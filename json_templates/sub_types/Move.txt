@@ -1,0 +1,6 @@
+{
+    player: int
+    turn:   int
+    row:    int
+    column: int
+}

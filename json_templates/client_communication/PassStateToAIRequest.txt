@@ -1,0 +1,6 @@
+{
+    gameID: int
+    userID: int
+    rules:  GameSpec
+    state:  GameState
+}

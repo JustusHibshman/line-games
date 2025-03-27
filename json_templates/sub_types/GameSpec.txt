@@ -1,0 +1,16 @@
+{
+    numPlayers: int
+    aiTime:     int                 number of seconds AI should think for
+    board: {
+        width:      int
+        height:     int
+        gravity:    bool
+    }
+    rules: {
+        winningLength:      int
+        allowCaptures:      bool
+        winByCaptures:      bool    winByCaptures --> allowCaptures
+        captureSize:        int
+        winningNumCaptures: int
+    }
+}

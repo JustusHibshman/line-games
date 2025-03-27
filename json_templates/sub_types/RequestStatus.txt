@@ -1,0 +1,9 @@
+{
+    success:    bool
+    status:     int     0 = success
+                        1 = game is full
+                        2 = game is over
+                        3 = incorrectly formatted request
+                        4 = servers overloaded
+    message:    string
+}

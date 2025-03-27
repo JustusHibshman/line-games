@@ -1,0 +1,11 @@
+{
+    player:     int                         the current player ID
+                                            [0, numPlayers)
+
+    turn:       int                         the first turn is turn 0
+
+    board:      array of arrays of ints     -1 = empty, other = player ID,
+                                            accessed as board[row][column]
+
+    captures:   array of ints               each player's total captures
+}

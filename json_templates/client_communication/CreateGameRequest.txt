@@ -1,0 +1,5 @@
+{
+    rules:          GameSpec
+    playerTypes:    array of ints,
+                    0 = Hotseat, 1 = AI, 2 = Human elsewhere
+}

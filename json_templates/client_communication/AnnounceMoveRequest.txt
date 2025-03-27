@@ -1,0 +1,5 @@
+{
+    gameID: int
+    userID: int
+    move:   Move
+}

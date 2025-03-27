@@ -1,0 +1,6 @@
+{
+    status:     RequestStatus
+    gameID:     int
+    userID:     int
+    serverIP:   string
+}
