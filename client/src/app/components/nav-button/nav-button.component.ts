@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -8,6 +8,9 @@ import { RouterLink } from '@angular/router';
   styleUrl: './nav-button.component.scss'
 })
 export class NavButtonComponent {
-    target = input.required();
-    text   = input.required();
+    target = input.required<string>();
+    text   = input.required<string>();
+    live   = input<boolean>(true);
+    targetHTML = computed(() => this.live() ? this.target() : 'null');
+    classHTML  = computed(() => this.live() ? 'live' : 'dead');
 }
