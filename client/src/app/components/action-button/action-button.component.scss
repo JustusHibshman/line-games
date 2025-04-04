@@ -1,0 +1,26 @@
+button {
+    font-size: 24px;
+    padding: 12px;
+    border-radius: 6px;
+
+    background-color: #111111;
+    color: #06b0a2;
+    border: 3px solid #06b0a2;
+
+    &:hover {
+        background-color: #000000;
+        color: #1bd4c5;
+        border: 3px solid #1bd4c5;
+        cursor: pointer;
+    }
+
+    &:disabled {
+        background-color: #111111;
+        color: #555555;
+        border: 3px solid #555555;
+
+        &:hover {
+            cursor: default;
+        }
+    }
+}
