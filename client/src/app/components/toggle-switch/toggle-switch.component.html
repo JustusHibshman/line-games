@@ -1,5 +1,5 @@
 <label class="slider">
-    <input type="checkbox" class="slider">
+    <input type="checkbox" class="slider" [checked]="(value() && !disable()) || (defaultValue() && disable())" (change)="toggle()" [disabled]="disable()" >
     <span class="sliderBackdrop"></span>
     <span class="slider"></span>
 </label>

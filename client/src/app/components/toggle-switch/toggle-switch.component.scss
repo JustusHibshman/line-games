@@ -23,7 +23,7 @@ span.sliderBackdrop {
     width: 50px;
     height: 30px;
     border-radius: 15px;
-    background-color: #cccccc;
+    background-color: #111111;
     transition: 0.5s;
 }
 
@@ -36,7 +36,7 @@ span.slider {
 
     width: 30px;
     height: 30px;
-    background-color: #ffffff;
+    background-color: #555555;
     transition: 0.5s;
     border-radius: 15px;
 }
@@ -46,6 +46,6 @@ input:checked ~ span.sliderBackdrop {
 }
 
 input:checked ~ span.slider {
-    background-color: #222222;
+    background-color: #b0901c;
     transform: translateX(20px);
 }

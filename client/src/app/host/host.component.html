@@ -4,6 +4,13 @@
 <app-nav-button [target]='"/"' [text]='"Home"' />
 </div>
 
-<div>
-<app-toggle-switch />
-</div>
+<p>Gravity</p>
+<app-toggle-switch [defaultValue]="false" (choice)="setGravity($event)" />
+
+<p>Allow Captures</p>
+<app-toggle-switch [defaultValue]="false" (choice)="setAllowCaptures($event)" />
+
+<p>Win by Captures</p>
+<app-toggle-switch 
+    [defaultValue]="false" [disable]="!allowCaptures()" 
+    (choice)="setWinByCaptures($event)" />
