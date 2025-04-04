@@ -1,1 +1,1 @@
-<button routerLink="{{ targetHTML() }}" class="{{ classHTML() }}" >{{ text() }}</button>
+<button [routerLink]="targetHTML()" [class]="classHTML()" [disabled]="!live()" >{{ text() }}</button>
