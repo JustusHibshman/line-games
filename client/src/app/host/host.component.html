@@ -12,3 +12,7 @@
 
 <p>Win by Captures</p>
 <app-toggle-switch [defaultValue]="false" [disable]="!allowCaptures()" [(value)]="winByCaptures" />
+
+<p>TODO: fix spacing</p>
+<app-text-box [(text)]="configName" [maxLength]="20" />
+<app-action-button [text]="'Save Config as Preset'" [disable]="configName() == ''" (click)="saveConfigAsPreset()" />

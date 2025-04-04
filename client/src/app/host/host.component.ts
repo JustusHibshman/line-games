@@ -1,12 +1,13 @@
 import { Component, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { ActionButtonComponent } from '@local-components/action-button/action-button.component';
 import { NavButtonComponent } from '@local-components/nav-button/nav-button.component';
+import { TextBoxComponent } from '@local-components/text-box/text-box.component';
 import { ToggleSwitchComponent } from '@local-components/toggle-switch/toggle-switch.component';
 
 @Component({
   selector: 'app-host',
-  imports: [FormsModule, ActionButtonComponent, NavButtonComponent, ToggleSwitchComponent],
+  imports: [ActionButtonComponent, NavButtonComponent, 
+            TextBoxComponent, ToggleSwitchComponent],
   templateUrl: './host.component.html',
   styleUrl: './host.component.scss'
 })

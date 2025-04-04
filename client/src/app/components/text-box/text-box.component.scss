@@ -1,0 +1,15 @@
+input {
+    font-size: 24px;
+    padding: 12px;
+    border-radius: 6px;
+
+    text-align: center;
+
+    background-color: #111111;
+    color: #06b0a2;
+    border: 3px solid #06b0a2; /* Lighter: #1bd4c5 */
+
+    &:focus {
+        outline: none;
+    }
+}
