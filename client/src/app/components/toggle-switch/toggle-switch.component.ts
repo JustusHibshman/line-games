@@ -1,4 +1,4 @@
-import { Component, input, OnChanges, OnInit, output, signal, SimpleChanges } from '@angular/core';
+import { Component, input, model, OnChanges, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -7,31 +7,20 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './toggle-switch.component.html',
   styleUrl: './toggle-switch.component.scss'
 })
-export class ToggleSwitchComponent implements OnInit, OnChanges {
+export class ToggleSwitchComponent implements OnChanges {
+    value        = model<boolean>();
     defaultValue = input<boolean>(false);
     disable      = input<boolean>(false);
-    theValue     = signal<boolean>(false);
-    choice       = output<boolean>();
-
-    ngOnInit(): void {
-        this.theValue.set(this.defaultValue());
-        this.choice.emit(this.theValue());
-    }
 
     ngOnChanges(changes: SimpleChanges): void {
         if ((changes['disable'] && changes['disable'].currentValue) || 
                 (changes['defaultValue'] && 
                  changes['defaultValue'].currentValue != changes['defaultValue'].previousValue)) {
             /* If disabled or the default value changes */
-            if (this.theValue() != this.defaultValue()) {
+            if (this.value() != this.defaultValue()) {
                 /* If we actually need to change */
-                this.theValue.set(this.defaultValue());
-                this.choice.emit(this.theValue());
+                this.value.set(this.defaultValue());
             }
         }
-    }
-
-    changeFn(): void {
-        this.choice.emit(this.theValue());
     }
 }

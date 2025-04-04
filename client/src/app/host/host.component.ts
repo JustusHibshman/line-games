@@ -1,10 +1,12 @@
 import { Component, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { ActionButtonComponent } from '@local-components/action-button/action-button.component';
 import { NavButtonComponent } from '@local-components/nav-button/nav-button.component';
 import { ToggleSwitchComponent } from '@local-components/toggle-switch/toggle-switch.component';
 
 @Component({
   selector: 'app-host',
-  imports: [NavButtonComponent, ToggleSwitchComponent],
+  imports: [FormsModule, ActionButtonComponent, NavButtonComponent, ToggleSwitchComponent],
   templateUrl: './host.component.html',
   styleUrl: './host.component.scss'
 })
@@ -12,6 +14,8 @@ export class HostComponent {
     gravity:       boolean = false;
     allowCaptures = signal<boolean>(false);
     winByCaptures: boolean = false;
+
+    configName    = signal<string>("");
 
     setGravity(event: boolean): void {
         this.gravity = event;
@@ -23,5 +27,13 @@ export class HostComponent {
 
     setWinByCaptures(event: boolean): void {
         this.winByCaptures = event;
+    }
+
+    saveConfigAsPreset(): void {
+        console.log("Save Button Pressed");
+    }
+
+    setConfigName(event: any): void {
+        this.configName.set(event.target.value);
     }
 }

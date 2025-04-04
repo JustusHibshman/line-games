@@ -5,12 +5,10 @@
 </div>
 
 <p>Gravity</p>
-<app-toggle-switch [defaultValue]="false" (choice)="setGravity($event)" />
+<app-toggle-switch [defaultValue]="false" [(value)]="gravity" />
 
 <p>Allow Captures</p>
-<app-toggle-switch [defaultValue]="false" (choice)="setAllowCaptures($event)" />
+<app-toggle-switch [defaultValue]="false" [(value)]="allowCaptures" />
 
 <p>Win by Captures</p>
-<app-toggle-switch 
-    [defaultValue]="false" [disable]="!allowCaptures()" 
-    (choice)="setWinByCaptures($event)" />
+<app-toggle-switch [defaultValue]="false" [disable]="!allowCaptures()" [(value)]="winByCaptures" />
