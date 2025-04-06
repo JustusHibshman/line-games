@@ -1,0 +1,32 @@
+div {
+    font-size: 0;
+}
+
+input {
+    width:  0px;
+    height: 0px;
+    opacity: 0;
+    margin: 0;
+}
+
+label {
+    display: block;
+    padding: 9px;
+
+    width: 220px;
+    background-color: #111111;
+    font-size: 18px;
+
+}
+
+label.greenC {
+    color: #3a7f02;
+}
+
+label.grayC {
+    color: #555555;
+}
+
+label.blueC {
+    color: #06b0a2;
+}
