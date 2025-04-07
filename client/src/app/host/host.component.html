@@ -1,35 +1,75 @@
-<h1>Host Page</h1>
-
-<div>
 <app-nav-button [target]='"/"' [text]='"Home"' />
-</div>
 
-<p>Gravity</p>
-<app-toggle-switch [defaultValue]="false" [(value)]="gravity" />
+<div class="main">
+    <div class="inputRow">
+        <div class="inputRowItem">
+        <span class="label">Width</span>
+        <app-integer-input [(value)]="width" [min]="3" [max]="19"
+                [disable]="false" />
+        </div>
+        <div class="inputRowItem">
+        <span class="label">Height</span>
+        <app-integer-input [(value)]="height" [min]="3" [max]="19" [disable]="false" />
+        </div>
 
-<p>Allow Captures</p>
-<app-toggle-switch [defaultValue]="false" [(value)]="allowCaptures" />
+        <div class="inputRowItem">
+        <span class="label">Winning Line Size</span>
+        <app-integer-input [(value)]="lineSize" [max]="boardMin()" [disable]="false" />
+        </div>
+    </div>
+    <div class="bigRowSpacer"></div>
+    <div class="inputRow">
+        <div class="inputRowItem">
+        <span class="label">Gravity</span>
+        <app-toggle-switch [defaultValue]="false" [(value)]="gravity" />
+        </div>
 
-<p>Win by Captures</p>
-<app-toggle-switch [defaultValue]="false" [disable]="!allowCaptures()" [(value)]="winByCaptures" />
+        <div class="inputRowItem">
+        <span class="label">Allow Captures</span>
+        <app-toggle-switch [defaultValue]="false" [(value)]="allowCaptures" />
+        </div>
 
-<p>TODO: fix spacing</p>
-<app-text-box [(text)]="configName" [maxLength]="20" />
-<app-action-button [text]="'Save Config as Preset'" [disable]="configName() == ''" (click)="saveConfigAsPreset()" />
+        <div class="inputRowItem">
+        <span class="label">Win by Captures</span>
+        <app-toggle-switch [defaultValue]="false" [(value)]="winByCaptures" 
+                [disable]="!allowCaptures()" />
+        </div>
+    </div>
+    <div class="smallRowSpacer"></div>
+    <div class="inputRow">
+        <div class="inputRowItem"></div>
 
-<br/><br/>
+        <div class="inputRowItem">
+        <span class="label">Capture Size</span>
+        <app-integer-input [(value)]="captureSize" [max]="boardMin() - 2"
+                [disable]="!allowCaptures()" />
+        </div>
 
-<div class="playerTypeSelectors">
-    <app-player-type-selector [(choice)]="playerTypes[0]" [formID]="'0'" 
-                [disable]="ptDisabled[0]()" />
-    <app-player-type-selector [(choice)]="playerTypes[1]" [formID]="'1'" 
-                [disable]="ptDisabled[1]()" />
-    <app-player-type-selector [(choice)]="playerTypes[2]" [formID]="'2'" 
-                [disable]="ptDisabled[2]()" />
-    <app-player-type-selector [(choice)]="playerTypes[3]" [formID]="'3'" 
-                [disable]="ptDisabled[3]()" />
-    <app-player-type-selector [(choice)]="playerTypes[4]" [formID]="'4'" 
-                [disable]="ptDisabled[4]()" />
-    <app-player-type-selector [(choice)]="playerTypes[5]" [formID]="'5'" 
-                [disable]="ptDisabled[5]()" />
+        <div class="inputRowItem">
+        <span class="label">Winning # Captures</span>
+        <app-integer-input [(value)]="winningCaptures" [max]="7" [disable]="!winByCaptures()" />
+        </div>
+    </div>
+    <div class="bigRowSpacer"></div>
+    <div>
+        <app-text-box [(text)]="configName" [maxLength]="20" class="label" />
+        <app-action-button [text]="'Save Config as Preset'" [disable]="configName() == ''"
+                (click)="saveConfigAsPreset()" />
+    </div>
+    <div class="bigRowSpacer"></div>
+    <div class="playerTypeSelectors">
+        <div></div> <!-- I am not sure yet why this is necessary -->
+        <app-player-type-selector [(choice)]="playerTypes[0]" [formID]="'0'" 
+                    [disable]="ptDisabled[0]()" />
+        <app-player-type-selector [(choice)]="playerTypes[1]" [formID]="'1'" 
+                    [disable]="ptDisabled[1]()" />
+        <app-player-type-selector [(choice)]="playerTypes[2]" [formID]="'2'" 
+                    [disable]="ptDisabled[2]()" />
+        <app-player-type-selector [(choice)]="playerTypes[3]" [formID]="'3'" 
+                    [disable]="ptDisabled[3]()" />
+        <app-player-type-selector [(choice)]="playerTypes[4]" [formID]="'4'" 
+                    [disable]="ptDisabled[4]()" />
+        <app-player-type-selector [(choice)]="playerTypes[5]" [formID]="'5'" 
+                    [disable]="ptDisabled[5]()" />
+    </div>
 </div>

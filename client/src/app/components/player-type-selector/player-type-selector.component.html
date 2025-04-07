@@ -2,7 +2,7 @@
     <div>
         <input type="radio" id="localHuman {{ formID() }}"   [name]="formID()"
             (change)="setValue(0)" [checked]="choice() == 0" [disabled]="disable()" >
-        <label for="localHuman {{ formID() }}" class="{{ lhc() }}" >Human (Your Machine)</label>
+        <label for="localHuman {{ formID() }}" class="{{ lhc() }}" >Human<br/>(Your PC)</label>
     </div>
     <div>
         <input type="radio" id="distantHuman {{ formID() }}" [name]="formID()"

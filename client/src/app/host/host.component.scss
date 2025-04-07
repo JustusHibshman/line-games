@@ -1,3 +1,47 @@
+div.main {
+    padding: 30px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 860px;
+    height: 640px;
+    margin: auto;
+
+    text-align: center;
+
+    background-color: #2f2f2f;
+    font-size: 18px;
+}
+
+div.inputRow {
+    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+div.inputRowItem {
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    width: 267px;
+}
+
+span.filler {
+    display: block;
+    width: 100%;
+}
+
+div.bigRowSpacer {
+    height: 40px;
+}
+
+div.smallRowSpacer {
+    height: 20px;
+}
+
 div.playerTypeSelectors {
     width: 100%;
     display: inline-flex;
@@ -6,4 +50,8 @@ div.playerTypeSelectors {
     span {
         display: inline-flex;
     }
+}
+
+.label {
+    margin-right: 10px;
 }
