@@ -19,6 +19,7 @@ span.sliderBackdrop {
     bottom: 0;
     left: 0;
     right: 0;
+    z-index: 1;
 
     cursor: pointer;
 
@@ -36,6 +37,7 @@ span.slider {
     bottom: 0;
     left: 0;
     right: 0;
+    z-index: 2;
 
     cursor: pointer;
 
@@ -52,8 +54,20 @@ input:disabled ~ span.slider {
 }
 
 input:checked ~ span.sliderBackdrop {
-    background-color: #000000;
     border: 2px solid #3a7f02;
+}
+
+input:checked ~ span.slider {
+    background-color: #3a7f02;
+    transform: translateX(20px);
+}
+
+span.sliderBackdrop:hover {
+    background-color: #000000;
+}
+
+span.slider:hover ~ span.sliderBackdrop {
+    background-color: #000000;
 }
 
 input:disabled ~ span.sliderBackdrop {
@@ -61,7 +75,14 @@ input:disabled ~ span.sliderBackdrop {
     cursor: default;
 }
 
-input:checked ~ span.slider {
-    background-color: #3a7f02;
-    transform: translateX(20px);
+input:disabled ~ span.sliderBackdrop:hover {
+    background-color: #111111;
+}
+
+input:disabled {
+    & ~ span.slider:hover {
+        & ~ span.sliderBackdrop {
+            background-color: #111111;
+        }
+    }
 }
