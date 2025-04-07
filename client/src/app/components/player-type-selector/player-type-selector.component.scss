@@ -2,6 +2,18 @@ div {
     font-size: 0;
 }
 
+div.greenC {
+    border: 3px solid #3a7f02;
+}
+
+div.blueC {
+    border: 3px solid #06b0a2;
+}
+
+div.grayC {
+    border: 3px solid #555555;
+}
+
 input {
     width:  0px;
     height: 0px;
@@ -16,7 +28,6 @@ label {
     width: 220px;
     background-color: #111111;
     font-size: 18px;
-
 }
 
 label.greenC {

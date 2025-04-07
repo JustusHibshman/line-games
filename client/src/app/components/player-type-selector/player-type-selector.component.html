@@ -1,20 +1,22 @@
-<div>
-    <input type="radio" id="localHuman {{ formID() }}"   [name]="formID()"
-        (change)="setValue(0)" [checked]="choice() == 0" [disabled]="disable()" >
-    <label for="localHuman {{ formID() }}" class="{{ lhc() }}" >Human (Your Machine)</label>
-</div>
-<div>
-    <input type="radio" id="distantHuman {{ formID() }}" [name]="formID()"
-        (change)="setValue(1)" [checked]="choice() == 1" [disabled]="disable()" >
-    <label for="distantHuman {{ formID() }}" class="{{ dhc() }}" >Human Elsewhere</label>
-</div>
-<div>
-    <input type="radio" id="ai {{ formID() }}"           [name]="formID()"
-        (change)="setValue(2)" [checked]="choice() == 2" [disabled]="disable()" >
-    <label for="ai {{ formID() }}" class="{{ aic() }}" >AI</label>
-</div>
-<div>
-    <input type="radio" id="none {{ formID() }}"         [name]="formID()"
-        (change)="setValue(3)" [checked]="choice() == 3" [disabled]="disable()" >
-    <label for="none {{ formID() }}" class="{{ nc() }}" >None</label>
+<div class="{{ borderClass() }}">
+    <div>
+        <input type="radio" id="localHuman {{ formID() }}"   [name]="formID()"
+            (change)="setValue(0)" [checked]="choice() == 0" [disabled]="disable()" >
+        <label for="localHuman {{ formID() }}" class="{{ lhc() }}" >Human (Your Machine)</label>
+    </div>
+    <div>
+        <input type="radio" id="distantHuman {{ formID() }}" [name]="formID()"
+            (change)="setValue(1)" [checked]="choice() == 1" [disabled]="disable()" >
+        <label for="distantHuman {{ formID() }}" class="{{ dhc() }}" >Human Elsewhere</label>
+    </div>
+    <div>
+        <input type="radio" id="ai {{ formID() }}"           [name]="formID()"
+            (change)="setValue(2)" [checked]="choice() == 2" [disabled]="disable()" >
+        <label for="ai {{ formID() }}" class="{{ aic() }}" >AI</label>
+    </div>
+    <div>
+        <input type="radio" id="none {{ formID() }}"         [name]="formID()"
+            (change)="setValue(3)" [checked]="choice() == 3" [disabled]="disable()" >
+        <label for="none {{ formID() }}" class="{{ nc() }}" >None</label>
+    </div>
 </div>

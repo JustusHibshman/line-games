@@ -13,10 +13,13 @@ export class PlayerTypeSelectorComponent {
     formID  = input.required<string>();
     
     colorClasses = ["blueC", "grayC", "greenC", "greenC"];
-    lhc = computed(() => this.colorClasses[((+ (this.choice() == 0)) * 2 + (+ this.disable()))]);
-    dhc = computed(() => this.colorClasses[((+ (this.choice() == 1)) * 2 + (+ this.disable()))]);
-    aic = computed(() => this.colorClasses[((+ (this.choice() == 2)) * 2 + (+ this.disable()))]);
-    nc  = computed(() => this.colorClasses[((+ (this.choice() == 3)) * 2 + (+ this.disable()))]);
+    lhc = computed(() => this.colorClasses[(+ (this.choice() == 0)) * 2 + (+ this.disable())]);
+    dhc = computed(() => this.colorClasses[(+ (this.choice() == 1)) * 2 + (+ this.disable())]);
+    aic = computed(() => this.colorClasses[(+ (this.choice() == 2)) * 2 + (+ this.disable())]);
+    nc  = computed(() => this.colorClasses[(+ (this.choice() == 3)) * 2 + (+ this.disable())]);
+    borderClass =
+        computed(() => this.colorClasses[
+            (+ (this.choice() != 3)) * (+ (this.disable())) + (+ (this.disable()))]);
 
     setValue(n: number): void {
         console.log(this.lhc);
