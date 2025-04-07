@@ -3,7 +3,7 @@ label.slider {
     position: relative;
     margin: 0px;
     padding: 0px;
-    /* cursor: pointer; */
+    cursor: pointer;
 }
 
 input.slider {
@@ -20,9 +20,10 @@ span.sliderBackdrop {
     left: 0;
     right: 0;
 
-    width: 50px;
-    height: 30px;
+    width: 46px;
+    height: 26px;
     border-radius: 15px;
+    border: 2px solid #06b0a2;
     background-color: #111111;
     transition: 0.5s;
 }
@@ -36,16 +37,25 @@ span.slider {
 
     width: 30px;
     height: 30px;
-    background-color: #555555;
+    background-color: #06b0a2;
     transition: 0.5s;
     border-radius: 15px;
 }
 
+input:disabled ~ span.slider {
+    background-color: #555555;
+}
+
 input:checked ~ span.sliderBackdrop {
     background-color: #000000;
+    border: 2px solid #3a7f02;
+}
+
+input:disabled ~ span.sliderBackdrop {
+    border: 2px solid #555555;
 }
 
 input:checked ~ span.slider {
-    background-color: #06b0a2;
+    background-color: #3a7f02;
     transform: translateX(20px);
 }

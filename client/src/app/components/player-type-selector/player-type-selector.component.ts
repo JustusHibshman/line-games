@@ -18,8 +18,7 @@ export class PlayerTypeSelectorComponent {
     aic = computed(() => this.colorClasses[(+ (this.choice() == 2)) * 2 + (+ this.disable())]);
     nc  = computed(() => this.colorClasses[(+ (this.choice() == 3)) * 2 + (+ this.disable())]);
     borderClass =
-        computed(() => this.colorClasses[
-            (+ (this.choice() != 3)) * (+ (this.disable())) + (+ (this.disable()))]);
+          computed(() => this.colorClasses[(+ (this.choice() != 3)) * 2 + (+ this.disable())]);
 
     setValue(n: number): void {
         console.log(this.lhc);
