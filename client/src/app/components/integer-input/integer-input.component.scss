@@ -1,0 +1,80 @@
+div {
+    width: 132px;
+    border: 3px solid #06b0a2; /* Lighter: #1bd4c5 */
+}
+
+div.dead {
+    border-color: #555555;
+}
+
+button {
+    font-size: 18px;
+    font-family: "Arial";
+    padding: 0;
+    padding-top: 9px;
+    padding-bottom: 9px;
+    border-radius: 0px;
+    text-align: center;
+
+    width: 36px;
+
+    background-color: #111111;
+    border: none;
+    color: #06b0a2;
+
+    cursor: pointer;
+
+    &:hover {
+        background-color: #000000;
+    }
+}
+
+button.dead {
+    color: #555555;
+    cursor: default;
+    &:hover {
+        background-color: #111111;
+    }
+}
+
+input {
+    font-size: 18px;
+    font-family: "Arial";
+    padding: 0;
+    padding-top: 9px;
+    padding-bottom: 9px;
+    text-align: center;
+
+    width: 54px;
+
+    background-color: #111111;
+    border: 3px solid #06b0a2; /* Lighter: #1bd4c5 */
+    border-top: none;
+    border-bottom: none;
+    color: #06b0a2;
+
+    -moz-appearance: textfield; /* Remove arrows in Firefox */
+
+    &:focus {
+        outline: none;
+        background-color: #000000;
+    }
+
+    &:hover {
+        background-color: #000000;
+    }
+}
+
+input.dead {
+    color: #555555;
+    border-color: #555555;
+    &:hover {
+        background-color: #111111;
+    }
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}

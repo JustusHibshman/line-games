@@ -1,0 +1,6 @@
+<div class="{{ status() }}">
+    <button (click)="decrement()" [class]="status()" [disabled]="disable()" >-</button>
+    <input type="number" step="1" [(ngModel)]="value" [min]="min()" [max]="max()"
+        [class]="status()" [disabled]="disable()" (focusout)="checkLegal()">
+    <button (click)="increment()" [class]="status()" [disabled]="disable()">+</button>
+</div>
