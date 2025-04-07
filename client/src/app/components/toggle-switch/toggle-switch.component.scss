@@ -3,8 +3,8 @@ label.slider {
     position: relative;
     margin: 0px;
     padding: 0px;
-    cursor: pointer;
 }
+
 
 input.slider {
     opacity: 0;
@@ -19,6 +19,8 @@ span.sliderBackdrop {
     bottom: 0;
     left: 0;
     right: 0;
+
+    cursor: pointer;
 
     width: 46px;
     height: 26px;
@@ -35,6 +37,8 @@ span.slider {
     left: 0;
     right: 0;
 
+    cursor: pointer;
+
     width: 30px;
     height: 30px;
     background-color: #06b0a2;
@@ -44,6 +48,7 @@ span.slider {
 
 input:disabled ~ span.slider {
     background-color: #555555;
+    cursor: default;
 }
 
 input:checked ~ span.sliderBackdrop {
@@ -53,6 +58,7 @@ input:checked ~ span.sliderBackdrop {
 
 input:disabled ~ span.sliderBackdrop {
     border: 2px solid #555555;
+    cursor: default;
 }
 
 input:checked ~ span.slider {
