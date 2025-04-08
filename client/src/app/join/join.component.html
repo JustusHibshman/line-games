@@ -1,3 +1,10 @@
-<h1>Join Page</h1>
-
 <app-nav-button [target]='"/"' [text]='"Home"' />
+
+<div class="main">
+<div *ngFor="let game of games; index as i" class="listing">
+    <span class="gameName">{{ game.name }}</span>
+    <span>Password:</span>
+    <app-text-box [maxLength]="10" [(text)]="typed[i]" class="password" />
+    <app-action-button [text]="'Join'" (click)="joinGame(i)" />
+</div>
+</div>

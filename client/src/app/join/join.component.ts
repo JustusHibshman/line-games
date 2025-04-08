@@ -1,12 +1,45 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
+import { NgFor } from '@angular/common';
+
+import { ActionButtonComponent } from '@local-components/action-button/action-button.component';
 import { NavButtonComponent } from '@local-components/nav-button/nav-button.component';
+import { TextBoxComponent } from '@local-components/text-box/text-box.component';
+
+import { GameListing } from '@local-types/game-listing.type';
 
 @Component({
   selector: 'app-join',
-  imports: [NavButtonComponent],
+  imports: [NgFor,
+            ActionButtonComponent, NavButtonComponent, TextBoxComponent],
   templateUrl: './join.component.html',
   styleUrl: './join.component.scss'
 })
-export class JoinComponent {
+export class JoinComponent implements OnInit {
+    games: Array<GameListing> = [
+        { gameID: 0, name: "Placeholder" },
+        { gameID: 1, name: "Fried Chicken" },
+        { gameID: 17, name: "Lucky 17"},
+    ];
 
+    typed: any = [];
+
+    ngOnInit(): void {
+        this.games.sort(this.compareListings)
+        this.typed = Array.from({ length: this.games.length }, () => signal<string>(""));
+    }
+
+    joinGame(idx: number): void {
+        console.log("Attempted to join game " + String(idx));
+        console.log("Current password entry: " + this.typed[idx]());
+    }
+
+    compareListings(a: GameListing, b: GameListing): number {
+        if (a.name < b.name) {
+            return -1;
+        } else if (b.name < a.name) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
 }
