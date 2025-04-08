@@ -66,6 +66,8 @@ export class HostComponent implements OnInit {
                                     this.playerTypes[5]() != PlayerType.None),
                    computed(() => this.playerTypes[4]() == PlayerType.None)]
 
+    aiComputeTime = signal<number>(4);
+
     saveConfigAsPreset(): void {
         this.gameSpec.board.width   = this.width();
         this.gameSpec.board.height  = this.height();
