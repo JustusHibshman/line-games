@@ -10,6 +10,7 @@ import { FormsModule } from '@angular/forms';
 export class TextBoxComponent {
     maxLength = input<number>(20);
     text = model<string>();
+    expanding = input<boolean>(false);
 
     measureText(t: string | undefined): number {
         if (t === undefined) {
@@ -29,5 +30,8 @@ export class TextBoxComponent {
         return 2 + full - (dots.actualBoundingBoxRight + dots.actualBoundingBoxLeft);
     }
 
-    widthCalc = computed(() => this.measureText(this.text()));
+    widthCalc = computed(() => this.expanding() ?
+                    this.measureText(this.text()) :
+                    this.measureText("@") +
+                        (this.maxLength() - 1) * (this.measureText("@@") - this.measureText("@")));
 }
