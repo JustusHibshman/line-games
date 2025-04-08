@@ -1,4 +1,6 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, OnInit, signal } from '@angular/core';
+import { KeyValuePipe, NgFor } from '@angular/common';
+
 import { ActionButtonComponent } from '@local-components/action-button/action-button.component';
 import { IntegerInputComponent } from '@local-components/integer-input/integer-input.component';
 import { NavButtonComponent } from '@local-components/nav-button/nav-button.component';
@@ -6,28 +8,43 @@ import { PlayerTypeSelectorComponent } from '@local-components/player-type-selec
 import { TextBoxComponent } from '@local-components/text-box/text-box.component';
 import { ToggleSwitchComponent } from '@local-components/toggle-switch/toggle-switch.component';
 
+import { GameSpec, copyGameSpec, emptyGameSpec }   from '@local-types/game-spec.type';
 import { PlayerType } from '@local-types/player-type.type';
 
 @Component({
   selector: 'app-host',
-  imports: [ActionButtonComponent, IntegerInputComponent, NavButtonComponent,
+  imports: [KeyValuePipe, NgFor,
+            ActionButtonComponent, IntegerInputComponent, NavButtonComponent,
             PlayerTypeSelectorComponent, TextBoxComponent, ToggleSwitchComponent],
   templateUrl: './host.component.html',
   styleUrl: './host.component.scss'
 })
-export class HostComponent {
+export class HostComponent implements OnInit {
+
+    specs: { [id: string]: GameSpec } = {};
+
+    ngOnInit(): void {
+        try {
+            this.loadConfigs();
+        }
+        catch(e) {
+            this.resetConfigs();
+        }
+    }
+
+    gameSpec: GameSpec = emptyGameSpec();
 
     width    = signal<number>(13);
     height   = signal<number>(13);
-    lineSize: number = 5;
+    winningLength = signal<number>(5);
     boardMin = computed(() => Math.min(this.width(), this.height()));
 
-    gravity: boolean = false;
+    gravity = signal<boolean>(false);
     allowCaptures = signal<boolean>(false);
     winByCaptures = signal<boolean>(false);
 
-    captureSize:     number = 2;
-    winningCaptures: number = 5;
+    captureSize = signal<number>(2);
+    winningNumCaptures = signal<number>(5);
 
     configName = signal<string>("");
 
@@ -46,10 +63,109 @@ export class HostComponent {
                    computed(() => this.playerTypes[4]() == PlayerType.None)]
 
     saveConfigAsPreset(): void {
-        console.log("Save Button Pressed");
+        this.gameSpec.board.width   = this.width();
+        this.gameSpec.board.height  = this.height();
+        this.gameSpec.board.gravity = this.gravity();
+
+        this.gameSpec.rules.winningLength = this.winningLength();
+        this.gameSpec.rules.allowCaptures = this.allowCaptures();
+        this.gameSpec.rules.winByCaptures = this.winByCaptures();
+        this.gameSpec.rules.captureSize   = this.captureSize();
+        this.gameSpec.rules.winningNumCaptures = this.winningNumCaptures();
+
+        this.specs[this.configName()] = copyGameSpec(this.gameSpec);
+        localStorage.setItem('specs', JSON.stringify(this.specs));
+    }
+
+    loadConfig(specName: string): GameSpec {
+        var gs: GameSpec = emptyGameSpec();
+        if (!this.specs[specName]) {
+            console.log("No GameSpec '" + specName + "' in localStorage!");
+        } else {
+            gs = copyGameSpec(this.specs[specName]);
+            this.width.set(gs.board.width);
+            this.height.set(gs.board.height);
+            this.gravity.set(gs.board.gravity);
+
+            this.winningLength.set(gs.rules.winningLength);
+            this.allowCaptures.set(gs.rules.allowCaptures);
+            this.winByCaptures.set(gs.rules.winByCaptures);
+            this.captureSize.set(gs.rules.captureSize);
+            this.winningNumCaptures.set(gs.rules.winningNumCaptures);
+        }
+        return gs;
     }
 
     setConfigName(event: any): void {
         this.configName.set(event.target.value);
+    }
+
+    loadConfigs(): void {
+        if (!localStorage['specs']) {
+            this.specs = {};
+            this.specs['Tic-Tac-Toe'] = this.ticTacToeConfig();
+            this.specs['Four in a Row'] = this.fourInARowConfig();
+            this.specs['Pente'] = this.penteConfig();
+            localStorage.setItem('specs', JSON.stringify(this.specs));
+        } else {
+            let specsString = localStorage.getItem('specs');
+            this.specs = specsString ? JSON.parse(specsString) : {};
+        }
+    }
+
+    resetConfigs(): void {
+        localStorage.removeItem('specs');
+        this.loadConfigs();
+    }
+
+    ticTacToeConfig(): GameSpec {
+        return {
+            board: {
+                width: 3,
+                height: 3,
+                gravity: false,
+            },
+            rules: {
+                winningLength: 3,
+                allowCaptures: false,
+                winByCaptures: false,
+                captureSize:   0,
+                winningNumCaptures: 0,
+            },
+        }
+    }
+
+    fourInARowConfig(): GameSpec {
+        return {
+            board: {
+                width: 7,
+                height: 6,
+                gravity: true,
+            },
+            rules: {
+                winningLength: 4,
+                allowCaptures: false,
+                winByCaptures: false,
+                captureSize:   0,
+                winningNumCaptures: 0,
+            },
+        }
+    }
+
+    penteConfig(): GameSpec {
+        return {
+            board: {
+                width: 13,
+                height: 13,
+                gravity: false,
+            },
+            rules: {
+                winningLength: 5,
+                allowCaptures: true,
+                winByCaptures: true,
+                captureSize:   2,
+                winningNumCaptures: 5,
+            },
+        }
     }
 }

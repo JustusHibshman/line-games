@@ -1,5 +1,14 @@
 <app-nav-button [target]='"/"' [text]='"Home"' />
 
+<div class="bigRowSpacer"></div>
+<div>
+    <app-action-button [text]="'Reset Presets'" (click)="resetConfigs()" />
+</div>
+<div class="bigRowSpacer"></div>
+<div *ngFor="let gameSpec of specs | keyvalue">
+    <app-action-button [text]="gameSpec.key" (click)="loadConfig(gameSpec.key)" />
+</div>
+
 <div class="main">
     <div class="inputRow">
         <div class="inputRowItem">
@@ -14,7 +23,7 @@
 
         <div class="inputRowItem">
         <span class="label">Winning Line Size</span>
-        <app-integer-input [(value)]="lineSize" [max]="boardMin()" [disable]="false" />
+        <app-integer-input [(value)]="winningLength" [max]="boardMin()" [disable]="false" />
         </div>
     </div>
     <div class="bigRowSpacer"></div>
@@ -47,7 +56,7 @@
 
         <div class="inputRowItem">
         <span class="label">Winning # Captures</span>
-        <app-integer-input [(value)]="winningCaptures" [max]="7" [disable]="!winByCaptures()" />
+        <app-integer-input [(value)]="winningNumCaptures" [max]="7" [disable]="!winByCaptures()" />
         </div>
     </div>
     <div class="bigRowSpacer"></div>
