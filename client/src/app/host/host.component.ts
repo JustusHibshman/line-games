@@ -6,6 +6,8 @@ import { PlayerTypeSelectorComponent } from '@local-components/player-type-selec
 import { TextBoxComponent } from '@local-components/text-box/text-box.component';
 import { ToggleSwitchComponent } from '@local-components/toggle-switch/toggle-switch.component';
 
+import { PlayerType } from '@local-types/player-type.type';
+
 @Component({
   selector: 'app-host',
   imports: [ActionButtonComponent, IntegerInputComponent, NavButtonComponent,
@@ -14,8 +16,9 @@ import { ToggleSwitchComponent } from '@local-components/toggle-switch/toggle-sw
   styleUrl: './host.component.scss'
 })
 export class HostComponent {
-    width    = signal<number>(19);
-    height   = signal<number>(19);
+
+    width    = signal<number>(13);
+    height   = signal<number>(13);
     lineSize: number = 5;
     boardMin = computed(() => Math.min(this.width(), this.height()));
 
@@ -28,13 +31,19 @@ export class HostComponent {
 
     configName = signal<string>("");
 
-    playerTypes = [signal<number>(0), signal<number>(0), signal<number>(3),
-                   signal<number>(3), signal<number>(3), signal<number>(3)];
-    ptDisabled  = [signal<boolean>(true), signal<boolean>(true),
-                   computed(() => this.playerTypes[1]() == 3 || this.playerTypes[3]() != 3),
-                   computed(() => this.playerTypes[2]() == 3 || this.playerTypes[4]() != 3),
-                   computed(() => this.playerTypes[3]() == 3 || this.playerTypes[5]() != 3),
-                   computed(() => this.playerTypes[4]() == 3)]
+    playerTypes = [signal<PlayerType>(PlayerType.Human), signal<PlayerType>(PlayerType.None),
+                   signal<PlayerType>(PlayerType.None),  signal<PlayerType>(PlayerType.None),
+                   signal<PlayerType>(PlayerType.None),  signal<PlayerType>(PlayerType.None)];
+    ptDisabled  = [signal<boolean>(true),
+                   computed(() => this.playerTypes[0]() == PlayerType.None || 
+                                    this.playerTypes[2]() != PlayerType.None),
+                   computed(() => this.playerTypes[1]() == PlayerType.None || 
+                                    this.playerTypes[3]() != PlayerType.None),
+                   computed(() => this.playerTypes[2]() == PlayerType.None ||
+                                    this.playerTypes[4]() != PlayerType.None),
+                   computed(() => this.playerTypes[3]() == PlayerType.None ||
+                                    this.playerTypes[5]() != PlayerType.None),
+                   computed(() => this.playerTypes[4]() == PlayerType.None)]
 
     saveConfigAsPreset(): void {
         console.log("Save Button Pressed");

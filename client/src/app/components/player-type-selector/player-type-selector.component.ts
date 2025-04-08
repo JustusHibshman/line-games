@@ -1,4 +1,5 @@
 import { Component, computed, input, model } from '@angular/core';
+import { PlayerType } from '@local-types/player-type.type';
 
 @Component({
   selector: 'app-player-type-selector',
@@ -8,20 +9,23 @@ import { Component, computed, input, model } from '@angular/core';
 })
 export class PlayerTypeSelectorComponent {
 
-    choice  = model<number>();
+    public PlayerTypes = PlayerType;
+
+    choice  = model.required<PlayerType>();
     disable = input<boolean>(false);
     formID  = input.required<string>();
     
     colorClasses = ["blueC", "grayC", "greenC", "greenC"];
-    lhc = computed(() => this.colorClasses[(+ (this.choice() == 0)) * 2 + (+ this.disable())]);
-    dhc = computed(() => this.colorClasses[(+ (this.choice() == 1)) * 2 + (+ this.disable())]);
-    aic = computed(() => this.colorClasses[(+ (this.choice() == 2)) * 2 + (+ this.disable())]);
-    nc  = computed(() => this.colorClasses[(+ (this.choice() == 3)) * 2 + (+ this.disable())]);
-    borderClass =
-          computed(() => this.colorClasses[(+ (this.choice() != 3)) * 2 + (+ this.disable())]);
+    hc  = computed(() => this.colorClasses[
+            (+ (this.choice() == PlayerType.Human)) * 2 + (+ this.disable())]);
+    aic = computed(() => this.colorClasses[
+            (+ (this.choice() == PlayerType.AI)) * 2    + (+ this.disable())]);
+    nc  = computed(() => this.colorClasses[
+            (+ (this.choice() == PlayerType.None)) * 2  + (+ this.disable())]);
+    borderClass = computed(() => this.colorClasses[
+            (+ (this.choice() != PlayerType.None)) * 2  + (+ this.disable())]);
 
-    setValue(n: number): void {
-        console.log(this.lhc);
-        this.choice.set(n);
+    setValue(t: PlayerType): void {
+        this.choice.set(t);
     }
 }
