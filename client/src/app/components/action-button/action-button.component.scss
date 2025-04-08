@@ -3,6 +3,15 @@ button {
     padding: 12px;
     border-radius: 6px;
 
+    &.small {
+        font-size: 18px;
+        padding: 9px;
+        border-radius: 4.5px;
+    }
+
+    max-width: 100%;
+    word-wrap: break-word;
+
     background-color: #111111;
     color: #3a7f02;
     border: 3px solid #3a7f02;
@@ -12,6 +21,21 @@ button {
         color: #4a7d21;
         border: 3px solid #4a7d21;
         cursor: pointer;
+    }
+
+    &.blue {
+        color: #06b0a2;
+        border: 3px solid #06b0a2;
+        &:hover {
+            color: #1bd4c5;
+            border: 3px solid #1bd4c5;
+        }
+
+        &:disabled {
+            background-color: #111111;
+            color: #555555;
+            border: 3px solid #555555;
+        }
     }
 
     &:disabled {

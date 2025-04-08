@@ -2,11 +2,12 @@
 
 <div class="bigRowSpacer"></div>
 <div>
-    <app-action-button [text]="'Reset Presets'" (click)="resetConfigs()" />
+    <app-action-button [blue]="true" [small]="true" [text]="'Reset Presets'" (click)="resetConfigs()" />
 </div>
-<div class="bigRowSpacer"></div>
-<div *ngFor="let gameSpec of specs | keyvalue">
-    <app-action-button [text]="gameSpec.key" (click)="loadConfig(gameSpec.key)" />
+<div class="smallRowSpacer"></div>
+<div *ngFor="let gameSpec of specs | keyvalue" class="preset">
+    <app-action-button [small]="true" [text]="gameSpec.key" (click)="loadConfig(gameSpec.key)" />
+    <div class="tinyRowSpacer"></div>
 </div>
 
 <div class="main">
@@ -62,7 +63,7 @@
     <div class="bigRowSpacer"></div>
     <div>
         <app-text-box [(text)]="configName" [maxLength]="20" class="label" />
-        <app-action-button [text]="'Save Config as Preset'" [disable]="configName() == ''"
+        <app-action-button [blue]="true" [text]="'Save Config as Preset'" [disable]="configName() == ''"
                 (click)="saveConfigAsPreset()" />
     </div>
     <div class="bigRowSpacer"></div>
