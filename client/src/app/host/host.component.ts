@@ -21,6 +21,8 @@ import { PlayerType } from '@local-types/player-type.type';
 })
 export class HostComponent implements OnInit {
 
+    public PlayerTypes = PlayerType;
+
     specs: { [id: string]: GameSpec } = {};
 
     ngOnInit(): void {
@@ -33,6 +35,8 @@ export class HostComponent implements OnInit {
     }
 
     gameSpec: GameSpec = emptyGameSpec();
+    gameName = signal<string>("");
+    password = signal<string>("");
 
     width    = signal<number>(13);
     height   = signal<number>(13);
