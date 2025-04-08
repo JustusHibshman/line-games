@@ -1,6 +1,4 @@
 {
-    numPlayers: int
-    aiTime:     int                 number of seconds AI should think for
     board: {
         width:      int
         height:     int

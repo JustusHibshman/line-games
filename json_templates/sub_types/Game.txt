@@ -1,0 +1,5 @@
+{
+    players: array of Player
+    spec:    GameSpec;
+    state:   GameState;
+}
