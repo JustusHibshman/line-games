@@ -91,7 +91,7 @@
         <span class="label">Password</span>
         <app-text-box [(text)]="password" [maxLength]="10" class="label" />
     </div>
-    <div class="smallRowSpacer"></div>
+    <div class="bigRowSpacer"></div>
     <div>
         <app-action-button [text]="'Launch Game'"
                 [disable]="gameName() == '' || playerTypes[1]() == PlayerTypes.None" />
