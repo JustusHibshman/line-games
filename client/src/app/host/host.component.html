@@ -64,7 +64,8 @@
     <div>
         <span class="label">Preset Name</span>
         <app-text-box [(text)]="configName" [maxLength]="17" class="label" />
-        <app-action-button [blue]="true" [text]="'Save Config as Preset'" [disable]="configName() == ''"
+        <app-action-button [blue]="true" [text]="'Save Config as Preset'"
+                [disable]="configName().trim() == ''"
                 (click)="saveConfigAsPreset()" />
     </div>
     <div class="bigRowSpacer"></div>
@@ -94,6 +95,6 @@
     <div class="bigRowSpacer"></div>
     <div>
         <app-action-button [text]="'Launch Game'"
-                [disable]="gameName() == '' || playerTypes[1]() == PlayerTypes.None" />
+                [disable]="gameName().trim() == '' || playerTypes[1]() == PlayerTypes.None" />
     </div>
 </div>

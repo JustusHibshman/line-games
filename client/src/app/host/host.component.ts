@@ -77,7 +77,7 @@ export class HostComponent implements OnInit {
         this.gameSpec.rules.captureSize   = this.captureSize();
         this.gameSpec.rules.winningNumCaptures = this.winningNumCaptures();
 
-        this.specs[this.configName()] = copyGameSpec(this.gameSpec);
+        this.specs[this.configName().trim()] = copyGameSpec(this.gameSpec);
         localStorage.setItem('specs', JSON.stringify(this.specs));
     }
 
@@ -98,10 +98,6 @@ export class HostComponent implements OnInit {
             this.winningNumCaptures.set(gs.rules.winningNumCaptures);
         }
         return gs;
-    }
-
-    setConfigName(event: any): void {
-        this.configName.set(event.target.value);
     }
 
     loadConfigs(): void {
