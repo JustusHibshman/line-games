@@ -3,22 +3,22 @@ button {
     padding: 18px;
     border-radius: 9px;
     text-align: center;
-    background-color: #111111;
+    background-color: var(--inputBackground);
 }
 
 button.live {
-    color: #a0800c;
-    border: 5px solid #a0800c;
+    color: var(--yellow);
+    border: 5px solid var(--yellow);
 
     &:hover {
-        background-color: #000000;
-        border: 5px solid #b0901c;
-        color:  #af8f1b;
+        background-color: var(--inputHoverBackground);
+        border: 5px solid var(--lightYellow);
+        color:  var(--lightYellow);
         cursor: pointer;
     }
 }
 
 button.dead {
-    color: #555555;
-    border: 5px solid #555555;
+    color: var(--inactiveGray);
+    border: 5px solid var(--inactiveGray);
 }

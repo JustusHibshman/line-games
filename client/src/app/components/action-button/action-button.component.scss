@@ -12,36 +12,36 @@ button {
     max-width: 100%;
     word-wrap: break-word;
 
-    background-color: #111111;
-    color: #3a7f02;
-    border: 3px solid #3a7f02;
+    background-color: var(--inputBackground);
+    color: var(--green);
+    border: 3px solid var(--green);
 
     &:hover {
-        background-color: #000000;
-        color: #4a7d21;
-        border: 3px solid #4a7d21;
+        background-color: var(--inputHoverBackground);
+        color: var(--lightGreen);
+        border: 3px solid var(--lightGreen);
         cursor: pointer;
     }
 
     &.blue {
-        color: #06b0a2;
-        border: 3px solid #06b0a2;
+        color: var(--blue);
+        border: 3px solid var(--blue);
         &:hover {
-            color: #1bd4c5;
-            border: 3px solid #1bd4c5;
+            color: var(--lightBlue);
+            border: 3px solid var(--lightBlue);
         }
 
         &:disabled {
-            background-color: #111111;
-            color: #555555;
-            border: 3px solid #555555;
+            background-color: var(--inputBackground);
+            color: var(--inactiveGray);
+            border: 3px solid var(--inactiveGray);
         }
     }
 
     &:disabled {
-        background-color: #111111;
-        color: #555555;
-        border: 3px solid #555555;
+        background-color: var(--inputBackground);
+        color: var(--inactiveGray);
+        border: 3px solid var(--inactiveGray);
 
         &:hover {
             cursor: default;

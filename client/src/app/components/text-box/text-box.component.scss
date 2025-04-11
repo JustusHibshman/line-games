@@ -10,11 +10,13 @@ input {
 
     text-align: left;
 
-    background-color: #111111;
-    color: #06b0a2;
-    border: 3px solid #06b0a2; /* Lighter: #1bd4c5 */
+    background-color: var(--inputBackground);
+    color: var(--blue);
+    border: 3px solid var(--blue);
 
     &:focus {
         outline: none;
+        color: var(--blue);
+        border: 3px solid var(--lightBlue);
     }
 }

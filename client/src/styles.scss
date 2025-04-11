@@ -48,11 +48,28 @@ table {
 }
 
 /* Custom to this site */
+html {
+    /* Custom colors */
+    --yellow: #a0800c;
+    --midYellow: #a88815;
+    --lightYellow: #af8f1b;
+    --blue: #06b0a2;
+    --lightBlue: #1bd4c5;
+    --green: #3a7f02;
+    --lightGreen: #4a7d21;
+
+    --purple: #582b90;
+    --redOrange: #bb3a12;
+    --gray:   #555555;
+
+    --inactiveGray: #555555;
+    --inputBackground: #111111;
+    --inputHoverBackground: #000000;
+}
 
 body {
-    background-color: #281d10;
-    background-color: #222222;
-    color: #eeeeee;
+    background-color: #202020;
+    color: #e0e0e0;
     font-family: Helvetica;
     padding: 8px;
 }

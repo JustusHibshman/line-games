@@ -1,10 +1,10 @@
 div {
     width: 132px;
-    border: 3px solid #06b0a2; /* Lighter: #1bd4c5 */
+    border: 3px solid var(--blue);
 }
 
 div.dead {
-    border-color: #555555;
+    border-color: var(--inactiveGray);
 }
 
 button {
@@ -18,22 +18,22 @@ button {
 
     width: 36px;
 
-    background-color: #111111;
+    background-color: var(--inputBackground);
     border: none;
-    color: #06b0a2;
+    color: var(--blue);
 
     cursor: pointer;
 
     &:hover {
-        background-color: #000000;
+        background-color: var(--inputHoverBackground);
     }
 }
 
 button.dead {
-    color: #555555;
+    color: var(--inactiveGray);
     cursor: default;
     &:hover {
-        background-color: #111111;
+        background-color: var(--inputBackground);
     }
 }
 
@@ -47,29 +47,29 @@ input {
 
     width: 54px;
 
-    background-color: #111111;
-    border: 3px solid #06b0a2; /* Lighter: #1bd4c5 */
+    background-color: var(--inputBackground);
+    border: 3px solid var(--blue);
     border-top: none;
     border-bottom: none;
-    color: #06b0a2;
+    color: var(--blue);
 
     -moz-appearance: textfield; /* Remove arrows in Firefox */
 
     &:focus {
         outline: none;
-        background-color: #000000;
+        background-color: var(--inputHoverBackground);
     }
 
     &:hover {
-        background-color: #000000;
+        background-color: var(--inputHoverBackground);
     }
 }
 
 input.dead {
-    color: #555555;
-    border-color: #555555;
+    color: var(--inactiveGray);
+    border-color: var(--inactiveGray);
     &:hover {
-        background-color: #111111;
+        background-color: var(--inputBackground);
     }
 }
 
