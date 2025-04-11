@@ -1,0 +1,28 @@
+<app-nav-button [target]='"/"' [text]='"Quit"' />
+
+<div class="main">
+    <div class="row">
+        <span class="label">How many players will be at your PC?</span>
+        <app-integer-input [min]=1 [max]=6 [(value)]="requestedSeats"
+            [disable]="awaitingResponse() || requestGranted()" />
+    </div>
+    <div class="bigRowSpacer"></div>
+    <div>
+        <app-action-button [text]="requestedSeatsText()" (click)="requestSeats()"
+            [disable]="awaitingResponse() || requestGranted()" />
+    </div>
+    <div class="bigRowSpacer"></div>
+    <div class="row">
+        <div *ngFor="let selected of seatSelected; index as i" class="selectionMarker">
+            <div class="playerDisc {{ colors[i] }} {{ visibilityText[i]() }}">
+
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <span *ngFor="let playerType of playerTypeTexts; index as i" class="type">
+            {{ playerType }}
+        </span>
+    </div>
+    
+</div>

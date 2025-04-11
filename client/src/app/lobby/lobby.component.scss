@@ -1,0 +1,88 @@
+div.main {
+    padding: 30px;
+    padding-top: 50px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    width: 860px;
+    margin: auto;
+
+    text-align: center;
+
+    background-color: #2f2f2f;
+    font-size: 18px;
+}
+
+div.row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+span.label {
+    margin-right: 10px;
+}
+
+span.type {
+    font-size: 24px;
+    margin: 6px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    background-color: #111111;
+    display: block;
+    width: 131px;
+    justify-content: center;
+}
+
+div.selectionMarker {
+    height: 60px;
+    width: 131px;
+    margin: 6px;
+}
+
+div.playerDisc {
+    display: inline-block;
+    height: 60px;
+    width: 60px;
+    border-radius: 30px;
+}
+
+div.bigRowSpacer {
+    height: 30px;
+}
+
+div.smallRowSpacer {
+    height: 20px;
+}
+
+div.tinyRowSpacer {
+    height: 5px;
+}
+
+div.yellow {
+    background-color: var(--midYellow);
+}
+
+div.blue {
+    background-color: var(--blue);
+}
+
+div.green {
+    background-color: var(--green);
+}
+
+div.purple {
+    background-color: var(--purple);
+}
+
+div.gray {
+    background-color: var(--gray);
+}
+
+div.orange {
+    background-color: var(--redOrange);
+}
+
+div.invisible {
+    opacity: 0;
+}
