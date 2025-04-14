@@ -1,0 +1,87 @@
+.menu {
+    float: left;
+    width: 142px;
+    margin-left: 8px;
+}
+
+.main {
+    /* These calculations assume the board is at least as wide as it is tall */
+
+    /* Ensure the full board stays on the page */
+    max-width: min(100vh - 16px, 100vw - 150px);
+    /* Always leave room for the menu, but go in the center if possible */
+    margin-left: max(150px, (100% - min(100vh - 16px, 100% - 150px)) / 2);
+
+    margin-top: 8px;
+    margin-bottom: 8px;
+
+    border-top: 2px solid #000000;
+    border-bottom: 2px solid #000000;
+    background-color: #2f2f2f;
+}
+
+.row {
+    display: flex;
+    border-left: 2px solid #000000;
+    border-right: 2px solid #000000;
+}
+
+.column {
+    border: 4px solid #000000;
+    flex-grow: 1;
+    padding: max(10px, min(3%, 40px));
+}
+
+.piece {
+    display: block;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    transition: 1.5s;
+}
+
+.empty {
+    background-color: none;
+    opacity: 0;
+}
+
+.hover-yellow {
+    &:hover {
+        background-color: var(--yellow);
+        opacity: 0.3;
+    }
+}
+
+.hover-blue {
+    &:hover {
+        background-color: var(--blue);
+        opacity: 0.3;
+    }
+}
+
+.hover-green {
+    &:hover {
+        background-color: var(--green);
+        opacity: 0.3;
+    }
+}
+
+.hover-orange {
+    &:hover {
+        background-color: var(--redOrange);
+        opacity: 0.3;
+    }
+}
+
+.hover-purple {
+    &:hover {
+        background-color: var(--purple);
+        opacity: 0.3;
+    }
+}
+
+.hover-gray {
+    &:hover {
+        background-color: var(--gray);
+        opacity: 0.3;
+    }
+}

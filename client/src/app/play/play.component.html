@@ -1,3 +1,19 @@
-<h1>Play Page</h1>
+<div class="menu">
+    <app-nav-button [target]='"/"' [text]='"Home"' />
+</div>
 
-<app-nav-button [target]='"/"' [text]='"Home"' />
+<div class="main">
+    @for(row of game().state.board; track $index; let r = $index) {
+    <div class="row">
+        @for(col of row; track $index; let c = $index) {
+        <div class="column">
+            <span [class]="'piece ' + colors[col + 1] +
+                           ' hover-' + colors[col == -1 ? currentPlayer() + 1 : 0]"
+                  (click)="selectSpot(r, c)" ></span>
+        </div>
+        }
+    </div>
+    } @empty {
+        <p>[No Game]</p>
+    }
+</div>
