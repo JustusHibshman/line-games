@@ -16,35 +16,37 @@
     <div class="inputRow">
         <div class="inputRowItem">
         <span class="label">Width</span>
-        <app-integer-input [(value)]="width" [min]="3" [max]="19"
+        <app-integer-input [(value)]="gameSpec().board.width"  [min]="3" [max]="19"
                 [disable]="false" />
         </div>
         <div class="inputRowItem">
         <span class="label">Height</span>
-        <app-integer-input [(value)]="height" [min]="3" [max]="width()" [disable]="false" />
+        <app-integer-input [(value)]="gameSpec().board.height" [min]="3"
+                [max]="gameSpec().board.width" [disable]="false" />
         </div>
 
         <div class="inputRowItem">
         <span class="label">Winning Line Size</span>
-        <app-integer-input [(value)]="winningLength" [max]="boardMin()" [disable]="false" />
+        <app-integer-input [(value)]="gameSpec().rules.winningLength" [min]="3"
+                [max]="boardMin()" [disable]="false" />
         </div>
     </div>
     <div class="bigRowSpacer"></div>
     <div class="inputRow">
         <div class="inputRowItem">
         <span class="label">Gravity</span>
-        <app-toggle-switch [defaultValue]="false" [(value)]="gravity" />
+        <app-toggle-switch [defaultValue]="false" [(value)]="gameSpec().board.gravity" />
         </div>
 
         <div class="inputRowItem">
         <span class="label">Allow Captures</span>
-        <app-toggle-switch [defaultValue]="false" [(value)]="allowCaptures" />
+        <app-toggle-switch [defaultValue]="false" [(value)]="gameSpec().rules.allowCaptures" />
         </div>
 
         <div class="inputRowItem">
         <span class="label">Win by Captures</span>
-        <app-toggle-switch [defaultValue]="false" [(value)]="winByCaptures" 
-                [disable]="!allowCaptures()" />
+        <app-toggle-switch [defaultValue]="false" [(value)]="gameSpec().rules.winByCaptures"
+                [disable]="!gameSpec().rules.allowCaptures" />
         </div>
     </div>
     <div class="smallRowSpacer"></div>
@@ -53,13 +55,14 @@
 
         <div class="inputRowItem">
         <span class="label">Capture Size</span>
-        <app-integer-input [(value)]="captureSize" [max]="boardMin() - 2"
-                [disable]="!allowCaptures()" />
+        <app-integer-input [(value)]="gameSpec().rules.captureSize" [max]="boardMin() - 2"
+                [disable]="!gameSpec().rules.allowCaptures" />
         </div>
 
         <div class="inputRowItem">
         <span class="label">Winning # Captures</span>
-        <app-integer-input [(value)]="winningNumCaptures" [max]="7" [disable]="!winByCaptures()" />
+        <app-integer-input [(value)]="gameSpec().rules.winningNumCaptures" [max]="7"
+                [disable]="!gameSpec().rules.winByCaptures" />
         </div>
     </div>
     <div class="bigRowSpacer"></div>

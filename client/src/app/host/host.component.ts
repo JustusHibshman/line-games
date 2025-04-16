@@ -38,23 +38,13 @@ export class HostComponent implements OnInit {
         }
     }
 
-    gameSpec: GameSpec = emptyGameSpec();
-    gameName = signal<string>("");
-    password = signal<string>("");
-
-    width    = signal<number>(13);
-    height   = signal<number>(13);
-    winningLength = signal<number>(5);
-    boardMin = computed(() => Math.min(this.width(), this.height()));
-
-    gravity = signal<boolean>(false);
-    allowCaptures = signal<boolean>(false);
-    winByCaptures = signal<boolean>(false);
-
-    captureSize = signal<number>(2);
-    winningNumCaptures = signal<number>(5);
+    gameSpec = signal<GameSpec>(this.penteConfig());
+    boardMin = computed(() => Math.min(this.gameSpec().board.width,
+                                       this.gameSpec().board.height));
 
     configName = signal<string>("");
+    gameName = signal<string>("");
+    password = signal<string>("");
 
     playerTypes = [signal<PlayerType>(PlayerType.Human), signal<PlayerType>(PlayerType.None),
                    signal<PlayerType>(PlayerType.None),  signal<PlayerType>(PlayerType.None),
@@ -73,37 +63,16 @@ export class HostComponent implements OnInit {
     aiComputeTime = signal<number>(4);
 
     saveConfigAsPreset(): void {
-        this.gameSpec.board.width   = this.width();
-        this.gameSpec.board.height  = this.height();
-        this.gameSpec.board.gravity = this.gravity();
-
-        this.gameSpec.rules.winningLength = this.winningLength();
-        this.gameSpec.rules.allowCaptures = this.allowCaptures();
-        this.gameSpec.rules.winByCaptures = this.winByCaptures();
-        this.gameSpec.rules.captureSize   = this.captureSize();
-        this.gameSpec.rules.winningNumCaptures = this.winningNumCaptures();
-
-        this.specs[this.configName().trim()] = copyGameSpec(this.gameSpec);
+        this.specs[this.configName().trim()] = copyGameSpec(this.gameSpec());
         localStorage.setItem('specs', JSON.stringify(this.specs));
     }
 
-    loadConfig(specName: string): GameSpec {
-        var gs: GameSpec = emptyGameSpec();
+    loadConfig(specName: string): void {
         if (!this.specs[specName]) {
             console.log("No GameSpec '" + specName + "' in localStorage!");
         } else {
-            gs = copyGameSpec(this.specs[specName]);
-            this.width.set(gs.board.width);
-            this.height.set(gs.board.height);
-            this.gravity.set(gs.board.gravity);
-
-            this.winningLength.set(gs.rules.winningLength);
-            this.allowCaptures.set(gs.rules.allowCaptures);
-            this.winByCaptures.set(gs.rules.winByCaptures);
-            this.captureSize.set(gs.rules.captureSize);
-            this.winningNumCaptures.set(gs.rules.winningNumCaptures);
+            this.gameSpec.set(copyGameSpec(this.specs[specName]));
         }
-        return gs;
     }
 
     loadConfigs(): void {
