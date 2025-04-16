@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { NgFor } from '@angular/common';
 
 import { ActionButtonComponent } from '@local-components/action-button/action-button.component';
@@ -6,6 +6,8 @@ import { NavButtonComponent } from '@local-components/nav-button/nav-button.comp
 import { TextBoxComponent } from '@local-components/text-box/text-box.component';
 
 import { GameListing } from '@local-types/game-listing.type';
+
+import { SetupService } from '@local-services/setup.service';
 
 @Component({
   selector: 'app-join',
@@ -15,6 +17,8 @@ import { GameListing } from '@local-types/game-listing.type';
   styleUrl: './join.component.scss'
 })
 export class JoinComponent implements OnInit {
+    setup = inject(SetupService);
+
     games: Array<GameListing> = [
         { gameID: 0, name: "Placeholder" },
         { gameID: 1, name: "Fried Chicken" },

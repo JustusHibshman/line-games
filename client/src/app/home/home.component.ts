@@ -1,5 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+
 import { NavButtonComponent } from '@local-components/nav-button/nav-button.component';
+
+import { SetupService } from '@local-services/setup.service';
 
 @Component({
   selector: 'app-home',
@@ -8,5 +11,5 @@ import { NavButtonComponent } from '@local-components/nav-button/nav-button.comp
   styleUrl: './home.component.scss'
 })
 export class HomeComponent {
-
+    setup = inject(SetupService);
 }

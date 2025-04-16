@@ -19,8 +19,9 @@
     "module": "ES2022",
     "baseUrl": ".",
     "paths": {
-        "@local-components/*": ["./src/app/components/*"],
-        "@local-types/*": ["./src/app/model/*"]
+        "@local-components/*":  ["./src/app/components/*"],
+        "@local-types/*":       ["./src/app/model/*"],
+        "@local-services/*":    ["./src/app/services/*"]
     }
   },
   "angularCompilerOptions": {

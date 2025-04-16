@@ -1,4 +1,4 @@
-import { Component, computed, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { KeyValuePipe, NgFor } from '@angular/common';
 
 import { ActionButtonComponent } from '@local-components/action-button/action-button.component';
@@ -11,6 +11,8 @@ import { ToggleSwitchComponent } from '@local-components/toggle-switch/toggle-sw
 import { GameSpec, copyGameSpec, emptyGameSpec }   from '@local-types/game-spec.type';
 import { PlayerType } from '@local-types/player-type.type';
 
+import { SetupService } from '@local-services/setup.service';
+
 @Component({
   selector: 'app-host',
   imports: [KeyValuePipe, NgFor,
@@ -22,6 +24,8 @@ import { PlayerType } from '@local-types/player-type.type';
 export class HostComponent implements OnInit {
 
     public PlayerTypes = PlayerType;
+
+    setup = inject(SetupService);
 
     specs: { [id: string]: GameSpec } = {};
 

@@ -1,4 +1,4 @@
-import { Component, computed, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { NgFor } from '@angular/common';
 
 import { ActionButtonComponent } from '@local-components/action-button/action-button.component';
@@ -6,6 +6,8 @@ import { IntegerInputComponent } from '@local-components/integer-input/integer-i
 import { NavButtonComponent } from '@local-components/nav-button/nav-button.component';
 
 import { PlayerType } from '@local-types/player-type.type';
+
+import { SetupService } from '@local-services/setup.service';
 
 @Component({
   selector: 'app-lobby',
@@ -15,6 +17,9 @@ import { PlayerType } from '@local-types/player-type.type';
   styleUrl: './lobby.component.scss'
 })
 export class LobbyComponent implements OnInit {
+
+    setup = inject(SetupService);
+
     players: any = [];
     playerTypeTexts: Array<string> = [];
 
