@@ -8,7 +8,7 @@ import { PlayerTypeSelectorComponent } from '@local-components/player-type-selec
 import { TextBoxComponent } from '@local-components/text-box/text-box.component';
 import { ToggleSwitchComponent } from '@local-components/toggle-switch/toggle-switch.component';
 
-import { GameSpec, copyGameSpec, emptyGameSpec }   from '@local-types/game-spec.type';
+import { GameSpec, copyGameSpec }   from '@local-types/game-spec.type';
 import { PlayerType } from '@local-types/player-type.type';
 
 import { SetupService } from '@local-services/setup.service';
@@ -38,7 +38,7 @@ export class HostComponent implements OnInit {
         }
     }
 
-    gameSpec = signal<GameSpec>(this.penteConfig());
+    gameSpec = signal<GameSpec>(this.ticTacToeConfig());
     boardMin = computed(() => Math.min(this.gameSpec().board.width,
                                        this.gameSpec().board.height));
 
