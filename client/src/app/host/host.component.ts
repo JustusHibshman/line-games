@@ -46,19 +46,19 @@ export class HostComponent implements OnInit {
     gameName = signal<string>("");
     password = signal<string>("");
 
-    playerTypes = [signal<PlayerType>(PlayerType.Human), signal<PlayerType>(PlayerType.None),
-                   signal<PlayerType>(PlayerType.None),  signal<PlayerType>(PlayerType.None),
-                   signal<PlayerType>(PlayerType.None),  signal<PlayerType>(PlayerType.None)];
+    playerTypes = signal<Array<PlayerType>>(
+                    [PlayerType.Human, PlayerType.None, PlayerType.None,
+                     PlayerType.None,  PlayerType.None, PlayerType.None]);
     ptDisabled  = [signal<boolean>(true),
-                   computed(() => this.playerTypes[0]() == PlayerType.None || 
-                                    this.playerTypes[2]() != PlayerType.None),
-                   computed(() => this.playerTypes[1]() == PlayerType.None || 
-                                    this.playerTypes[3]() != PlayerType.None),
-                   computed(() => this.playerTypes[2]() == PlayerType.None ||
-                                    this.playerTypes[4]() != PlayerType.None),
-                   computed(() => this.playerTypes[3]() == PlayerType.None ||
-                                    this.playerTypes[5]() != PlayerType.None),
-                   computed(() => this.playerTypes[4]() == PlayerType.None)]
+                   computed(() => this.playerTypes()[0] == PlayerType.None || 
+                                    this.playerTypes()[2] != PlayerType.None),
+                   computed(() => this.playerTypes()[1] == PlayerType.None || 
+                                    this.playerTypes()[3] != PlayerType.None),
+                   computed(() => this.playerTypes()[2] == PlayerType.None ||
+                                    this.playerTypes()[4] != PlayerType.None),
+                   computed(() => this.playerTypes()[3] == PlayerType.None ||
+                                    this.playerTypes()[5] != PlayerType.None),
+                   computed(() => this.playerTypes()[4] == PlayerType.None)]
 
     aiComputeTime = signal<number>(4);
 

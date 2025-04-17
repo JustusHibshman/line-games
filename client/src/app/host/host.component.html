@@ -78,29 +78,29 @@
     <div class="smallRowSpacer"></div>
     <div class="playerTypeSelectors">
         <div></div> <!-- I am not sure yet why this is necessary -->
-        <app-player-type-selector [(choice)]="playerTypes[0]" [formID]="'0'" 
+        <app-player-type-selector [(choice)]="playerTypes()[0]" [formID]="'0'" 
                     [disable]="ptDisabled[0]()" />
-        <app-player-type-selector [(choice)]="playerTypes[1]" [formID]="'1'" 
+        <app-player-type-selector [(choice)]="playerTypes()[1]" [formID]="'1'" 
                     [disable]="ptDisabled[1]()" />
-        <app-player-type-selector [(choice)]="playerTypes[2]" [formID]="'2'" 
+        <app-player-type-selector [(choice)]="playerTypes()[2]" [formID]="'2'" 
                     [disable]="ptDisabled[2]()" />
-        <app-player-type-selector [(choice)]="playerTypes[3]" [formID]="'3'" 
+        <app-player-type-selector [(choice)]="playerTypes()[3]" [formID]="'3'" 
                     [disable]="ptDisabled[3]()" />
-        <app-player-type-selector [(choice)]="playerTypes[4]" [formID]="'4'" 
+        <app-player-type-selector [(choice)]="playerTypes()[4]" [formID]="'4'" 
                     [disable]="ptDisabled[4]()" />
-        <app-player-type-selector [(choice)]="playerTypes[5]" [formID]="'5'" 
+        <app-player-type-selector [(choice)]="playerTypes()[5]" [formID]="'5'" 
                     [disable]="ptDisabled[5]()" />
         <span>
         <div class="aiTime">
             <div>AI Compute Time</div>
             <div class="tinyRowSpacer"></div>
             <app-integer-input [min]="1" [max]="20" [(value)]="aiComputeTime" 
-                [disable]="playerTypes[0]() != PlayerTypes.AI && 
-                           playerTypes[1]() != PlayerTypes.AI &&
-                           playerTypes[2]() != PlayerTypes.AI &&
-                           playerTypes[3]() != PlayerTypes.AI &&
-                           playerTypes[4]() != PlayerTypes.AI &&
-                           playerTypes[5]() != PlayerTypes.AI" />
+                [disable]="playerTypes()[0] != PlayerTypes.AI && 
+                           playerTypes()[1] != PlayerTypes.AI &&
+                           playerTypes()[2] != PlayerTypes.AI &&
+                           playerTypes()[3] != PlayerTypes.AI &&
+                           playerTypes()[4] != PlayerTypes.AI &&
+                           playerTypes()[5] != PlayerTypes.AI" />
         </div>
         </span>
     </div>
@@ -115,6 +115,7 @@
     <div class="bigRowSpacer"></div>
     <div>
         <app-action-button [text]="'Launch Game'"
-                [disable]="gameName().trim() == '' || playerTypes[1]() == PlayerTypes.None" />
+                [disable]="gameName().trim() == '' || playerTypes()[1] == PlayerTypes.None"
+                (click)="setup.hostGame(gameName(), password(), gameSpec(), playerTypes())" />
     </div>
 </div>
