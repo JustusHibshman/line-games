@@ -15,8 +15,6 @@ export class SetupService {
     router = inject(Router);
     gameplay = inject(GameplayService);
 
-    gameLink: GameLink | undefined;
-
     /* These variables are for the mock server experience only */
     hostedGameSpec: GameSpec | undefined;
     hostedPlayerTypes: Array<PlayerType> = [];
@@ -25,27 +23,23 @@ export class SetupService {
     constructor() { }
 
     quitGame(): void {
-        if (this.gameLink === undefined) {
-            return;
-        }
+        let gameLink = this.gameplay.getGameLink();
 
-        if (this.gameLink.host) {
-            /* Tell central server to kill previous game */
+        if (gameLink.inGame) {
+            if (gameLink.hosting) {
+                /* Tell central server to kill previous game */
+            }
+            this.gameplay.quitGame();
         }
-        this.gameLink = {
-            gameID: -1,
-            userID: -1,
-            inGame: false,
-            host:   false,
-            gameServerIP: ""
-        };
     }
 
     hostGame(name: string, password: string,
              spec: GameSpec, playerTypes: Array<PlayerType>): void {
         /* TODO: Update with actual http request(s) */
 
-        if (this.gameLink !== undefined && this.gameLink.inGame) {
+        let gameLink = this.gameplay.getGameLink();
+
+        if (gameLink.inGame) {
             this.quitGame();
         }
 
@@ -54,13 +48,13 @@ export class SetupService {
         let success = true;
         if (success) {
             /* Begin mock values */
-            this.gameLink = {
-                gameID: 499,
-                userID: 721,
-                inGame: true,
-                host:   true,
+            this.gameplay.setGameLink({
+                gameID:  499,
+                userID:  721,
+                inGame:  true,
+                hosting: true,
                 gameServerIP: "localhost"
-            }
+            });
             /* End mock values */
             /* Begin mock variables */
             this.hostedGameSpec = copyGameSpec(spec);
@@ -72,7 +66,9 @@ export class SetupService {
     }
 
     claimSeats(numSeats: number): boolean {
-        if (this.gameLink === undefined || !this.gameLink.inGame) {
+        let gameLink = this.gameplay.getGameLink();
+
+        if (!gameLink.inGame) {
             return false;
         }
 

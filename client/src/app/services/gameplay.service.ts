@@ -12,7 +12,31 @@ export class GameplayService {
 
     router = inject(Router);
 
-    gameLink: GameLink | undefined;
+    gameLink: GameLink;
 
-    constructor() { }
+    constructor() {
+        this.gameLink = this.emptyGameLink();
+    }
+
+    getGameLink(): GameLink {
+        return { ...this.gameLink };
+    }
+
+    setGameLink(gl: GameLink): void {
+        this.gameLink = { ...gl };
+    }
+
+    quitGame(): void {
+        this.gameLink = this.emptyGameLink();
+    }
+
+    emptyGameLink(): GameLink {
+        return {
+            gameID:  null,
+            userID:  null,
+            inGame:  false,
+            hosting: null,
+            gameServerIP: null
+        };
+    }
 }
