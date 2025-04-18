@@ -13,21 +13,39 @@ export class GameplayService {
     router = inject(Router);
 
     gameLink: GameLink;
+    gameSpec: GameSpec | null;
+    playerTypes: Array<PlayerType>;
 
     constructor() {
         this.gameLink = this.emptyGameLink();
+        this.gameSpec = null;
+        this.playerTypes = [];
     }
 
     getGameLink(): GameLink {
         return { ...this.gameLink };
     }
 
+    getPlayerTypes(): Array<PlayerType> {
+        return [ ...this.playerTypes ];
+    }
+
     setGameLink(gl: GameLink): void {
         this.gameLink = { ...gl };
     }
 
+    setGameSpec(gs: GameSpec): void {
+        this.gameSpec = copyGameSpec(gs);
+    }
+
+    setPlayerTypes(pt: Array<PlayerType>): void {
+        this.playerTypes = [ ...pt ];
+    }
+
     quitGame(): void {
         this.gameLink = this.emptyGameLink();
+        this.gameSpec = null;
+        this.playerTypes = [];
     }
 
     emptyGameLink(): GameLink {

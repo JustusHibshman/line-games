@@ -62,6 +62,20 @@ export class HostComponent implements OnInit {
 
     aiComputeTime = signal<number>(4);
 
+    hostGame(): void {
+        /* Filter out the None "players" */
+        let numPlayers = 2;
+        for (let i = 2; i < 6; i++) {
+            if (this.playerTypes()[i] == PlayerType.None) {
+                break;
+            }
+        }
+        let pt: Array<PlayerType> =
+            Array.from({length: numPlayers}, (v, i) => this.playerTypes()[i]);
+
+        this.setup.hostGame(this.gameName(), this.password(), this.gameSpec(), pt);
+    }
+
     saveConfigAsPreset(): void {
         this.specs[this.configName().trim()] = copyGameSpec(this.gameSpec());
         localStorage.setItem('specs', JSON.stringify(this.specs));

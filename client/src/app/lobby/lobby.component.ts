@@ -24,7 +24,7 @@ export class LobbyComponent implements OnInit {
     playerTypeTexts: Array<string> = [];
 
     /* Whether the seat has been selected */
-    seatSelected: any = [];
+    seatSelected = signal<Array<boolean>>([]);
     visibilityText: any = [];
 
     colors = ["yellow", "blue", "green", "orange", "purple", "gray"];
@@ -38,21 +38,24 @@ export class LobbyComponent implements OnInit {
 
     ngOnInit(): void {
         /* Placeholder Values */
-        this.players = Array.from({length: 6}, () => PlayerType.Human);
-        this.players[1] = PlayerType.AI;
-        this.players[3] = PlayerType.AI;
+        this.players = this.setup.getPlayerTypes();
         this.playerTypeTexts =
             Array.from(this.players, (t) => t == PlayerType.Human ? "Human" : "AI");
 
-        this.seatSelected = Array.from({length: this.players.length},
-                                       () => signal<boolean>(false));
+        this.seatSelected.set(Array.from({length: this.players.length},
+                                         () => false));
         this.visibilityText =
                 Array.from({length: this.players.length},
-                           (v, i) => computed(() => this.seatSelected[i]() ? "" : "invisible"));
+                           (v, i) => computed(() => this.seatSelected()[i] ? "" : "invisible"));
     }
 
     requestSeats(): void {
         this.awaitingResponse.set(true);
-        this.seatSelected[2].set(true);
+        let claimed = this.setup.claimSeats(this.requestedSeats());
+        if (claimed.length != 0) {
+            this.requestGranted.set(true);
+            this.seatSelected.set(Array.from({length: this.players.length}, (v, i) => i in claimed));
+        }
+        this.awaitingResponse.set(false);
     }
 }

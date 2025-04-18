@@ -15,11 +15,6 @@ export class SetupService {
     router = inject(Router);
     gameplay = inject(GameplayService);
 
-    /* These variables are for the mock server experience only */
-    hostedGameSpec: GameSpec | undefined;
-    hostedPlayerTypes: Array<PlayerType> = [];
-    /* End of mock server experience variables */
-
     constructor() { }
 
     quitGame(): void {
@@ -30,6 +25,35 @@ export class SetupService {
                 /* Tell central server to kill previous game */
             }
             this.gameplay.quitGame();
+        }
+    }
+
+    joinGame(name: string, password: string): void {
+        /* TODO: Update with actual http request(s) */
+
+        let gameLink = this.gameplay.getGameLink();
+
+        if (gameLink.inGame) {
+            this.quitGame();
+        }
+
+        let success = true;
+        if (success) {
+            /* Begin mock values */
+            this.gameplay.setGameLink({
+                gameID:  499,
+                userID:  721,
+                inGame:  true,
+                hosting: true,
+                gameServerIP: "localhost"
+            });
+            /*
+                this.gameplay.setGameSpec(TODO: FILL IN);
+                this.gameplay.setPlayerTypes(TODO: FILL IN);
+            */
+            /* End mock values */
+
+            this.router.navigate(['/lobby']);
         }
     }
 
@@ -56,26 +80,33 @@ export class SetupService {
                 gameServerIP: "localhost"
             });
             /* End mock values */
-            /* Begin mock variables */
-            this.hostedGameSpec = copyGameSpec(spec);
-            this.hostedPlayerTypes = Array.from(playerTypes, (v) => v);
-            /* End mock variables */
+
+            this.gameplay.setGameSpec(spec);
+            this.gameplay.setPlayerTypes(playerTypes);
 
             this.router.navigate(['/lobby']);
         }
     }
 
-    claimSeats(numSeats: number): boolean {
+    claimSeats(numSeats: number): Array<number> {
         let gameLink = this.gameplay.getGameLink();
 
         if (!gameLink.inGame) {
-            return false;
+            return [];
         }
 
         /* Ask the game server for the seats */
 
+        /* Mock Version */
         let success = true;
+        if (success) {
+            return Array.from({length: Math.min(numSeats, this.gameplay.getPlayerTypes().length)}, (v, i) => i);
+        }
+        /* End Mock Version */
+        return [];
+    }
 
-        return success;
+    getPlayerTypes(): Array<PlayerType> {
+        return this.gameplay.getPlayerTypes();
     }
 }

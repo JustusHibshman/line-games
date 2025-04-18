@@ -116,6 +116,6 @@
     <div>
         <app-action-button [text]="'Launch Game'"
                 [disable]="gameName().trim() == '' || playerTypes()[1] == PlayerTypes.None"
-                (click)="setup.hostGame(gameName(), password(), gameSpec(), playerTypes())" />
+                (click)="hostGame()" />
     </div>
 </div>

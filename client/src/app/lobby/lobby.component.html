@@ -15,7 +15,7 @@
     </div>
     <div class="bigRowSpacer"></div>
     <div class="row">
-        <div *ngFor="let selected of seatSelected; index as i" class="selectionMarker">
+        <div *ngFor="let selected of seatSelected(); index as i" class="selectionMarker">
             <div class="playerDisc {{ colors[i] }} {{ visibilityText[i]() }}">
 
             </div>
