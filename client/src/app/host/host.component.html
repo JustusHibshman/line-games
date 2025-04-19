@@ -16,37 +16,37 @@
     <div class="inputRow">
         <div class="inputRowItem">
         <span class="label">Width</span>
-        <app-integer-input [(value)]="gameSpec().board.width"  [min]="3" [max]="19"
+        <app-integer-input [(value)]="gameSpec.board.width"  [min]="3" [max]="19"
                 [disable]="false" />
         </div>
         <div class="inputRowItem">
         <span class="label">Height</span>
-        <app-integer-input [(value)]="gameSpec().board.height" [min]="3"
-                [max]="gameSpec().board.width" [disable]="false" />
+        <app-integer-input [(value)]="gameSpec.board.height" [min]="3"
+                [max]="gameSpec.board.width" [disable]="false" />
         </div>
 
         <div class="inputRowItem">
         <span class="label">Winning Line Size</span>
-        <app-integer-input [(value)]="gameSpec().rules.winningLength" [min]="3"
-                [max]="boardMin()" [disable]="false" />
+        <app-integer-input [(value)]="gameSpec.rules.winningLength" [min]="3"
+                [max]="gameSpec.board.height" [disable]="false" />
         </div>
     </div>
     <div class="bigRowSpacer"></div>
     <div class="inputRow">
         <div class="inputRowItem">
         <span class="label">Gravity</span>
-        <app-toggle-switch [defaultValue]="false" [(value)]="gameSpec().board.gravity" />
+        <app-toggle-switch [defaultValue]="false" [(value)]="gameSpec.board.gravity" />
         </div>
 
         <div class="inputRowItem">
         <span class="label">Allow Captures</span>
-        <app-toggle-switch [defaultValue]="false" [(value)]="gameSpec().rules.allowCaptures" />
+        <app-toggle-switch [defaultValue]="false" [(value)]="gameSpec.rules.allowCaptures" />
         </div>
 
         <div class="inputRowItem">
         <span class="label">Win by Captures</span>
-        <app-toggle-switch [defaultValue]="false" [(value)]="gameSpec().rules.winByCaptures"
-                [disable]="!gameSpec().rules.allowCaptures" />
+        <app-toggle-switch [defaultValue]="false" [(value)]="gameSpec.rules.winByCaptures"
+                [disable]="!gameSpec.rules.allowCaptures" />
         </div>
     </div>
     <div class="smallRowSpacer"></div>
@@ -55,14 +55,14 @@
 
         <div class="inputRowItem">
         <span class="label">Capture Size</span>
-        <app-integer-input [(value)]="gameSpec().rules.captureSize" [max]="boardMin() - 2"
-                [disable]="!gameSpec().rules.allowCaptures" />
+        <app-integer-input [(value)]="gameSpec.rules.captureSize" [max]="gameSpec.board.height - 2"
+                [disable]="!gameSpec.rules.allowCaptures" />
         </div>
 
         <div class="inputRowItem">
         <span class="label">Winning # Captures</span>
-        <app-integer-input [(value)]="gameSpec().rules.winningNumCaptures" [max]="7"
-                [disable]="!gameSpec().rules.winByCaptures" />
+        <app-integer-input [(value)]="gameSpec.rules.winningNumCaptures" [max]="7"
+                [disable]="!gameSpec.rules.winByCaptures" />
         </div>
     </div>
     <div class="bigRowSpacer"></div>
@@ -78,29 +78,29 @@
     <div class="smallRowSpacer"></div>
     <div class="playerTypeSelectors">
         <div></div> <!-- I am not sure yet why this is necessary -->
-        <app-player-type-selector [(choice)]="playerTypes()[0]" [formID]="'0'" 
+        <app-player-type-selector [(choice)]="playerTypes[0]" [formID]="'0'" 
                     [disable]="ptDisabled[0]()" />
-        <app-player-type-selector [(choice)]="playerTypes()[1]" [formID]="'1'" 
+        <app-player-type-selector [(choice)]="playerTypes[1]" [formID]="'1'" 
                     [disable]="ptDisabled[1]()" />
-        <app-player-type-selector [(choice)]="playerTypes()[2]" [formID]="'2'" 
+        <app-player-type-selector [(choice)]="playerTypes[2]" [formID]="'2'" 
                     [disable]="ptDisabled[2]()" />
-        <app-player-type-selector [(choice)]="playerTypes()[3]" [formID]="'3'" 
+        <app-player-type-selector [(choice)]="playerTypes[3]" [formID]="'3'" 
                     [disable]="ptDisabled[3]()" />
-        <app-player-type-selector [(choice)]="playerTypes()[4]" [formID]="'4'" 
+        <app-player-type-selector [(choice)]="playerTypes[4]" [formID]="'4'" 
                     [disable]="ptDisabled[4]()" />
-        <app-player-type-selector [(choice)]="playerTypes()[5]" [formID]="'5'" 
+        <app-player-type-selector [(choice)]="playerTypes[5]" [formID]="'5'" 
                     [disable]="ptDisabled[5]()" />
         <span>
         <div class="aiTime">
             <div>AI Compute Time</div>
             <div class="tinyRowSpacer"></div>
             <app-integer-input [min]="1" [max]="20" [(value)]="aiComputeTime" 
-                [disable]="playerTypes()[0] != PlayerTypes.AI && 
-                           playerTypes()[1] != PlayerTypes.AI &&
-                           playerTypes()[2] != PlayerTypes.AI &&
-                           playerTypes()[3] != PlayerTypes.AI &&
-                           playerTypes()[4] != PlayerTypes.AI &&
-                           playerTypes()[5] != PlayerTypes.AI" />
+                [disable]="playerTypes[0]() != PlayerTypes.AI && 
+                           playerTypes[1]() != PlayerTypes.AI &&
+                           playerTypes[2]() != PlayerTypes.AI &&
+                           playerTypes[3]() != PlayerTypes.AI &&
+                           playerTypes[4]() != PlayerTypes.AI &&
+                           playerTypes[5]() != PlayerTypes.AI" />
         </div>
         </span>
     </div>
@@ -115,7 +115,7 @@
     <div class="bigRowSpacer"></div>
     <div>
         <app-action-button [text]="'Launch Game'"
-                [disable]="gameName().trim() == '' || playerTypes()[1] == PlayerTypes.None"
+                [disable]="gameName().trim() == '' || playerTypes[1]() == PlayerTypes.None"
                 (click)="hostGame()" />
     </div>
 </div>

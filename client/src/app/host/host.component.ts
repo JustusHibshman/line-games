@@ -38,46 +38,45 @@ export class HostComponent implements OnInit {
         }
     }
 
-    gameSpec = signal<GameSpec>(this.ticTacToeConfig());
-    boardMin = computed(() => Math.min(this.gameSpec().board.width,
-                                       this.gameSpec().board.height));
+    gameSpec: GameSpec = this.ticTacToeConfig();
 
     configName = signal<string>("");
     gameName = signal<string>("");
     password = signal<string>("");
 
-    playerTypes = signal<Array<PlayerType>>(
-                    [PlayerType.Human, PlayerType.None, PlayerType.None,
-                     PlayerType.None,  PlayerType.None, PlayerType.None]);
+    playerTypes = [signal<PlayerType>(PlayerType.Human), signal<PlayerType>(PlayerType.None),
+                   signal<PlayerType>(PlayerType.None),  signal<PlayerType>(PlayerType.None),
+                   signal<PlayerType>(PlayerType.None),  signal<PlayerType>(PlayerType.None)];
     ptDisabled  = [signal<boolean>(true),
-                   computed(() => this.playerTypes()[0] == PlayerType.None || 
-                                    this.playerTypes()[2] != PlayerType.None),
-                   computed(() => this.playerTypes()[1] == PlayerType.None || 
-                                    this.playerTypes()[3] != PlayerType.None),
-                   computed(() => this.playerTypes()[2] == PlayerType.None ||
-                                    this.playerTypes()[4] != PlayerType.None),
-                   computed(() => this.playerTypes()[3] == PlayerType.None ||
-                                    this.playerTypes()[5] != PlayerType.None),
-                   computed(() => this.playerTypes()[4] == PlayerType.None)]
+                   computed(() => this.playerTypes[0]() == PlayerType.None || 
+                                    this.playerTypes[2]() != PlayerType.None),
+                   computed(() => this.playerTypes[1]() == PlayerType.None || 
+                                    this.playerTypes[3]() != PlayerType.None),
+                   computed(() => this.playerTypes[2]() == PlayerType.None ||
+                                    this.playerTypes[4]() != PlayerType.None),
+                   computed(() => this.playerTypes[3]() == PlayerType.None ||
+                                    this.playerTypes[5]() != PlayerType.None),
+                   computed(() => this.playerTypes[4]() == PlayerType.None)]
 
     aiComputeTime = signal<number>(4);
 
     hostGame(): void {
         /* Filter out the None "players" */
+        console.log(Array.from(this.playerTypes, (v) => v()));
         let numPlayers = 2;
-        for (let i = 2; i < 6; i++) {
-            if (this.playerTypes()[i] == PlayerType.None) {
+        for (; numPlayers < 6; numPlayers++) {
+            if (this.playerTypes[numPlayers]() == PlayerType.None) {
                 break;
             }
         }
         let pt: Array<PlayerType> =
-            Array.from({length: numPlayers}, (v, i) => this.playerTypes()[i]);
+            Array.from({length: numPlayers}, (v, i) => this.playerTypes[i]());
 
-        this.setup.hostGame(this.gameName(), this.password(), this.gameSpec(), pt);
+        this.setup.hostGame(this.gameName(), this.password(), this.gameSpec, pt);
     }
 
     saveConfigAsPreset(): void {
-        this.specs[this.configName().trim()] = copyGameSpec(this.gameSpec());
+        this.specs[this.configName().trim()] = copyGameSpec(this.gameSpec);
         localStorage.setItem('specs', JSON.stringify(this.specs));
     }
 
@@ -85,7 +84,7 @@ export class HostComponent implements OnInit {
         if (!this.specs[specName]) {
             console.log("No GameSpec '" + specName + "' in localStorage!");
         } else {
-            this.gameSpec.set(copyGameSpec(this.specs[specName]));
+            this.gameSpec = copyGameSpec(this.specs[specName]);
         }
     }
 
