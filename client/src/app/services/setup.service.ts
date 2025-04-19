@@ -15,6 +15,8 @@ export class SetupService {
     router = inject(Router);
     gameplay = inject(GameplayService);
 
+    __MOCK__emptySeats: boolean = true;  /* Mock variable to simulate server response */
+
     constructor() { }
 
     quitGame(): void {
@@ -100,7 +102,22 @@ export class SetupService {
         /* Mock Version */
         let success = true;
         if (success) {
-            return Array.from({length: Math.min(numSeats, this.gameplay.getPlayerTypes().length)}, (v, i) => i);
+            let empty = 0;
+            let seats: Array<number> = [];
+            let types = this.gameplay.getPlayerTypes();
+            for (let i = 0; i < types.length; i++) {
+                if (types[i] === PlayerType.Human) {
+                    empty++;
+                    /* Nasty append method since I'm not using internet at the moment */
+                    seats = Array.from({length: empty}, (v, j) => j < (empty - 1) ? seats[j] : i);
+                }
+            }
+            if (numSeats > empty) {
+                return [];
+            } else if (numSeats == empty) {
+                this.__MOCK__emptySeats = false;
+            }
+            return seats;
         }
         /* End Mock Version */
         return [];
@@ -108,5 +125,9 @@ export class SetupService {
 
     getPlayerTypes(): Array<PlayerType> {
         return this.gameplay.getPlayerTypes();
+    }
+
+    hasEmptySeats(): boolean {
+        return this.__MOCK__emptySeats;
     }
 }

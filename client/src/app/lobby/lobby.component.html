@@ -26,5 +26,9 @@
             {{ playerType }}
         </span>
     </div>
+    <div class="row">
+        <app-action-button [text]="'Enter Game'" (click)="enterGame()"
+            [disable]="emptySeats" />
+    </div>
     
 </div>

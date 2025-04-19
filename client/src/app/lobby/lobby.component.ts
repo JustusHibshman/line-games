@@ -1,5 +1,6 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { NgFor } from '@angular/common';
+import { Router } from '@angular/router';
 
 import { ActionButtonComponent } from '@local-components/action-button/action-button.component';
 import { IntegerInputComponent } from '@local-components/integer-input/integer-input.component';
@@ -19,9 +20,11 @@ import { SetupService } from '@local-services/setup.service';
 export class LobbyComponent implements OnInit {
 
     setup = inject(SetupService);
+    router = inject(Router);
 
     players: any = [];
     playerTypeTexts: Array<string> = [];
+    emptySeats: boolean = true;
 
     /* Whether the seat has been selected */
     seatSelected = signal<Array<boolean>>([]);
@@ -47,6 +50,8 @@ export class LobbyComponent implements OnInit {
         this.visibilityText =
                 Array.from({length: this.players.length},
                            (v, i) => computed(() => this.seatSelected()[i] ? "" : "invisible"));
+
+        this.emptySeats = this.setup.hasEmptySeats();
     }
 
     requestSeats(): void {
@@ -54,8 +59,21 @@ export class LobbyComponent implements OnInit {
         let claimed = this.setup.claimSeats(this.requestedSeats());
         if (claimed.length != 0) {
             this.requestGranted.set(true);
-            this.seatSelected.set(Array.from({length: this.players.length}, (v, i) => i in claimed));
+            this.seatSelected.set(Array.from({length: this.players.length}, (v, i) => this.contains(i, claimed)));
         }
         this.awaitingResponse.set(false);
+    }
+
+    enterGame(): void {
+        this.router.navigate(['/play']);
+    }
+
+    contains(a: number, l: Array<number>): boolean {
+        for (let i = 0; i < l.length; i++) {
+            if (a == l[i]) {
+                return true;
+            }
+        }
+        return false;
     }
 }
