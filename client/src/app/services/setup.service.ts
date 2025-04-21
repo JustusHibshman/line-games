@@ -111,8 +111,7 @@ export class SetupService {
             for (let i = 0; i < types.length; i++) {
                 if (types[i] === PlayerType.Human) {
                     empty++;
-                    /* Nasty append method since I'm not using internet at the moment */
-                    seats = Array.from({length: empty}, (v, j) => j < (empty - 1) ? seats[j] : i);
+                    seats.push(i);
                 }
             }
             if (numSeats > empty) {
