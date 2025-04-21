@@ -29,7 +29,37 @@
 .column {
     border: 4px solid #000000;
     flex-grow: 1;
-    padding: 15px;
+    padding: 10px;
+}
+
+.status {
+    margin-top: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.statusText {
+    display: inline-block;
+    font-size: 18px;
+}
+
+.winMarker {
+    display: inline-block;
+    width: 36px;
+    height: 36px;
+    border-radius: 18px;
+}
+
+.captureMarker {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    border-radius: 12px;
+}
+
+.bigRowSpacer {
+    height: 30px;
 }
 
 .piece {

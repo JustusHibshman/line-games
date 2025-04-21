@@ -1,14 +1,26 @@
 <div class="menu">
     <app-nav-button [target]='"/"' [text]='"Home"' />
+
+    <div class="bigRowSpacer"></div>
+    <div class="status">
+        <span class="statusText">Winner:</span><span [class]="'winMarker ' + colors[winner() + 1]"></span>
+    </div>
+    <div>
+        @for(numCaptures of captures(); track $index; let i = $index) {
+        <div class="status">
+            <span [class]="'captureMarker ' + colors[i + 1]"></span><span class="statusText">Captures: {{ numCaptures }}</span>
+        </div>
+        }
+    </div>
 </div>
 
 <div class="main">
-    @for(row of game().state.board; track $index; let r = $index) {
+    @for(row of board(); track $index; let r = $index) {
     <div class="row">
         @for(col of row; track $index; let c = $index) {
         <div class="column">
             <span [class]="'piece ' + colors[col + 1] +
-                           ' hover-' + colors[col == -1 ? currentPlayer() + 1 : 0]"
+                           ' hover-' + colors[isLegalMove(r, c) ? currentPlayer() + 1 : 0]"
                   (click)="selectSpot(r, c)" ></span>
         </div>
         }

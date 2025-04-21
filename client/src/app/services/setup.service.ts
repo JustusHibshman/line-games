@@ -55,8 +55,7 @@ export class SetupService {
                 gameServerIP: "localhost"
             });
             /*
-                this.gameplay.setGameSpec(TODO: FILL IN);
-                this.gameplay.setPlayerTypes(TODO: FILL IN);
+                this.gameplay.setGame(TODO: FILL IN);
             */
             /* End mock values */
 
@@ -88,8 +87,7 @@ export class SetupService {
             });
             /* End mock values */
 
-            this.gameplay.setGameSpec(spec);
-            this.gameplay.setPlayerTypes(playerTypes);
+            this.gameplay.setGame(spec, playerTypes);
 
             this.router.navigate(['/lobby']);
         }
