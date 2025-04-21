@@ -15,6 +15,7 @@ export class GameplayService {
     gameLink: GameLink;
     gameSpec: GameSpec | null;
     playerTypes: Array<PlayerType>;
+    seats: Array<number> = [];
 
     constructor() {
         this.gameLink = this.emptyGameLink();
@@ -56,5 +57,9 @@ export class GameplayService {
             hosting: null,
             gameServerIP: null
         };
+    }
+
+    setSeats(s: Array<number>): void {
+        this.seats = Array.from(s, (v) => v);
     }
 }

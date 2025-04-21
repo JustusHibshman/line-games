@@ -36,6 +36,7 @@ export class HostComponent implements OnInit {
         catch(e) {
             this.resetConfigs();
         }
+        this.setup.quitGame();
     }
 
     gameSpec: GameSpec = this.ticTacToeConfig();

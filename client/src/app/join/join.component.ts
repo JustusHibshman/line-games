@@ -30,6 +30,7 @@ export class JoinComponent implements OnInit {
     ngOnInit(): void {
         this.games.sort(this.compareListings)
         this.typed = Array.from({ length: this.games.length }, () => signal<string>(""));
+        this.setup.quitGame();
     }
 
     joinGame(idx: number): void {

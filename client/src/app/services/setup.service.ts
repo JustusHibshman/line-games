@@ -19,6 +19,10 @@ export class SetupService {
 
     constructor() { }
 
+    enterGame(): void {
+        this.router.navigate(['/play']);
+    }
+
     quitGame(): void {
         let gameLink = this.gameplay.getGameLink();
 
@@ -27,6 +31,7 @@ export class SetupService {
                 /* Tell central server to kill previous game */
             }
             this.gameplay.quitGame();
+            this.__MOCK__emptySeats = true;
         }
     }
 
@@ -117,6 +122,7 @@ export class SetupService {
             } else if (numSeats == empty) {
                 this.__MOCK__emptySeats = false;
             }
+            this.gameplay.setSeats(seats);
             return seats;
         }
         /* End Mock Version */

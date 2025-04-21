@@ -60,6 +60,7 @@ export class LobbyComponent implements OnInit {
         if (claimed.length != 0) {
             this.requestGranted.set(true);
             this.seatSelected.set(Array.from({length: this.players.length}, (v, i) => this.contains(i, claimed)));
+            this.emptySeats = this.setup.hasEmptySeats();
         }
         this.awaitingResponse.set(false);
     }
