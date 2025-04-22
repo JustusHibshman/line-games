@@ -20,8 +20,8 @@
         @for(col of row; track $index; let c = $index) {
         <div class="column">
             <span [class]="'piece ' + colors[col + 1] +
-                           ' hover-' + colors[isLegalMove(r, c) ? currentPlayer() + 1 : 0]"
-                  (click)="selectSpot(r, c)" ></span>
+                           ' hover-' + colors[isLegalMove({row: r, col: c}) ? currentPlayer() + 1 : 0]"
+                  (click)="selectSpot({row: r, col: c})" ></span>
         </div>
         }
     </div>

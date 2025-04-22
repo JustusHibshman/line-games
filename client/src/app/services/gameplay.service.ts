@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { GameLink } from '@local-types/game-link.type';
 import { GameSpec, copyGameSpec} from '@local-types/game-spec.type';
 import { GameState } from '@local-types/game-state.type';
+import { Move } from '@local-types/move.type';
 import { PlayerType } from '@local-types/player-type.type';
 
 @Injectable({
@@ -42,10 +43,10 @@ export class GameplayService {
         this.gameLink = { ...gl };
     }
 
-    setGame(gs: GameSpec, pt: Array<PlayerType>): void {
+    setGame(gs: GameSpec, pt: Array<PlayerType>, startingSeat: number): void {
         this.gameSpec = copyGameSpec(gs);
         this.gameState.set({
-            player: 0,
+            player: startingSeat,
             turn:   0,
             board: Array.from({length: gs.board.height},
                                 () => Array.from({length: gs.board.width}, () => -1)),
@@ -136,26 +137,27 @@ export class GameplayService {
         return this.seats.indexOf(player) > -1;
     }
 
-    isLegalMove(r: number, c: number): boolean {
+    isLegalMove(m: Move): boolean {
         if (this.gameOver()) {
             return false;
-        } else if (this.gameState()?.board[r][c] != -1) {
+        } else if (this.gameState()?.board[m.row][m.col] != -1) {
             return false;
         } else if (this.gameSpec?.board.gravity &&
-                        (r != this.gameSpec?.board.height - 1 && this.gameState()?.board[r + 1][c] == -1)) {
+                   m.row != this.gameSpec?.board.height - 1 &&
+                   this.gameState()?.board[m.row + 1][m.col] == -1) {
             return false;
         }
         return true;
     }
 
-    makeMove(r: number, c: number): void {
+    makeMove(m: Move): void {
         if (this.gameState() === undefined) {
             return;
         }
         let newGameState: GameState = this.ensureGameState(this.gameState());
-        newGameState.board[r][c] = newGameState.player;
-        this.performCaptures(r, c, newGameState); /* Modifies newGameState */
-        let winningPlayer = this.checkForVictor(r, c, newGameState);
+        newGameState.board[m.row][m.col] = newGameState.player;
+        this.performCaptures(m, newGameState); /* Modifies newGameState */
+        let winningPlayer = this.checkForVictor(m, newGameState);
         if (winningPlayer != -1) {
             this.gameOver.set(true);
             this.winner.set(winningPlayer);
@@ -167,21 +169,21 @@ export class GameplayService {
     }
 
     /* Modifies gState */
-    performCaptures(r: number, c: number, gState: GameState): void {
+    /* Returns a list of recently emptied cells */
+    performCaptures(m: Move, gState: GameState): Array<Move> {
         if (this.gameSpec === null) {
-            return;
+            return [];
         } else if (this.gameSpec.rules.allowCaptures == false) {
-            return;
+            return [];
         }
-        let player = gState.board[r][c];
+        let player = gState.board[m.row][m.col];
         let capSize = this.gameSpec.rules.captureSize;
-
-        console.log("Checking for captures");
+        let captured: Array<Move> = [];
 
         for (let i = -1; i < 2; i++) {
             for (let j = -1; j < 2; j++) {
-                let rAlt = r + (capSize + 1) * i;
-                let cAlt = c + (capSize + 1) * j;
+                let rAlt = m.row + (capSize + 1) * i;
+                let cAlt = m.col + (capSize + 1) * j;
                 if (rAlt < 0 || rAlt >= this.gameSpec.board.height) {
                     continue;
                 }
@@ -193,8 +195,8 @@ export class GameplayService {
                 }
                 let isCapture = true;
                 for (let k = 1; k <= capSize; k++) {
-                    rAlt = r + k * i;
-                    cAlt = c + k * j;
+                    rAlt = m.row + k * i;
+                    cAlt = m.col + k * j;
                     if (gState.board[rAlt][cAlt] == player || gState.board[rAlt][cAlt] == -1) {
                         isCapture = false;
                         break;
@@ -205,19 +207,21 @@ export class GameplayService {
                 }
                 gState.captures[player]++;
                 for (let k = 1; k <= capSize; k++) {
-                    rAlt = r + k * i;
-                    cAlt = c + k * j;
+                    rAlt = m.row + k * i;
+                    cAlt = m.col + k * j;
                     gState.board[rAlt][cAlt] = -1;
+                    captured.push({row: rAlt, col: cAlt});
                 }
             }
         }
+        return captured;
     }
 
-    checkForVictor(r: number, c: number, gState: GameState): number {
+    checkForVictor(m: Move, gState: GameState): number {
         if (this.gameSpec === null) {
             return -1;
         }
-        let player = gState.board[r][c];
+        let player = gState.board[m.row][m.col];
 
         if (this.gameSpec.rules.winByCaptures) {
             if (gState.captures[player] >= this.gameSpec.rules.winningNumCaptures) {
@@ -244,8 +248,8 @@ export class GameplayService {
             let count = 1;
             for (let dir = -1; dir < 2; dir += 2) {
                 let k = 1;
-                let rAlt = r + k * i * dir;
-                let cAlt = c + k * j * dir;
+                let rAlt = m.row + k * i * dir;
+                let cAlt = m.col + k * j * dir;
                 while (rAlt >= 0 && rAlt < this.gameSpec.board.height &&
                        cAlt >= 0 && cAlt < this.gameSpec.board.width) {
                     if (gState.board[rAlt][cAlt] == player) {
@@ -254,8 +258,8 @@ export class GameplayService {
                         break;
                     }
                     k++;
-                    rAlt = r + k * i * dir;
-                    cAlt = c + k * j * dir;
+                    rAlt = m.row + k * i * dir;
+                    cAlt = m.col + k * j * dir;
                 }
             }
             if (count >= this.gameSpec.rules.winningLength) {
@@ -264,5 +268,27 @@ export class GameplayService {
         }
 
         return -1;
+    }
+
+    primitiveAIChoice(): Move {
+        return {row: 0, col: 0};
+    }
+
+    primitiveAIChoiceHelper(gState: GameState, player: number, depth: number): Move {
+        return {row: 0, col: 0};
+    }
+
+    /* These functions enable use of the default Set class for moves */
+    moveToInt(m: Move): number {
+        let w = this.ensureNumber(this.gameSpec?.board.width, 0);
+        return m.row * w + m.col;
+    }
+
+    intToMove(i: number): Move {
+        let w = this.ensureNumber(this.gameSpec?.board.width, 0);
+        return {
+            row: Math.floor(i / w),
+            col: i % w
+        };
     }
 }

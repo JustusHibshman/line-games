@@ -75,6 +75,8 @@ export class SetupService {
 
         /* Ask central server to initiate new game */
 
+        let startingSeat = Math.floor(Math.random() * playerTypes.length);
+
         let success = true;
         if (success) {
             /* Begin mock values */
@@ -87,7 +89,7 @@ export class SetupService {
             });
             /* End mock values */
 
-            this.gameplay.setGame(spec, playerTypes);
+            this.gameplay.setGame(spec, playerTypes, startingSeat);
 
             this.router.navigate(['/lobby']);
         }

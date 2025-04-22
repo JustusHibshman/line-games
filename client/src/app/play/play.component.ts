@@ -3,6 +3,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { NavButtonComponent } from '@local-components/nav-button/nav-button.component';
 
 import { GameState } from '@local-types/game-state.type';
+import { Move } from '@local-types/move.type';
 
 import { SetupService } from '@local-services/setup.service';
 import { GameplayService } from '@local-services/gameplay.service';
@@ -28,15 +29,15 @@ export class PlayComponent implements OnInit {
     ngOnInit(): void {
     }
 
-    selectSpot(r: number, c: number): void {
-        if (!this.isLegalMove(r, c)) {
+    selectSpot(m: Move): void {
+        if (!this.isLegalMove(m)) {
             return;
         }
-        this.gameplay.makeMove(r, c);
+        this.gameplay.makeMove(m);
     }
 
-    isLegalMove(r: number, c: number): boolean {
-        return this.gameplay.isLegalMove(r, c) &&
+    isLegalMove(m: Move): boolean {
+        return this.gameplay.isLegalMove(m) &&
                this.gameplay.isLocalPlayer(this.currentPlayer());
     }
 }
