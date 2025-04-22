@@ -13,3 +13,12 @@ export function emptyGameState(): GameState {
         captures:   [],
     }
 }
+
+export function copyGameState(gs: GameState): GameState {
+    return {
+        player: gs.player,
+        turn:   gs.turn,
+        board:  Array.from(gs.board, (a: Array<number>) => [...a]),
+        captures: [... gs.captures]
+    }
+}
