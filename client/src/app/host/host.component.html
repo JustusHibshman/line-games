@@ -35,12 +35,14 @@
     <div class="inputRow">
         <div class="inputRowItem">
         <span class="label">Gravity</span>
-        <app-toggle-switch [defaultValue]="false" [(value)]="gameSpec.board.gravity" />
+        <app-toggle-switch [defaultValue]="false" [(value)]="gameSpec.board.gravity" 
+                           [disable]="gameSpec.rules.allowCaptures" />
         </div>
 
         <div class="inputRowItem">
         <span class="label">Allow Captures</span>
-        <app-toggle-switch [defaultValue]="false" [(value)]="gameSpec.rules.allowCaptures" />
+        <app-toggle-switch [defaultValue]="false" [(value)]="gameSpec.rules.allowCaptures"
+                           [disable]="gameSpec.board.gravity" />
         </div>
 
         <div class="inputRowItem">
