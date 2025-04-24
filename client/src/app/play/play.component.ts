@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, Signal } from '@angular/core';
 
 import { NavButtonComponent } from '@local-components/nav-button/nav-button.component';
 
@@ -20,7 +20,7 @@ export class PlayComponent implements OnInit {
     gameplay = inject(GameplayService);
 
     board = this.gameplay.getBoard();
-    currentPlayer = this.gameplay.getPlayer();
+    currentPlayer: Signal<number> = this.gameplay.getPlayer();
     winner = this.gameplay.getWinner();
     captures = this.gameplay.getCaptures();
 
