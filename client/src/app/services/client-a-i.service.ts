@@ -179,17 +179,19 @@ export class ClientAIService {
             return Array.from(a, () => 0);
         }
         let result = Array.from(a, () => 0);
+        let selfWeight = 0.2;
         for (let i = 0; i < a.length; i++) {
             let total = 0;
             let max = 0;
+            let weightedSum = (sum - (1 - selfWeight) * a[i]);
             for (let j = 0; j < a.length; j++) {
                 if (i == j) {
                     continue;
                 }
-                total += a[j] / sum;
-                max = Math.max(max, a[j] / sum);
+                total += a[j] / weightedSum;
+                max = Math.max(max, a[j] / weightedSum);
             }
-            result[i] = 2 * a[i] - ((total / (a.length - 1)) + max);
+            result[i] = (2 * selfWeight * a[i]) - ((total / (a.length - 1)) + max);
         }
         return result;
     }
@@ -306,14 +308,17 @@ export class ClientAIService {
         if (currentDepth < 3) {
             return;
         }
+        if (this.numPlayers == 2 && currentDepth < 4) {
+            return;
+        }
 
-        let toKeepDenominator = 2 + Math.floor((currentDepth - 3) / 2);
+        let toKeepDenominator = 3 + Math.floor((currentDepth - 3) / 2);
         let priorLayer: Array<SearchTreeNode> = ss.layers[currentDepth - 2];
 
         for (let i = 0; i < priorLayer.length; i++) {
             let current: SearchTreeNode = priorLayer[i];
 
-            if (current.children.length <= toKeepDenominator) {
+            if (current.children.length < toKeepDenominator) {
                 continue;
             }
             let numToKeep = Math.ceil(current.children.length / toKeepDenominator);
@@ -337,13 +342,13 @@ export class ClientAIService {
     }
 
     singleScore(winner: number | null, player: number, hScore: number): number {
-        // Normalized Heuristic Scores are by nature constrained to the [-2, 2] range.
+        // Normalized Heuristic Scores are by nature constrained to the [-4, 4] range.
         if (winner === null) {
             return hScore;
         } else if (winner == player) {
-            return 3;
+            return 7 + hScore;
         } else {
-            return -3;
+            return -7 + hScore;
         }
     }
 
