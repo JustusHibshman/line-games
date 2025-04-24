@@ -161,7 +161,7 @@ export class ClientAIService {
                         }
                     }
                     if (count > 0) {
-                        rawLineScores[firstPlayer] += count * count * count;
+                        rawLineScores[firstPlayer] += count * count * count * count * count;
                     }
                 }
             }
@@ -302,7 +302,58 @@ export class ClientAIService {
     }
 
     prune(ss: SearchSpace): void {
+        let currentDepth = ss.layers.length;
+        if (currentDepth < 3) {
+            return;
+        }
 
+        let toKeepDenominator = 2 + Math.floor((currentDepth - 3) / 2);
+        let priorLayer: Array<SearchTreeNode> = ss.layers[currentDepth - 2];
+
+        for (let i = 0; i < priorLayer.length; i++) {
+            let current: SearchTreeNode = priorLayer[i];
+
+            if (current.children.length <= toKeepDenominator) {
+                continue;
+            }
+            let numToKeep = Math.ceil(current.children.length / toKeepDenominator);
+            let numToRemove = current.children.length - numToKeep;
+
+            let children: Array<ScoredSTN> =
+                Array.from(current.children, (v : SearchTreeNode) =>
+                                <ScoredSTN> { score: this.singleScore(v.definiteWinner,
+                                                                      current.state.player,
+                                                                      v.heuristicScores[current.state.player]),
+                                              stn: v });
+            children = children.sort((a, b) => a.score - b.score);
+            let cut:  Array<SearchTreeNode> = Array.from({length: numToRemove}, (v, i) => children[i].stn);
+            let keep: Array<SearchTreeNode> = Array.from({length: numToKeep}, (v, i) => children[i + numToRemove].stn);
+
+            current.children = keep;
+            for (let chopped of cut) {
+                this.snip(chopped, current);
+            }
+        }
+    }
+
+    singleScore(winner: number | null, player: number, hScore: number): number {
+        // Normalized Heuristic Scores are by nature constrained to the [-2, 2] range.
+        if (winner === null) {
+            return hScore;
+        } else if (winner == player) {
+            return 3;
+        } else {
+            return -3;
+        }
+    }
+
+    // Modifies the order of children and parents in the arrays
+    snip(child: SearchTreeNode, parentNode: SearchTreeNode) {
+        let idx = child.parents.indexOf(parentNode);
+        if (idx != child.parents.length - 1) {
+            child.parents[idx] = child.parents[child.parents.length - 1];
+        }
+        child.parents.pop();
     }
 
     backwardInduction(ss: SearchSpace): Move {
@@ -381,4 +432,9 @@ type SearchTreeNode = {
 type SearchSpace = {
     layers: Array<Array<SearchTreeNode>>,
     hashToCanonical: { [key: string]: SearchTreeNode },
+};
+
+type ScoredSTN = {
+    score: number,
+    stn:   SearchTreeNode,
 };
