@@ -203,7 +203,6 @@ export class ClientAIService {
     }
 
     primitiveAIChoiceHelper(gState: GameState, depth: number): Move {
-        console.log("Turns to look ahead: " + String(depth));
         let initialNode: SearchTreeNode = {
             winner: -1,
             scores: [],
