@@ -52,6 +52,17 @@ export class LobbyComponent implements OnInit {
                            (v, i) => computed(() => this.seatSelected()[i] ? "" : "invisible"));
 
         this.emptySeats = this.setup.hasEmptySeats();
+
+        // TODO: Remove the following code
+        let requestSize = 0;
+        for (let i = 0; i < this.players.length; i++) {
+            if (this.players[i] == PlayerType.Human) {
+                requestSize++;
+            }
+        }
+        this.requestedSeats.set(requestSize);
+        this.requestSeats();
+        this.enterGame();
     }
 
     requestSeats(): void {

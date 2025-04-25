@@ -93,6 +93,7 @@
         <app-player-type-selector [(choice)]="playerTypes[5]" [formID]="'5'" 
                     [disable]="ptDisabled[5]()" />
         <span>
+        <!--
         <div class="aiTime">
             <div>AI Compute Time</div>
             <div class="tinyRowSpacer"></div>
@@ -103,10 +104,11 @@
                            playerTypes[3]() != PlayerTypes.AI &&
                            playerTypes[4]() != PlayerTypes.AI &&
                            playerTypes[5]() != PlayerTypes.AI" />
-        </div>
+        </div> -->
         </span>
     </div>
 
+    <!--
     <div class="bigRowSpacer"></div>
     <div>
         <span class="label">Game Name</span>
@@ -114,6 +116,7 @@
         <span class="label">Password</span>
         <app-text-box [(text)]="password" [maxLength]="10" class="label" />
     </div>
+    -->
     <div class="bigRowSpacer"></div>
     <div>
         <app-action-button [text]="'Launch Game'"

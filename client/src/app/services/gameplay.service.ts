@@ -1,4 +1,4 @@
-import { computed, inject, Injectable, signal, Signal } from '@angular/core';
+import { computed, inject, Injectable, signal, Signal, WritableSignal } from '@angular/core';
 
 import { GameLink } from '@local-types/game-link.type';
 import { GameSpec, copyGameSpec } from '@local-types/game-spec.type';
@@ -17,27 +17,26 @@ export class GameplayService {
     gsService = inject(GameStateService);
     clientAIService = inject(ClientAIService);
 
-    gameLink: GameLink;
+    gameLink: WritableSignal<GameLink>;
     gameSpec: GameSpec | null;
     gameState = signal<GameState | null>(null);
     playerTypes: Array<PlayerType>;
     seats: Array<number> = [];
     gameOver = signal<boolean>(false);
     winner   = signal<number>(-1);
-
     AITimer: number = 0;
 
     /* Initializing */
 
     constructor() {
-        this.gameLink = this.emptyGameLink();
+        this.gameLink = signal<GameLink>(this.emptyGameLink());
         this.gameSpec = null;
         this.gameState.set(null);
         this.playerTypes = [];
     }
 
-    getGameLink(): GameLink {
-        return { ...this.gameLink };
+    getGameLink() {
+        return computed(() => this.gameLink());
     }
 
     getPlayerTypes(): Array<PlayerType> {
@@ -45,7 +44,7 @@ export class GameplayService {
     }
 
     setGameLink(gl: GameLink): void {
-        this.gameLink = { ...gl };
+        this.gameLink.set({ ...gl });
     }
 
     setGame(gs: GameSpec, pt: Array<PlayerType>, startingSeat: number): void {
@@ -65,7 +64,7 @@ export class GameplayService {
     }
 
     quitGame(): void {
-        this.gameLink = this.emptyGameLink();
+        this.gameLink.set(this.emptyGameLink());
         this.gameSpec = null;
         this.playerTypes = [];
     }

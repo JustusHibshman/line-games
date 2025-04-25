@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal, ChangeDetectorRef, AfterContentChecked } from '@angular/core';
 import { KeyValuePipe, NgFor } from '@angular/common';
 
 import { ActionButtonComponent } from '@local-components/action-button/action-button.component';
@@ -21,13 +21,15 @@ import { SetupService } from '@local-services/setup.service';
   templateUrl: './host.component.html',
   styleUrl: './host.component.scss'
 })
-export class HostComponent implements OnInit {
+export class HostComponent implements OnInit, AfterContentChecked {
 
     public PlayerTypes = PlayerType;
 
     setup = inject(SetupService);
 
     specs: { [id: string]: GameSpec } = {};
+
+    constructor(private changeDetector: ChangeDetectorRef) {}
 
     ngOnInit(): void {
         try {
@@ -39,10 +41,14 @@ export class HostComponent implements OnInit {
         this.setup.quitGame();
     }
 
+    ngAfterContentChecked(): void {
+        this.changeDetector.detectChanges();
+    }
+
     gameSpec: GameSpec = this.ticTacToeConfig();
 
     configName = signal<string>("");
-    gameName = signal<string>("");
+    gameName = signal<string>("<placeholder>");
     password = signal<string>("");
 
     playerTypes = [signal<PlayerType>(PlayerType.Human), signal<PlayerType>(PlayerType.None),

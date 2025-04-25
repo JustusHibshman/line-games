@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { computed, inject, Injectable, Signal } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { GameSpec, copyGameSpec } from '@local-types/game-spec.type';
@@ -16,7 +16,11 @@ export class SetupService {
     router = inject(Router);
     gameplay = inject(GameplayService);
 
+    gameLink: Signal<GameLink> = this.gameplay.getGameLink();
+
     __MOCK__emptySeats: boolean = true;  /* Mock variable to simulate server response */
+
+    inGame = computed(() => this.gameLink().inGame);
 
     constructor() { }
 
@@ -25,10 +29,9 @@ export class SetupService {
     }
 
     quitGame(): void {
-        let gameLink = this.gameplay.getGameLink();
 
-        if (gameLink.inGame) {
-            if (gameLink.hosting) {
+        if (this.gameLink().inGame) {
+            if (this.gameLink().hosting) {
                 /* Tell central server to kill previous game */
             }
             this.gameplay.quitGame();
@@ -39,9 +42,7 @@ export class SetupService {
     joinGame(name: string, password: string): void {
         /* TODO: Update with actual http request(s) */
 
-        let gameLink = this.gameplay.getGameLink();
-
-        if (gameLink.inGame) {
+        if (this.gameLink().inGame) {
             this.quitGame();
         }
 
@@ -68,9 +69,7 @@ export class SetupService {
              spec: GameSpec, playerTypes: Array<PlayerType>): void {
         /* TODO: Update with actual http request(s) */
 
-        let gameLink = this.gameplay.getGameLink();
-
-        if (gameLink.inGame) {
+        if (this.gameLink().inGame) {
             this.quitGame();
         }
 
@@ -97,9 +96,7 @@ export class SetupService {
     }
 
     claimSeats(numSeats: number): Array<number> {
-        let gameLink = this.gameplay.getGameLink();
-
-        if (!gameLink.inGame) {
+        if (!this.gameLink().inGame) {
             return [];
         }
 

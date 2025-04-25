@@ -2,13 +2,13 @@
     <nav>
     <ul>
         <li>
-            <app-nav-button [target]='"/join"' [text]='"Join"' />
+            <app-nav-button [target]="'/join'" [text]="'Join'" [live]="false" />
         </li>
         <li>
-            <app-nav-button [target]='"/host"' [text]='"Host"' />
+            <app-nav-button [target]="'/host'" [text]="'Host'" />
         </li>
         <li>
-            <app-nav-button [target]='"/play"' [text]='"Current Game"' [live]='false' />
+            <app-nav-button [target]="'/play'" [text]="'Current Game'" [live]="setup.inGame()" />
         </li>
     </ul>
     </nav>
