@@ -71,7 +71,6 @@ export class HostComponent implements OnInit, AfterContentChecked {
 
     hostGame(): void {
         /* Filter out the None "players" */
-        console.log(Array.from(this.playerTypes, (v) => v()));
         let numPlayers = 2;
         for (; numPlayers < 6; numPlayers++) {
             if (this.playerTypes[numPlayers]() == PlayerType.None) {
@@ -86,19 +85,17 @@ export class HostComponent implements OnInit, AfterContentChecked {
 
     saveConfigAsPreset(): void {
         this.specs[this.configName().trim()] = copyGameSpec(this.gameSpec);
-        localStorage.setItem('specs', JSON.stringify(this.specs));
+        localStorage.setItem(this.DataPrefix + 'specs', JSON.stringify(this.specs));
     }
 
     loadConfig(specName: string): void {
-        if (!this.specs[specName]) {
-            console.log("No GameSpec '" + specName + "' in localStorage!");
-        } else {
+        if (this.specs[specName]) {
             this.gameSpec = copyGameSpec(this.specs[specName]);
         }
     }
 
     loadConfigs(): void {
-        if (!localStorage['specs']) {
+        if (!localStorage[this.DataPrefix + 'specs']) {
             this.specs = {};
             this.specs['Tic-Tac-Toe'] = this.ticTacToeConfig();
             this.specs['Link Four'] = this.linkFourConfig();
