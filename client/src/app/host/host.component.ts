@@ -27,6 +27,8 @@ export class HostComponent implements OnInit, AfterContentChecked {
 
     setup = inject(SetupService);
 
+    DataPrefix: string = "HOST.";
+
     specs: { [id: string]: GameSpec } = {};
 
     constructor(private changeDetector: ChangeDetectorRef) {}
@@ -101,15 +103,15 @@ export class HostComponent implements OnInit, AfterContentChecked {
             this.specs['Tic-Tac-Toe'] = this.ticTacToeConfig();
             this.specs['Link Four'] = this.linkFourConfig();
             this.specs['Pente'] = this.penteConfig();
-            localStorage.setItem('specs', JSON.stringify(this.specs));
+            localStorage.setItem(this.DataPrefix + 'specs', JSON.stringify(this.specs));
         } else {
-            let specsString = localStorage.getItem('specs');
+            let specsString = localStorage.getItem(this.DataPrefix + 'specs');
             this.specs = specsString ? JSON.parse(specsString) : {};
         }
     }
 
     resetConfigs(): void {
-        localStorage.removeItem('specs');
+        localStorage.removeItem(this.DataPrefix + 'specs');
         this.loadConfigs();
     }
 

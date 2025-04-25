@@ -1,4 +1,5 @@
-import { computed, inject, Injectable, signal, Signal, WritableSignal } from '@angular/core';
+import { computed, inject, Injectable,
+         signal, Signal, WritableSignal } from '@angular/core';
 
 import { GameLink } from '@local-types/game-link.type';
 import { GameSpec, copyGameSpec } from '@local-types/game-spec.type';
@@ -24,15 +25,43 @@ export class GameplayService {
     seats: Array<number> = [];
     gameOver = signal<boolean>(false);
     winner   = signal<number>(-1);
-    AITimer: number = 0;
 
-    /* Initializing */
+    // Initializing
 
     constructor() {
         this.gameLink = signal<GameLink>(this.emptyGameLink());
         this.gameSpec = null;
         this.gameState.set(null);
         this.playerTypes = [];
+        try {
+            this.loadData();
+        }
+        catch(e) {
+            // Overwrite bad values with whatever is present
+            this.saveData();
+        }
+    }
+
+    DataPrefix: string = "GP_SERVICE.";
+
+    saveData(): void {
+        localStorage.setItem(this.DataPrefix + 'gameLink',    JSON.stringify(this.gameLink()));
+        localStorage.setItem(this.DataPrefix + 'gameSpec',    JSON.stringify(this.gameSpec));
+        localStorage.setItem(this.DataPrefix + 'gameState',   JSON.stringify(this.gameState()));
+        localStorage.setItem(this.DataPrefix + 'playerTypes', JSON.stringify(this.playerTypes));
+        localStorage.setItem(this.DataPrefix + 'gameOver',    JSON.stringify(this.gameOver()));
+        localStorage.setItem(this.DataPrefix + 'seats',  JSON.stringify(this.seats));
+        localStorage.setItem(this.DataPrefix + 'winner', JSON.stringify(this.winner()));
+    }
+
+    loadData(): void {
+        this.gameLink.set( JSON.parse(localStorage[this.DataPrefix + 'gameLink']));
+        this.gameSpec =    JSON.parse(localStorage[this.DataPrefix + 'gameSpec']);
+        this.gameState.set(JSON.parse(localStorage[this.DataPrefix + 'gameState']));
+        this.playerTypes = JSON.parse(localStorage[this.DataPrefix + 'playerTypes']);
+        this.gameOver.set( JSON.parse(localStorage[this.DataPrefix + 'gameOver']));
+        this.seats =    JSON.parse(localStorage[this.DataPrefix + 'seats']);
+        this.winner.set(JSON.parse(localStorage[this.DataPrefix + 'winner']));
     }
 
     getGameLink() {
@@ -45,6 +74,7 @@ export class GameplayService {
 
     setGameLink(gl: GameLink): void {
         this.gameLink.set({ ...gl });
+        this.saveData();
     }
 
     setGame(gs: GameSpec, pt: Array<PlayerType>, startingSeat: number): void {
@@ -60,6 +90,8 @@ export class GameplayService {
         this.gameOver.set(false);
         this.winner.set(-1);
 
+        this.saveData();
+
         this.takeAIMovesIfNeeded();
     }
 
@@ -67,6 +99,7 @@ export class GameplayService {
         this.gameLink.set(this.emptyGameLink());
         this.gameSpec = null;
         this.playerTypes = [];
+        this.saveData();
     }
 
     emptyGameLink(): GameLink {
@@ -81,6 +114,7 @@ export class GameplayService {
 
     setSeats(s: Array<number>): void {
         this.seats = Array.from(s, (v) => v);
+        this.saveData();
     }
 
     /* Playing */
@@ -144,6 +178,8 @@ export class GameplayService {
             this.gameOver.set(true);
             this.winner.set(winningPlayer);
         }
+
+        this.saveData();
 
         this.takeAIMovesIfNeeded();
     }
