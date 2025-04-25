@@ -7,8 +7,6 @@ import { PlayerType } from '@local-types/player-type.type';
 
 import { GameStateService } from '@local-services/game-state.service';
 
-import * as CryptoJS from 'crypto-js';
-
 @Injectable({
   providedIn: 'root'
 })
@@ -21,7 +19,13 @@ export class ClientAIService {
     primitiveAIChoice(gState: GameState, gSpec: GameSpec, numPlayers: number): Move {
         this.setGame(gSpec, numPlayers);
 
-        let chosenDepth = Math.max(this.numPlayers + 1, 4);
+        let chosenDepth = Math.max(this.numPlayers, 3);
+        if (this.numPlayers == 2) {
+            chosenDepth += 1;
+        }
+        if (this.gSpec.board.width < 8) {
+            chosenDepth += 1;
+        }
         if (this.gSpec.board.width < 5) {
             chosenDepth += 2;
         }
@@ -53,23 +57,9 @@ export class ClientAIService {
         };
     }
 
-    ////////////// Set Operations ///////////////
-
-    union(a: Set<number>, b: Set<number>): Set<number> {
-        return new Set<number>([...a, ...b]);
-    }
-
-    subtraction(a: Set<number>, b: Set<number>): Set<number> {
-        return new Set<number>([...a].filter(x => !b.has(x)));
-    }
-
-    intersection(a: Set<number>, b: Set<number>): Set<number> {
-        return new Set<number>([...a].filter(x => b.has(x)));
-    }
-
     ////////////// AI Search Space ///////////////
     
-    initialAvailableMoves(): Set<number> {
+    gameStartAvailableMoves(): Set<number> {
         let w = this.gSpec.board.width;
         let h = this.gSpec.board.height;
         if (this.gSpec.board.gravity) {
@@ -113,18 +103,14 @@ export class ClientAIService {
         return s;
     }
 
-    hashGameState(gState: GameState): string {
-        return CryptoJS.MD5(JSON.stringify(gState)).toString();
-    }
-
     ////////////// AI Decision-Making ///////////////
 
-    // Higher is better -- assumes there is no winner
+    // Higher is Better -- Values are guaranteed to be in the range -4 <= x <= 4
     heuristicScores(gState: GameState): Array<number> {
-        /* Captures */
+        // Captures
         var captureScores: Array<number>;
-        if (this.gSpec.rules.allowCaptures) {
-            captureScores = this.normalizedHeuristicNumbers(gState.captures);
+        if (this.gSpec.rules.winByCaptures) {
+            captureScores = this.normalizeHeuristicNumbers(gState.captures);
         } else {
             captureScores = Array.from({length: this.numPlayers}, () => 0);
         }
@@ -166,11 +152,11 @@ export class ClientAIService {
                 }
             }
         }
-        let lineScores = this.normalizedHeuristicNumbers(rawLineScores);
+        let lineScores = this.normalizeHeuristicNumbers(rawLineScores);
         return Array.from(captureScores, (v, i) => v + lineScores[i]);
     }
 
-    normalizedHeuristicNumbers(a: Array<number>): Array<number> {
+    normalizeHeuristicNumbers(a: Array<number>): Array<number> {
         let sum = 0;
         for (let v of a) {
             sum += v;
@@ -191,25 +177,104 @@ export class ClientAIService {
                 total += a[j] / weightedSum;
                 max = Math.max(max, a[j] / weightedSum);
             }
-            result[i] = (2 * selfWeight * a[i]) - ((total / (a.length - 1)) + max);
+            let selfScore   = selfWeight * (a[i] / weightedSum);
+            let avgOppScore = total / (a.length - 1);
+            let maxOppScore = max;
+            result[i] = 2 * selfScore - (maxOppScore + avgOppScore);
+        }
+        return result;
+    }
+
+    // Higher is Better
+    scores(stn: SearchTreeNode): Array<number> {
+        // Heuristic values are guaranteed to be in the range -4 <= x <= 4
+        const WinValue: number = 9; // (4 - -4) + 1   [i.e. more than the full range]
+        let result: Array<number> = this.heuristicScores(stn.state);
+        if (stn.winner != -1) {
+            for (let i = 0; i < this.numPlayers; i++) {
+                if (i == stn.winner) {
+                    result[i] += WinValue;
+                } else {
+                    result[i] -= WinValue;
+                }
+            }
         }
         return result;
     }
 
     primitiveAIChoiceHelper(gState: GameState, depth: number): Move {
+        console.log("Turns to look ahead: " + String(depth));
         let initialNode: SearchTreeNode = {
-            hash: this.hashGameState(gState),
-            definiteWinner: null,
-            heuristicScores: [],
+            winner: -1,
+            scores: [],
             state: gState,
-            parents: [],
-            children: [],
-            movesToChildren: [],
-            moves: new Set<number>(),
+            movedToBy: {row: -1, col: -1},
+            moves: this.initialMoves(gState),
         };
 
-        if (initialNode.state.turn == 0) {
-            initialNode.moves = this.initialAvailableMoves();
+        let ss: SearchSpace = {
+            layers: [[initialNode]],
+            activeIdxs: [0],
+        };
+
+        let currentDepth = 0;
+        let bestMove: Move = {row: -1, col: -1};
+        var activeNode: SearchTreeNode;
+        while (true) {
+            while (ss.activeIdxs[currentDepth] < ss.layers[currentDepth].length) {
+                // Sibling stepping
+                activeNode = ss.layers[currentDepth][ss.activeIdxs[currentDepth]];
+                if (currentDepth < depth && activeNode.winner == -1 && activeNode.moves.size > 0) {
+                    // Prepare the descendents of activeNode
+                    ss.layers.push([]);
+                    ss.activeIdxs.push(0);
+                    let movesCopy = new Set<number>(activeNode.moves);
+                    while (movesCopy.size > 0) {
+                        let move = this.intToMove(this.pop(movesCopy));
+                        ss.layers[currentDepth + 1].push(this.childFromMove(activeNode, move));
+                    }
+                    // TODO: If we were going to prune, this is the place to do it.
+                    currentDepth++;
+                } else {
+                    activeNode.scores = this.scores(activeNode);
+                    ss.activeIdxs[currentDepth]++;
+                }
+            }
+            currentDepth--;
+
+            // Aggregate score values
+            activeNode = ss.layers[currentDepth][ss.activeIdxs[currentDepth]];
+            if (activeNode.scores.length == 0) {
+                // Definitely has children, because all childless nodes are given scores earlier
+                let bestScore = ss.layers[currentDepth + 1][0].scores[activeNode.state.player];
+                bestMove = ss.layers[currentDepth + 1][0].movedToBy;
+                let bestIdx = 0;
+                for (let i = 1; i < ss.layers[currentDepth + 1].length; i++) {
+                    let score = ss.layers[currentDepth + 1][i].scores[activeNode.state.player];
+                    if (score > bestScore) {
+                        bestScore = score;
+                        bestMove  = ss.layers[currentDepth + 1][i].movedToBy;
+                        bestIdx = i;
+                    }
+                }
+                activeNode.scores = ss.layers[currentDepth + 1][bestIdx].scores;
+            }
+
+            if (currentDepth == 0) {
+                break;
+            }
+
+            ss.activeIdxs[currentDepth]++;
+            ss.layers.pop();
+            ss.activeIdxs.pop();
+        }
+
+        return bestMove;
+    }
+
+    initialMoves(gState: GameState): Set<number> {
+        if (gState.turn == 0) {
+            return new Set<number>(this.gameStartAvailableMoves());
         } else {
             let s: Set<number> = new Set<number>();
             if (this.gSpec.board.gravity) {
@@ -226,220 +291,75 @@ export class ClientAIService {
             } else {
                 for (let r = 0; r < this.gSpec.board.height; r++) {
                     for (let c = 0; c < this.gSpec.board.width; c++) {
-                        if (initialNode.state.board[r][c] != -1) {
-                            s = this.union(s, this.surroundingMoves({row: r, col: c}, initialNode.state));
+                        if (gState.board[r][c] != -1) {
+                            s = this.union(s, this.surroundingMoves({row: r, col: c}, gState));
                         }
                     }
                 }
             }
-            initialNode.moves = s;
+            return s;
         }
+    }
 
-        let ss: SearchSpace = {
-            layers: [[initialNode]],
-            hashToCanonical: {},
+    childFromMove(parentNode: SearchTreeNode, m: Move): SearchTreeNode {
+        let newGS: GameState = copyGameState(parentNode.state);
+        let capturedCellsArr: Array<Move> =
+                this.gsService.makeMove(m, newGS, this.gSpec, this.numPlayers);
+
+        let capturedCells: Set<number> =
+                new Set(Array.from(capturedCellsArr, (x) => this.moveToInt(x)));
+        let enabledCells: Set<number> = this.surroundingMoves(m, newGS);
+        let newMoves = new Set(parentNode.moves);
+        newMoves.delete(this.moveToInt(m));
+
+        let winner = this.gsService.checkForVictor(m, newGS, this.gSpec);
+
+        return {
+            winner: winner,
+            scores: [],
+            state: newGS,
+            movedToBy: m,
+            moves: this.union(newMoves, this.union(capturedCells, enabledCells)),
         };
-        ss.hashToCanonical[initialNode.hash] = initialNode;
-
-        // Alternate between growing and pruning
-        for (let d = 0; d < depth; d++) {
-            this.grow(ss);
-            this.prune(ss);
-        }
-
-        return this.backwardInduction(ss);
     }
 
-    grow(ss: SearchSpace): void {
-        let oldLayer: Array<SearchTreeNode> = ss.layers[ss.layers.length - 1];
-        ss.layers.push([]);
-        let newLayer: Array<SearchTreeNode> = ss.layers[ss.layers.length - 1];
-        for (let i = 0; i < oldLayer.length; i++) {
-            let node: SearchTreeNode = oldLayer[i];
-            if (node.definiteWinner !== null) {
-                // This sub-search is completed
-                continue;
-            }
-            let player: number = node.state.player;
-            for (let m of node.moves) {
-                let newGS: GameState = copyGameState(node.state);
-                let capturedCellsArr: Array<Move> =
-                        this.gsService.makeMove(this.intToMove(m), newGS, this.gSpec, this.numPlayers);
+    //////////////////////// Set Operations /////////////////////////
 
-                let hash: string = this.hashGameState(newGS);
-                if (hash in ss.hashToCanonical) {
-                    // We already found a way to get to this game state
-                    let newNode: SearchTreeNode = ss.hashToCanonical[hash];
-                    newNode.parents.push(node);
-                    node.children.push(newNode);
-                    node.movesToChildren.push(this.intToMove(m));
-                    continue;
-                }
-
-                let capturedCells: Set<number> =
-                    new Set(Array.from(capturedCellsArr, (x) => this.moveToInt(x)));
-                let enabledCells: Set<number> = this.surroundingMoves(this.intToMove(m), newGS);
-                let newMoves = new Set<number>(node.moves);
-                newMoves.delete(m);
-
-                let winner = this.gsService.checkForVictor(this.intToMove(m), newGS, this.gSpec);
-
-                let newNode: SearchTreeNode = {
-                    hash: hash,
-                    definiteWinner: winner == -1 ? null : winner,
-                    heuristicScores: this.heuristicScores(newGS),
-                    state: newGS,
-                    parents: [node],
-                    children: [],
-                    movesToChildren: [],
-                    moves: this.union(newMoves, this.union(capturedCells, enabledCells)),
-                };
-
-                newLayer.push(newNode);
-                ss.hashToCanonical[hash] = newNode;
-                node.children.push(newNode);
-                node.movesToChildren.push(this.intToMove(m));
-            }
+    pop(s: Set<number>): number {
+        let x = 0;
+        for (let y of s) {
+            x = y;
+            break;
         }
+        s.delete(x);
+        return x;
     }
 
-    prune(ss: SearchSpace): void {
-        let currentDepth = ss.layers.length;
-        if (currentDepth < 3) {
-            return;
-        }
-        if (this.numPlayers == 2 && currentDepth < 4) {
-            return;
-        }
-
-        let toKeepDenominator = 3 + Math.floor((currentDepth - 3) / 2);
-        let priorLayer: Array<SearchTreeNode> = ss.layers[currentDepth - 2];
-
-        for (let i = 0; i < priorLayer.length; i++) {
-            let current: SearchTreeNode = priorLayer[i];
-
-            if (current.children.length < toKeepDenominator) {
-                continue;
+    union(a: Set<number>, b: Set<number>): Set<number> {
+        if (a.size > b.size) {
+            let s = new Set<number>(a);
+            for (let x of b) {
+                s.add(x);
             }
-            let numToKeep = Math.ceil(current.children.length / toKeepDenominator);
-            let numToRemove = current.children.length - numToKeep;
-
-            let children: Array<ScoredSTN> =
-                Array.from(current.children, (v : SearchTreeNode) =>
-                                <ScoredSTN> { score: this.singleScore(v.definiteWinner,
-                                                                      current.state.player,
-                                                                      v.heuristicScores[current.state.player]),
-                                              stn: v });
-            children = children.sort((a, b) => a.score - b.score);
-            let cut:  Array<SearchTreeNode> = Array.from({length: numToRemove}, (v, i) => children[i].stn);
-            let keep: Array<SearchTreeNode> = Array.from({length: numToKeep}, (v, i) => children[i + numToRemove].stn);
-
-            current.children = keep;
-            for (let chopped of cut) {
-                this.snip(chopped, current);
-            }
+            return s;
         }
-    }
-
-    singleScore(winner: number | null, player: number, hScore: number): number {
-        // Normalized Heuristic Scores are by nature constrained to the [-4, 4] range.
-        if (winner === null) {
-            return hScore;
-        } else if (winner == player) {
-            return 7 + hScore;
-        } else {
-            return -7 + hScore;
+        let s = new Set<number>(b);
+        for (let x of a) {
+            s.add(x);
         }
-    }
-
-    // Modifies the order of children and parents in the arrays
-    snip(child: SearchTreeNode, parentNode: SearchTreeNode) {
-        let idx = child.parents.indexOf(parentNode);
-        if (idx != child.parents.length - 1) {
-            child.parents[idx] = child.parents[child.parents.length - 1];
-        }
-        child.parents.pop();
-    }
-
-    backwardInduction(ss: SearchSpace): Move {
-        let layerIdx = ss.layers.length - 2;
-        var chosenMove: Move | null = null;
-        while (layerIdx >= 0) {
-            let layer = ss.layers[layerIdx];
-            for (let i = 0; i < layer.length; i++) {
-                let node = layer[i];
-                if (node.children.length == 0) {
-                    continue;
-                }
-
-                let player = node.state.player;
-                let bestIdxs = [0];
-                let bestWin: number | null  = node.children[0].definiteWinner;
-                let bestHeuristic: number   = node.children[0].heuristicScores[player];
-                for (let j = 1; j < node.children.length; j++) {
-                    let child = node.children[j];
-                    if (bestWin === null) {
-                        if (child.definiteWinner === null) {
-                            if (child.heuristicScores[player] > bestHeuristic) {
-                                bestHeuristic = child.heuristicScores[player];
-                                bestIdxs = [j];
-                            } else if (child.heuristicScores[player] == bestHeuristic) {
-                                bestIdxs.push(j);
-                            }
-                        } else if (child.definiteWinner == player) {
-                            bestHeuristic = child.heuristicScores[player];
-                            bestWin = player;
-                            bestIdxs = [j];
-                        }
-                    } else if (bestWin == player) {
-                        if (child.definiteWinner !== null && child.definiteWinner == player) {
-                            bestIdxs.push(j);
-                        }
-                    } else { // bestWin == someone else
-                        if (child.definiteWinner === null) {
-                            bestWin = null;
-                            bestHeuristic = child.heuristicScores[player];
-                            bestIdxs = [j];
-                        } else if (child.definiteWinner == player) {
-                            bestWin = player;
-                            bestHeuristic = child.heuristicScores[player];
-                            bestIdxs = [j];
-                        } else {
-                            bestIdxs.push(j);
-                        }
-                    }
-                }
-                let chosenIdx = bestIdxs[Math.floor(Math.random() * bestIdxs.length)];
-                node.definiteWinner  = node.children[chosenIdx].definiteWinner;
-                node.heuristicScores = node.children[chosenIdx].heuristicScores;
-                chosenMove = node.movesToChildren[chosenIdx];
-            }
-            layerIdx--;
-        }
-        if (chosenMove === null) {
-            throw Error("AI asked to find move on full board");
-        }
-        return chosenMove;
+        return s;
     }
 }
 
 type SearchTreeNode = {
-    hash: string,
-    definiteWinner: number | null,
-    heuristicScores: Array<number>,
+    winner: number,
+    scores: Array<number>,
     state: GameState,
-    parents: Array<SearchTreeNode>,
-    children: Array<SearchTreeNode>,
-    movesToChildren: Array<Move>,
+    movedToBy: Move,
     moves: Set<number>,
 };
 
 type SearchSpace = {
     layers: Array<Array<SearchTreeNode>>,
-    hashToCanonical: { [key: string]: SearchTreeNode },
-};
-
-type ScoredSTN = {
-    score: number,
-    stn:   SearchTreeNode,
+    activeIdxs: Array<number>,
 };
