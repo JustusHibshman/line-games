@@ -99,7 +99,7 @@ export class HostComponent implements OnInit, AfterContentChecked {
         if (!localStorage['specs']) {
             this.specs = {};
             this.specs['Tic-Tac-Toe'] = this.ticTacToeConfig();
-            this.specs['Four in a Row'] = this.fourInARowConfig();
+            this.specs['Link Four'] = this.linkFourConfig();
             this.specs['Pente'] = this.penteConfig();
             localStorage.setItem('specs', JSON.stringify(this.specs));
         } else {
@@ -130,7 +130,7 @@ export class HostComponent implements OnInit, AfterContentChecked {
         }
     }
 
-    fourInARowConfig(): GameSpec {
+    linkFourConfig(): GameSpec {
         return {
             board: {
                 width: 7,
