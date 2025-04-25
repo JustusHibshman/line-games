@@ -1,6 +1,6 @@
 # Line Games
 
-This project is currently under development. It's a server and browser client for playing line-forming games like Tic-Tac-Toe, Pente, etc.
+This project is currently under development. It's a server and browser client for playing line-forming games like Tic-Tac-Toe, Pente, Link Four, etc.
 
 The goal is to eventually have all of the following features.
 
@@ -22,6 +22,12 @@ The goal is to eventually have all of the following features.
  - Online multiplayer
  - Any mix of the above
  - Up to 6 players
+
+## Development Phases
+
+ - [ ] Phase I: Client interface with working hotseat and in-browser AI
+ - [ ] Phase II: Back end for online multiplayer -- will also broadcast the host's client AI moves
+ - [ ] Phase III: Move AI to the back end; make it more powerful and efficient
 
 
 ## Technical Implementation
