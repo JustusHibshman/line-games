@@ -72,6 +72,13 @@ export class GameplayService {
         return [ ...this.playerTypes ];
     }
 
+    getGravity(): boolean {
+        if (this.gameSpec === null) {
+            return false;
+        }
+        return this.gameSpec.board.gravity;
+    }
+
     setGameLink(gl: GameLink): void {
         this.gameLink.set({ ...gl });
         this.saveData();

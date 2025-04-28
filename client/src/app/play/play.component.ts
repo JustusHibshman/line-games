@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal, Signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal, Signal } from '@angular/core';
 
 import { NavButtonComponent } from '@local-components/nav-button/nav-button.component';
 
@@ -29,11 +29,37 @@ export class PlayComponent implements OnInit {
     ngOnInit(): void {
     }
 
+    transposedBoard = computed(() => this.transpose(this.board()));
+    gravityStr = computed(() => this.gameplay.getGravity() ? "gravity" : ""); 
+
+    transpose(a: Array<Array<number>> | undefined): Array<Array<number>> {
+        if (a === undefined || a.length == 0) {
+            return [];
+        }
+        return Array.from({length: a[0].length}, (x, i) =>
+                          Array.from({length: a.length},
+                                     (y, j) => a[j][i]));
+    }
+
     selectSpot(m: Move): void {
-        if (!this.isLegalMove(m)) {
+        if (!this.gameplay.getGravity()) {
+            if (!this.isLegalMove(m)) {
+                return;
+            }
+            this.gameplay.makeMove(m);
             return;
         }
-        this.gameplay.makeMove(m);
+
+        let b: Array<Array<number>> | undefined = this.board();
+        let numRows = b === undefined ? 0 : b.length;
+
+        for (let r = numRows - 1; r >= 0; r--) {
+            let m2 = {row: r, col: m.col};
+            if (this.isLegalMove(m2)) {
+                this.gameplay.makeMove(m2);
+                return;
+            }
+        }
     }
 
     isLegalMove(m: Move): boolean {

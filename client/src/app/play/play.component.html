@@ -15,11 +15,11 @@
 </div>
 
 <div class="main">
-    @for(row of board(); track $index; let r = $index) {
-    <div class="row">
-        @for(col of row; track $index; let c = $index) {
-        <div class="column">
-            <span [class]="'piece ' + colors[col + 1] +
+    @for(col of transposedBoard(); track $index; let c = $index) {
+    <div class="column {{ gravityStr() }}">
+        @for(row of col; track $index; let r = $index) {
+        <div class="row">
+            <span [class]="'piece ' + colors[row + 1] +
                            ' hover-' + colors[isLegalMove({row: r, col: c}) ? currentPlayer() + 1 : 0]"
                   (click)="selectSpot({row: r, col: c})" ></span>
         </div>

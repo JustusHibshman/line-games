@@ -15,20 +15,51 @@
     margin-top: 8px;
     margin-bottom: 8px;
 
-    border-top: 2px solid #000000;
-    border-bottom: 2px solid #000000;
-    background-color: #2f2f2f;
-}
-
-.row {
-    display: flex;
     border-left: 2px solid #000000;
     border-right: 2px solid #000000;
+    background-color: #2f2f2f;
+
+    display: flex;
 }
 
 .column {
-    border: 4px solid #000000;
+    display: inline-block;
+    border-top: 2px solid #000000;
+    border-bottom: 2px solid #000000;
     flex-grow: 1;
+
+    &:hover {
+        &.gravity {
+            .hover-yellow {
+                background-color: var(--yellow);
+                opacity: 0.3;
+            }
+            .hover-blue {
+                background-color: var(--blue);
+                opacity: 0.3;
+            }
+            .hover-green {
+                background-color: var(--green);
+                opacity: 0.3;
+            }
+            .hover-orange {
+                background-color: var(--redOrange);
+                opacity: 0.3;
+            }
+            .hover-purple {
+                background-color: var(--purple);
+                opacity: 0.3;
+            }
+            .hover-gray {
+                background-color: var(--gray);
+                opacity: 0.3;
+            }
+        }
+    }
+}
+
+.row {
+    border: 4px solid #000000;
     padding: 10px;
 }
 
