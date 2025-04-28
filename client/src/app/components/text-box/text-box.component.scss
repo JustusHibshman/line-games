@@ -11,12 +11,12 @@ input {
     text-align: left;
 
     background-color: var(--inputBackground);
-    color: var(--blue);
-    border: 3px solid var(--blue);
+    color: var(--colorB);
+    border: 3px solid var(--colorB);
 
     &:focus {
         outline: none;
-        color: var(--blue);
-        border: 3px solid var(--lightBlue);
+        color: var(--colorB);
+        border: 3px solid var(--lightColorB);
     }
 }

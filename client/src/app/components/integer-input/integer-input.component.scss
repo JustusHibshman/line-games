@@ -1,10 +1,10 @@
 div {
     width: 132px;
-    border: 3px solid var(--blue);
+    border: 3px solid var(--colorB);
 }
 
 div.dead {
-    border-color: var(--inactiveGray);
+    border-color: var(--inactiveColor);
 }
 
 button {
@@ -20,7 +20,7 @@ button {
 
     background-color: var(--inputBackground);
     border: none;
-    color: var(--blue);
+    color: var(--colorB);
 
     cursor: pointer;
 
@@ -30,7 +30,7 @@ button {
 }
 
 button.dead {
-    color: var(--inactiveGray);
+    color: var(--inactiveColor);
     cursor: default;
     &:hover {
         background-color: var(--inputBackground);
@@ -48,10 +48,10 @@ input {
     width: 54px;
 
     background-color: var(--inputBackground);
-    border: 3px solid var(--blue);
+    border: 3px solid var(--colorB);
     border-top: none;
     border-bottom: none;
-    color: var(--blue);
+    color: var(--colorB);
 
     -moz-appearance: textfield; /* Remove arrows in Firefox */
 
@@ -66,8 +66,8 @@ input {
 }
 
 input.dead {
-    color: var(--inactiveGray);
-    border-color: var(--inactiveGray);
+    color: var(--inactiveColor);
+    border-color: var(--inactiveColor);
     &:hover {
         background-color: var(--inputBackground);
     }

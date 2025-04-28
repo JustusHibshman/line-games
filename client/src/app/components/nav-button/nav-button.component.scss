@@ -7,18 +7,18 @@ button {
 }
 
 button.live {
-    color: var(--yellow);
-    border: 5px solid var(--yellow);
+    color: var(--colorA);
+    border: 5px solid var(--colorA);
 
     &:hover {
         background-color: var(--inputHoverBackground);
-        border: 5px solid var(--lightYellow);
-        color:  var(--lightYellow);
+        border: 5px solid var(--lightColorA);
+        color:  var(--lightColorA);
         cursor: pointer;
     }
 }
 
 button.dead {
-    color: var(--inactiveGray);
-    border: 5px solid var(--inactiveGray);
+    color: var(--inactiveColor);
+    border: 5px solid var(--inactiveColor);
 }

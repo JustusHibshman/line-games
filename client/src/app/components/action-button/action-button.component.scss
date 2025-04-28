@@ -13,35 +13,35 @@ button {
     word-wrap: break-word;
 
     background-color: var(--inputBackground);
-    color: var(--green);
-    border: 3px solid var(--green);
+    color: var(--colorC);
+    border: 3px solid var(--colorC);
 
     &:hover {
         background-color: var(--inputHoverBackground);
-        color: var(--lightGreen);
-        border: 3px solid var(--lightGreen);
+        color: var(--lightColorC);
+        border: 3px solid var(--lightColorC);
         cursor: pointer;
     }
 
-    &.blue {
-        color: var(--blue);
-        border: 3px solid var(--blue);
+    &.bStyle {
+        color: var(--colorB);
+        border: 3px solid var(--colorB);
         &:hover {
-            color: var(--lightBlue);
-            border: 3px solid var(--lightBlue);
+            color: var(--lightColorB);
+            border: 3px solid var(--lightColorB);
         }
 
         &:disabled {
             background-color: var(--inputBackground);
-            color: var(--inactiveGray);
-            border: 3px solid var(--inactiveGray);
+            color: var(--inactiveColor);
+            border: 3px solid var(--inactiveColor);
         }
     }
 
     &:disabled {
         background-color: var(--inputBackground);
-        color: var(--inactiveGray);
-        border: 3px solid var(--inactiveGray);
+        color: var(--inactiveColor);
+        border: 3px solid var(--inactiveColor);
 
         &:hover {
             cursor: default;

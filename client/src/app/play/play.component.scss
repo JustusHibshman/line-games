@@ -79,28 +79,28 @@
 
 .hoverable {
     &:hover {
-        .hover-yellow {
-            background-color: var(--yellow);
+        .hover-A {
+            background-color: var(--colorA);
             opacity: 0.3;
         }
-        .hover-blue {
-            background-color: var(--blue);
+        .hover-B {
+            background-color: var(--colorB);
             opacity: 0.3;
         }
-        .hover-green {
-            background-color: var(--green);
+        .hover-C {
+            background-color: var(--colorC);
             opacity: 0.3;
         }
-        .hover-orange {
-            background-color: var(--redOrange);
+        .hover-D {
+            background-color: var(--colorD);
             opacity: 0.3;
         }
-        .hover-purple {
-            background-color: var(--purple);
+        .hover-E {
+            background-color: var(--colorE);
             opacity: 0.3;
         }
-        .hover-gray {
-            background-color: var(--gray);
+        .hover-F {
+            background-color: var(--colorF);
             opacity: 0.3;
         }
     }

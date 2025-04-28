@@ -10,7 +10,7 @@ export class ActionButtonComponent {
     text    = input.required<string>();
     disable = input<boolean>(false);
     small   = input<boolean>(false);
-    blue    = input<boolean>(false);
+    bStyle  = input<boolean>(false);
     size    = computed(() => this.small() ? "small" : "normal");
-    blueStyle = computed(() => this.blue() ? "blue" : "green");
+    bStyleStr = computed(() => this.bStyle() ? "bStyle" : "");
 }

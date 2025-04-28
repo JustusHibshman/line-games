@@ -2,16 +2,16 @@ div {
     font-size: 0;
 }
 
-div.greenC {
-    border: 3px solid var(--green);
+div.cStyle {
+    border: 3px solid var(--colorC);
 }
 
-div.blueC {
-    border: 3px solid var(--blue);
+div.bStyle {
+    border: 3px solid var(--colorB);
 }
 
-div.grayC {
-    border: 3px solid var(--inactiveGray);
+div.inactive {
+    border: 3px solid var(--inactiveColor);
 }
 
 input {
@@ -30,16 +30,16 @@ label {
     font-size: 18px;
 }
 
-label.greenC {
-    color: var(--green);
+label.cStyle {
+    color: var(--colorC);
 }
 
-label.grayC {
-    color: var(--inactiveGray);
+label.inactive {
+    color: var(--inactiveColor);
 }
 
-label.blueC {
-    color: var(--blue);
+label.bStyle {
+    color: var(--colorB);
     cursor: pointer;
     &:hover {
         background-color: var(--inputHoverBackground);

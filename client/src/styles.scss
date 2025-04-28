@@ -50,19 +50,21 @@ table {
 /* Custom to this site */
 html {
     /* Custom colors */
-    --yellow: #a0800c;
-    --midYellow: #a88815;
-    --lightYellow: #af8f1b;
-    --blue: #06b0a2;
-    --lightBlue: #1bd4c5;
-    --green: #3a7f02;
-    --lightGreen: #4a7d21;
+    --colorA: #a0800c;
+    --midColorA: #a88815;
+    --lightColorA: #af8f1b;
 
-    --purple: #582b90;
-    --redOrange: #bb3a12;
-    --gray:   #555555;
+    --colorB: #06b0a2;
+    --lightColorB: #1bd4c5;
 
-    --inactiveGray: #555555;
+    --colorC: #3a7f02;
+    --lightColorC: #4a7d21;
+
+    --colorD: #582b90;
+    --colorE: #bb3a12;
+    --colorF: #555555;
+
+    --inactiveColor: #555555;
     --inputBackground: #111111;
     --inputHoverBackground: #000000;
 }
@@ -73,26 +75,21 @@ body {
     font-family: Helvetica;
 }
 
-.yellow {
-    background-color: var(--midYellow);
+.colorA {
+    background-color: var(--colorA);
 }
-
-.blue {
-    background-color: var(--blue);
+.colorB {
+    background-color: var(--colorB);
 }
-
-.green {
-    background-color: var(--green);
+.colorC {
+    background-color: var(--colorC);
 }
-
-.purple {
-    background-color: var(--purple);
+.colorD {
+    background-color: var(--colorD);
 }
-
-.gray {
-    background-color: var(--gray);
+.colorE {
+    background-color: var(--colorE);
 }
-
-.orange {
-    background-color: var(--redOrange);
+.colorF {
+    background-color: var(--colorF);
 }
