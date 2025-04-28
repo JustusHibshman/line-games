@@ -14,12 +14,12 @@ div.main {
 
     text-align: center;
 
-    background-color: #2f2f2f;
+    background-color: var(--centerBackdrop);
     font-size: 18px;
 }
 
 div.listing {
-    background-color: #111111;
+    background-color: var(--inputBackground);
     padding: 6px;
     margin-bottom: 8px;
     border: 2px solid #000000;

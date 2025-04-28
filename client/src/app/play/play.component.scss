@@ -15,23 +15,23 @@
     margin-top: 8px;
     margin-bottom: 8px;
 
-    border-left: 2px solid #000000;
-    border-right: 2px solid #000000;
-    background-color: #2f2f2f;
+    border-left: 2px solid var(--gameBorder);
+    border-right: 2px solid var(--gameBorder);
+    background-color: var(--centerBackdrop);
 
     display: flex;
 }
 
 .column {
     display: inline-block;
-    border-top: 2px solid #000000;
-    border-bottom: 2px solid #000000;
+    border-top: 2px solid var(--gameBorder);
+    border-bottom: 2px solid var(--gameBorder);
     flex-grow: 1;
 
 }
 
 .row {
-    border: 4px solid #000000;
+    border: 4px solid var(--gameBorder);
     padding: 10px;
 }
 

@@ -7,7 +7,7 @@
         @if(winner() != -1) {
             <span [class]="'winMarker color' + colors[winner() + 1]"></span>
         } @else {
-            <span>None</span>
+            <span class="statusText">None</span>
         }
     </div>
     <div>

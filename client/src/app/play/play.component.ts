@@ -24,7 +24,7 @@ export class PlayComponent implements OnInit {
     winner = this.gameplay.getWinner();
     captures = this.gameplay.getCaptures();
 
-    colors = ["empty", "A", "B", "C", "D", "E", "F"];
+    colors = ["empty", "B", "C", "F", "E", "D", "A"];
 
     ngOnInit(): void {
     }

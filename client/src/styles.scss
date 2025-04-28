@@ -48,10 +48,10 @@ table {
 }
 
 /* Custom to this site */
+
+/* Original Color Scheme
 html {
-    /* Custom colors */
     --colorA: #a0800c;
-    --midColorA: #a88815;
     --lightColorA: #af8f1b;
 
     --colorB: #06b0a2;
@@ -67,11 +67,59 @@ html {
     --inactiveColor: #555555;
     --inputBackground: #111111;
     --inputHoverBackground: #000000;
+
+    --centerBackdrop: #2f2f2f;
+
+    --gameBorder: #000000;
 }
 
 body {
     background-color: #202020;
     color: #e0e0e0;
+    font-family: Helvetica;
+}
+*/
+
+html {
+
+    --colorA: #c34904; // Reddish orange
+    --lightColorA: #aa4005;
+
+    --colorB: #001c7d; // Navy blue
+    --lightColorB: #001768;
+
+    /*
+    --colorB: #01808e; // Light teal
+    --lightColorB: #007b89;
+    */
+
+    --colorC: #105903; // Dark green
+    --lightColorC: #146b04;
+
+    /*
+    --colorD: #6b2504; // Orangish red
+    --lightColorD: #822d05;
+    */
+    --colorD: #770092; // Purple
+    --lightColorD: #66007d;
+
+    --colorE: #83680a; // Yellow-gold
+    --lightColorE: #a3810c;
+
+    --colorF: #444444; // Gray
+
+    --inactiveColor: #555555;
+    --inputBackground: #bbbbbb;
+    --inputHoverBackground: #aaaaaa;
+
+    --centerBackdrop: #999999;
+
+    --gameBorder: #cccccc; // same as backdrop color
+}
+
+body {
+    background-color: var(--gameBorder);
+    color: #000000;
     font-family: Helvetica;
 }
 
