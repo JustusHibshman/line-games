@@ -18,10 +18,9 @@
     @for(col of transposedBoard(); track $index; let c = $index) {
     <div class="column {{ gravityStr() }}">
         @for(row of col; track $index; let r = $index) {
-        <div class="row">
+        <div class="row hoverable" (click)="selectSpot({row: r, col: c})">
             <span [class]="'piece ' + colors[row + 1] +
-                           ' hover-' + colors[isLegalMove({row: r, col: c}) ? currentPlayer() + 1 : 0]"
-                  (click)="selectSpot({row: r, col: c})" ></span>
+                           ' hover-' + colors[isLegalMove({row: r, col: c}) ? currentPlayer() + 1 : 0]"></span>
         </div>
         }
     </div>

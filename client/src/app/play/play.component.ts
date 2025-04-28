@@ -30,7 +30,7 @@ export class PlayComponent implements OnInit {
     }
 
     transposedBoard = computed(() => this.transpose(this.board()));
-    gravityStr = computed(() => this.gameplay.getGravity() ? "gravity" : ""); 
+    gravityStr = computed(() => this.gameplay.getGravity() ? "hoverable" : ""); 
 
     transpose(a: Array<Array<number>> | undefined): Array<Array<number>> {
         if (a === undefined || a.length == 0) {

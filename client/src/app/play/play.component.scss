@@ -28,34 +28,6 @@
     border-bottom: 2px solid #000000;
     flex-grow: 1;
 
-    &:hover {
-        &.gravity {
-            .hover-yellow {
-                background-color: var(--yellow);
-                opacity: 0.3;
-            }
-            .hover-blue {
-                background-color: var(--blue);
-                opacity: 0.3;
-            }
-            .hover-green {
-                background-color: var(--green);
-                opacity: 0.3;
-            }
-            .hover-orange {
-                background-color: var(--redOrange);
-                opacity: 0.3;
-            }
-            .hover-purple {
-                background-color: var(--purple);
-                opacity: 0.3;
-            }
-            .hover-gray {
-                background-color: var(--gray);
-                opacity: 0.3;
-            }
-        }
-    }
 }
 
 .row {
@@ -105,44 +77,31 @@
     opacity: 0;
 }
 
-.hover-yellow {
+.hoverable {
     &:hover {
-        background-color: var(--yellow);
-        opacity: 0.3;
-    }
-}
-
-.hover-blue {
-    &:hover {
-        background-color: var(--blue);
-        opacity: 0.3;
-    }
-}
-
-.hover-green {
-    &:hover {
-        background-color: var(--green);
-        opacity: 0.3;
-    }
-}
-
-.hover-orange {
-    &:hover {
-        background-color: var(--redOrange);
-        opacity: 0.3;
-    }
-}
-
-.hover-purple {
-    &:hover {
-        background-color: var(--purple);
-        opacity: 0.3;
-    }
-}
-
-.hover-gray {
-    &:hover {
-        background-color: var(--gray);
-        opacity: 0.3;
+        .hover-yellow {
+            background-color: var(--yellow);
+            opacity: 0.3;
+        }
+        .hover-blue {
+            background-color: var(--blue);
+            opacity: 0.3;
+        }
+        .hover-green {
+            background-color: var(--green);
+            opacity: 0.3;
+        }
+        .hover-orange {
+            background-color: var(--redOrange);
+            opacity: 0.3;
+        }
+        .hover-purple {
+            background-color: var(--purple);
+            opacity: 0.3;
+        }
+        .hover-gray {
+            background-color: var(--gray);
+            opacity: 0.3;
+        }
     }
 }
