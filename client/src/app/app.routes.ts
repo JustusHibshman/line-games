@@ -9,6 +9,12 @@ export const routes: Routes = [
         }
     },
     {
+        path: 'design',
+        loadComponent: () => {
+            return import('./design/design.component').then((m) => m.DesignComponent);
+        }
+    },
+    {
         path: 'host',
         loadComponent: () => {
             return import('./host/host.component').then((m) => m.HostComponent);

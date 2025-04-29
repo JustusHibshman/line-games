@@ -13,12 +13,13 @@ import { GameSpec, copyGameSpec }   from '@local-types/game-spec.type';
 import { PlayerType } from '@local-types/player-type.type';
 
 import { SetupService } from '@local-services/setup.service';
+import { RulePresetsService } from '@local-services/rule-presets.service';
 
 @Component({
   selector: 'app-host',
   imports: [KeyValuePipe, NgFor,
-            ActionButtonComponent, HelpHoverBoxComponent, IntegerInputComponent, NavButtonComponent,
-            PlayerTypeSelectorComponent, TextBoxComponent, ToggleSwitchComponent],
+            ActionButtonComponent, HelpHoverBoxComponent, NavButtonComponent,
+            PlayerTypeSelectorComponent],
   templateUrl: './host.component.html',
   styleUrl: './host.component.scss'
 })
@@ -27,30 +28,14 @@ export class HostComponent implements OnInit, AfterContentChecked {
     public PlayerTypes = PlayerType;
 
     setup = inject(SetupService);
+    presets = inject(RulePresetsService);
 
-    DataPrefix: string = "HOST.";
+    chosenPreset = signal<string>("[none]");
+    rulesReady = signal<boolean>(false);
 
-    specs: { [id: string]: GameSpec } = {};
+    gameSpec: GameSpec = this.presets.ticTacToeConfig();
+    specs: { [id: string]: GameSpec } = this.presets.getSpecs();
 
-    constructor(private changeDetector: ChangeDetectorRef) {}
-
-    ngOnInit(): void {
-        try {
-            this.loadConfigs();
-        }
-        catch(e) {
-            this.resetConfigs();
-        }
-        this.setup.quitGame();
-    }
-
-    ngAfterContentChecked(): void {
-        this.changeDetector.detectChanges();
-    }
-
-    gameSpec: GameSpec = this.ticTacToeConfig();
-
-    configName = signal<string>("");
     gameName = signal<string>("<placeholder>");
     password = signal<string>("");
 
@@ -70,6 +55,24 @@ export class HostComponent implements OnInit, AfterContentChecked {
 
     aiComputeTime = signal<number>(4);
 
+    constructor(private changeDetector: ChangeDetectorRef) {}
+
+    ngOnInit(): void {
+        this.setup.quitGame();
+    }
+
+    ngAfterContentChecked(): void {
+        this.changeDetector.detectChanges();
+    }
+
+    loadConfig(name: string) {
+        if (this.specs[name]) {
+            this.gameSpec = this.specs[name];
+            this.chosenPreset.set(name);
+            this.rulesReady.set(true);
+        }
+    }
+
     hostGame(): void {
         /* Filter out the None "players" */
         let numPlayers = 2;
@@ -82,85 +85,5 @@ export class HostComponent implements OnInit, AfterContentChecked {
             Array.from({length: numPlayers}, (v, i) => this.playerTypes[i]());
 
         this.setup.hostGame(this.gameName(), this.password(), this.gameSpec, pt);
-    }
-
-    saveConfigAsPreset(): void {
-        this.specs[this.configName().trim()] = copyGameSpec(this.gameSpec);
-        localStorage.setItem(this.DataPrefix + 'specs', JSON.stringify(this.specs));
-    }
-
-    loadConfig(specName: string): void {
-        if (this.specs[specName]) {
-            this.gameSpec = copyGameSpec(this.specs[specName]);
-        }
-    }
-
-    loadConfigs(): void {
-        if (!localStorage[this.DataPrefix + 'specs']) {
-            this.specs = {};
-            this.specs['Tic-Tac-Toe'] = this.ticTacToeConfig();
-            this.specs['Link Four'] = this.linkFourConfig();
-            this.specs['Pente'] = this.penteConfig();
-            localStorage.setItem(this.DataPrefix + 'specs', JSON.stringify(this.specs));
-        } else {
-            let specsString = localStorage.getItem(this.DataPrefix + 'specs');
-            this.specs = specsString ? JSON.parse(specsString) : {};
-        }
-    }
-
-    resetConfigs(): void {
-        localStorage.removeItem(this.DataPrefix + 'specs');
-        this.loadConfigs();
-    }
-
-    ticTacToeConfig(): GameSpec {
-        return {
-            board: {
-                width: 3,
-                height: 3,
-                gravity: false,
-            },
-            rules: {
-                winningLength: 3,
-                allowCaptures: false,
-                winByCaptures: false,
-                captureSize:   0,
-                winningNumCaptures: 0,
-            },
-        }
-    }
-
-    linkFourConfig(): GameSpec {
-        return {
-            board: {
-                width: 7,
-                height: 6,
-                gravity: true,
-            },
-            rules: {
-                winningLength: 4,
-                allowCaptures: false,
-                winByCaptures: false,
-                captureSize:   0,
-                winningNumCaptures: 0,
-            },
-        }
-    }
-
-    penteConfig(): GameSpec {
-        return {
-            board: {
-                width: 13,
-                height: 13,
-                gravity: false,
-            },
-            rules: {
-                winningLength: 5,
-                allowCaptures: true,
-                winByCaptures: true,
-                captureSize:   2,
-                winningNumCaptures: 5,
-            },
-        }
     }
 }

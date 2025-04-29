@@ -3,12 +3,7 @@
 
     <div class="bigRowSpacer"></div>
     <div>
-        <app-help-hover-box [text]="'Erases all saved presets other than Link Four, Pente, and Tic-Tac-Toe. If you have modified any of those three presets, they are returned to their original form.'" />
-        <app-action-button [bStyle]="true" [small]="true" [text]="'Clear Presets'" (click)="resetConfigs()" />
-    </div>
-    <div class="bigRowSpacer"></div>
-    <div>
-        <app-help-hover-box [text]="'Clicking on one of these green preset buttons loads a saved set of game rules into the menu in the center.'" />
+        <app-help-hover-box [text]="'Clicking on one of these green preset buttons loads a saved set of game rules.'" />
         <span>Presets:</span>
     </div>
     <div class="smallRowSpacer"></div>
@@ -19,81 +14,8 @@
 </div>
 
 <div class="main">
-    <span class="header">Customize Your Game's Rules</span>
+    <span class="header">Loaded Preset: {{ chosenPreset() }}</span>
     <div class="bigRowSpacer"></div>
-    <div class="inputRow">
-        <div class="inputRowItem">
-            <app-help-hover-box [text]="'[how wide the game board should be]'" />
-            <span class="label">Width</span>
-            <app-integer-input [(value)]="gameSpec.board.width"  [min]="3" [max]="19"
-                    [disable]="false" />
-        </div>
-        <div class="inputRowItem">
-            <app-help-hover-box [text]="'[how tall the game board should be]'" />
-            <span class="label">Height</span>
-            <app-integer-input [(value)]="gameSpec.board.height" [min]="3"
-                    [max]="gameSpec.board.width" [disable]="false" />
-        </div>
-
-        <div class="inputRowItem">
-            <app-help-hover-box [text]="'[how many pieces in a row you need to win]'" />
-            <span class="label">Winning Line Size</span>
-            <app-integer-input [(value)]="gameSpec.rules.winningLength" [min]="3"
-                    [max]="gameSpec.board.height" [disable]="false" />
-        </div>
-    </div>
-    <div class="bigRowSpacer"></div>
-    <div class="inputRow">
-        <div class="inputRowItem">
-            <app-help-hover-box [text]="'When gravity is turned on, pieces can only be placed on the bottom row or stacked on top of other pieces.'" />
-            <span class="label">Gravity</span>
-            <app-toggle-switch [defaultValue]="false" [(value)]="gameSpec.board.gravity" 
-                               [disable]="gameSpec.rules.allowCaptures" />
-        </div>
-
-        <div class="inputRowItem">
-            <app-help-hover-box [text]="'When captures are turned on, then whenever you sandwich exactly X opponent pieces between your own pieces, the opponent pieces are removed from the board. The value of X is set by Capture Size (below).'" />
-            <span class="label">Allow Captures</span>
-            <app-toggle-switch [defaultValue]="false" [(value)]="gameSpec.rules.allowCaptures"
-                               [disable]="gameSpec.board.gravity" />
-        </div>
-
-        <div class="inputRowItem">
-            <app-help-hover-box [text]="'When winning by captures is turned on, a player wins as soon as they have Y or more captures. The value of Y is set by Winning # Captures (below).'" />
-            <span class="label">Win by Captures</span>
-            <app-toggle-switch [defaultValue]="false" [(value)]="gameSpec.rules.winByCaptures"
-                    [disable]="!gameSpec.rules.allowCaptures" />
-        </div>
-    </div>
-    <div class="smallRowSpacer"></div>
-    <div class="inputRow">
-        <div class="inputRowItem"></div>
-
-        <div class="inputRowItem">
-        <span class="label">Capture Size</span>
-        <app-integer-input [(value)]="gameSpec.rules.captureSize" [max]="gameSpec.board.height - 2"
-                [disable]="!gameSpec.rules.allowCaptures" />
-        </div>
-
-        <div class="inputRowItem">
-        <span class="label">Winning # Captures</span>
-        <app-integer-input [(value)]="gameSpec.rules.winningNumCaptures" [max]="7"
-                [disable]="!gameSpec.rules.winByCaptures" />
-        </div>
-    </div>
-    <div class="bigRowSpacer"></div>
-    <div>
-        <app-help-hover-box [text]="'If you like a particular custom set of rules, you can name it and save it as a preset. It will then appear as one of the preset buttons on the left. To load your saved settings, simply click the corresponding button.'" />
-        <span class="label">Preset Name</span>
-        <app-text-box [(text)]="configName" [small]="true" [maxLength]="17" class="label" />
-        <app-action-button [bStyle]="true" [text]="'Save Rules as Preset'"
-                [disable]="configName().trim() == ''"
-                (click)="saveConfigAsPreset()" />
-    </div>
-    <div class="smallRowSpacer"></div>
-    <div class="dividerLine"></div>
-
-    <div class="smallRowSpacer"></div>
     <span class="header">Choose the Number of AI and Human Players</span>
     <div class="bigRowSpacer"></div>
     <div class="playerTypeSelectors">
@@ -138,7 +60,7 @@
     <div class="bigRowSpacer"></div>
     <div>
         <app-action-button [text]="'Launch Game'"
-                [disable]="gameName().trim() == '' || playerTypes[1]() == PlayerTypes.None"
+                [disable]="!rulesReady() || gameName().trim() == '' || playerTypes[1]() == PlayerTypes.None"
                 (click)="hostGame()" />
     </div>
 </div>
