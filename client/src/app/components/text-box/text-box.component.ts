@@ -11,6 +11,9 @@ export class TextBoxComponent {
     maxLength = input<number>(20);
     text = model<string>();
     expanding = input<boolean>(false);
+    small = input<boolean>(false);
+
+    smallStr = computed(() => this.small() ? "small" : "");
 
     measureText(t: string | undefined): number {
         if (t === undefined) {
@@ -21,7 +24,11 @@ export class TextBoxComponent {
         if (ctx === null) {
             return 0;
         }
-        ctx.font = "24px Arial";
+        if (this.small()) {
+            ctx.font = "18px Arial";
+        } else {
+            ctx.font = "24px Arial";
+        }
         /* The "."'s assure that any whitespace at the front and back of t is measured. */
         let stats = ctx.measureText("." + t + ".");
         let dots = ctx.measureText("..");

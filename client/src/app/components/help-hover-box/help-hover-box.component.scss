@@ -1,0 +1,51 @@
+.help {
+    display: inline-block;
+    width:  24px;
+    height: 24px;
+    font-size: 24px;
+
+    margin-right: 10px;
+}
+
+.qMark {
+    width:  100%;
+    height: 100%;
+    border-radius: 50%;
+    line-height: 24px;;
+
+    text-align: center;
+    vertical-align: middle;
+
+    color: var(--colorB);
+    border: 2px solid var(--colorB);
+
+    &~.popup {
+        display: none;
+    }
+
+    &:hover {
+        cursor: pointer;
+
+        &~.popup {
+            display: block;
+            position: absolute;
+            left: 50%;
+            z-index: 3;
+        }
+    }
+}
+
+.popup {
+}
+
+.content {
+    width: 400px;
+    margin-top:  30px;
+    margin-left: -200px;
+
+    padding: 12px;
+
+    background-color: var(--centerBackdrop);
+    border: 4px solid var(--colorA);
+    border-radius: 12px;
+}

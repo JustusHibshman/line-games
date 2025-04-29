@@ -2,6 +2,7 @@ import { Component, computed, inject, OnInit, signal, ChangeDetectorRef, AfterCo
 import { KeyValuePipe, NgFor } from '@angular/common';
 
 import { ActionButtonComponent } from '@local-components/action-button/action-button.component';
+import { HelpHoverBoxComponent } from '@local-components/help-hover-box/help-hover-box.component';
 import { IntegerInputComponent } from '@local-components/integer-input/integer-input.component';
 import { NavButtonComponent } from '@local-components/nav-button/nav-button.component';
 import { PlayerTypeSelectorComponent } from '@local-components/player-type-selector/player-type-selector.component';
@@ -16,7 +17,7 @@ import { SetupService } from '@local-services/setup.service';
 @Component({
   selector: 'app-host',
   imports: [KeyValuePipe, NgFor,
-            ActionButtonComponent, IntegerInputComponent, NavButtonComponent,
+            ActionButtonComponent, HelpHoverBoxComponent, IntegerInputComponent, NavButtonComponent,
             PlayerTypeSelectorComponent, TextBoxComponent, ToggleSwitchComponent],
   templateUrl: './host.component.html',
   styleUrl: './host.component.scss'

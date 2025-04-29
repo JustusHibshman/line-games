@@ -8,6 +8,12 @@ input {
     padding: 12px;
     border-radius: 6px;
 
+    &.small {
+        font-size: 18px;
+        padding: 9px;
+        border-radius: 4.5px;
+    }
+
     text-align: left;
 
     background-color: var(--inputBackground);
