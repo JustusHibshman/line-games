@@ -19,7 +19,7 @@
 </div>
 
 <div class="main">
-    <h2>Customize Your Game's Rules</h2>
+    <span class="header">Customize Your Game's Rules</span>
     <div class="bigRowSpacer"></div>
     <div class="inputRow">
         <div class="inputRowItem">
@@ -92,7 +92,10 @@
     </div>
     <div class="smallRowSpacer"></div>
     <div class="dividerLine"></div>
+
     <div class="smallRowSpacer"></div>
+    <span class="header">Choose the Number of AI and Human Players</span>
+    <div class="bigRowSpacer"></div>
     <div class="playerTypeSelectors">
         <div></div> <!-- I am not sure yet why this is necessary -->
         <app-player-type-selector [(choice)]="playerTypes[0]" [formID]="'0'" 
