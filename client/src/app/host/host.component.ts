@@ -85,7 +85,6 @@ export class HostComponent implements OnInit, AfterContentChecked {
             Array.from({length: numPlayers}, (v, i) => this.playerTypes[i]());
 
         this.setup.hostGame(this.gameName(), this.password(), this.gameSpec, pt);
-        this.goFullscreen();
     }
 
     goFullscreen(): void {
