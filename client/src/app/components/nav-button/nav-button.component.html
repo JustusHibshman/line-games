@@ -1,1 +1,3 @@
-<button [routerLink]="targetHTML()" [class]="classHTML()" [disabled]="!live()" >{{ text() }}</button>
+<button [routerLink]="targetHTML()" [class]="liveStr() + ' ' + paleStr()" [disabled]="!live()" >
+    {{ text() }}
+</button>

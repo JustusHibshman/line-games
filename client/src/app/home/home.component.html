@@ -1,4 +1,15 @@
-<div>
+<div class="holder">
+    <div class="backdrop">
+        @for(row of funBackdrop(); track $index) {
+        <div class="backdropRow">
+            @for(col of row; track $index) {
+                <span class="backdropItem {{ col }}"></span>
+            }
+        </div>
+        }
+    </div>
+</div>
+<div class="holder">
     <nav>
     <ul>
         <!--
@@ -7,13 +18,13 @@
         </li>
         -->
         <li>
-            <app-nav-button [target]="'/host'" [text]="'Start Game'" />
+            <app-nav-button [target]="'/host'" [pale]="true" [text]="'Start Game'" />
         </li>
         <li>
-            <app-nav-button [target]="'/design'" [text]="'Design Custom Rules'" />
+            <app-nav-button [target]="'/design'" [pale]="true" [text]="'Design Custom Rules'" />
         </li>
         <li>
-            <app-nav-button [target]="'/play'" [text]="'Return to Game'" [live]="setup.inGame()" />
+            <app-nav-button [target]="'/play'" [pale]="true" [text]="'Return to Game'" [live]="setup.inGame()" />
         </li>
     </ul>
     </nav>

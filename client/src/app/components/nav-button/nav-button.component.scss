@@ -22,3 +22,8 @@ button.dead {
     color: var(--inactiveColor);
     border: 5px solid var(--inactiveColor);
 }
+
+button.pale {
+    // Could just use opacity. This option is handy for making the text not transparent.
+    background-color: rgb(var(--inputBackgroundRed), var(--inputBackgroundGreen), var(--inputBackgroundBlue), 0.95);
+}

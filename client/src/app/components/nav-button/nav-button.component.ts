@@ -11,6 +11,8 @@ export class NavButtonComponent {
     target = input.required<string>();
     text   = input.required<string>();
     live   = input<boolean>(true);
+    pale   = input<boolean>(false);
     targetHTML = computed(() => this.live() ? this.target() : 'null');
-    classHTML  = computed(() => this.live() ? 'live' : 'dead');
+    liveStr = computed(() => this.live() ? 'live' : 'dead');
+    paleStr = computed(() => this.pale() ? 'pale' : ''); 
 }
