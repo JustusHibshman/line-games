@@ -1,56 +1,6 @@
-/* http://meyerweb.com/eric/tools/css/reset/ 
-   v2.0 | 20110126
-   License: none (public domain)
-*/
-
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed, 
-figure, figcaption, footer, header, hgroup, 
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
-	margin: 0;
-	padding: 0;
-	border: 0;
-	font-size: 100%;
-	font: inherit;
-	vertical-align: baseline;
-}
-/* HTML5 display-role reset for older browsers */
-article, aside, details, figcaption, figure, 
-footer, header, hgroup, menu, nav, section {
-	display: block;
-}
-body {
-	line-height: 1;
-}
-ol, ul {
-	list-style: none;
-}
-blockquote, q {
-	quotes: none;
-}
-blockquote:before, blockquote:after,
-q:before, q:after {
-	content: '';
-	content: none;
-}
-table {
-	border-collapse: collapse;
-	border-spacing: 0;
-}
-
 /* Custom to this site */
 
-/* Original Color Scheme
-html {
+.dark-theme {
     --colorA: #a0800c;
     --lightColorA: #af8f1b;
 
@@ -65,22 +15,22 @@ html {
     --colorF: #555555;
 
     --inactiveColor: #555555;
-    --inputBackground: #111111;
     --inputHoverBackground: #000000;
+
+    --inputBackground: #111111;
+    --inputBackgroundRed: 17;   // #11 is equal to 17
+    --inputBackgroundGreen: 17;
+    --inputBackgroundBlue: 17;
 
     --centerBackdrop: #2f2f2f;
 
     --gameBorder: #000000;
-}
 
-body {
     background-color: #202020;
     color: #e0e0e0;
-    font-family: Helvetica;
 }
-*/
 
-html {
+.light-theme {
 
     --colorA: #c34904; // Reddish orange
     --lightColorA: #aa4005;
@@ -88,23 +38,14 @@ html {
     --colorB: #001c7d; // Navy blue
     --lightColorB: #001768;
 
-    /*
-    --colorB: #01808e; // Light teal
-    --lightColorB: #007b89;
-    */
-
     --colorC: #105903; // Dark green
     --lightColorC: #146b04;
 
-    /*
-    --colorD: #6b2504; // Orangish red
-    --lightColorD: #822d05;
-    */
     --colorD: #770092; // Purple
-    --lightColorD: #66007d;
+    // --lightColorD: #66007d;
 
     --colorE: #83680a; // Yellow-gold
-    --lightColorE: #a3810c;
+    // --lightColorE: #a3810c;
 
     --colorF: #444444; // Gray
 
@@ -120,12 +61,23 @@ html {
     --centerBackdrop: #999999;
 
     --gameBorder: #cccccc; // same as backdrop color
+
+    background-color: var(--gameBorder);
+    color: #000000;
+}
+
+html, body {
+    height: 100%; // These are needed to enable the full-page div's use of 'height: 100%;'
+    width:  100%;
 }
 
 body {
-    background-color: var(--gameBorder);
-    color: #000000;
     font-family: Helvetica;
+}
+
+.full-page {
+    width:  100%;
+    height: 100%;
 }
 
 .colorA {
