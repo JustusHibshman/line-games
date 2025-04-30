@@ -1,4 +1,4 @@
-/* Custom to this site */
+/*************** Colors ***************/
 
 .dark-theme {
     --colorA: #a0800c;
@@ -24,10 +24,10 @@
 
     --centerBackdrop: #2f2f2f;
 
-    --gameBorder: #000000;
+    --siteBackground: #202020;
+    --gameBorder: var(--siteBackground);
 
-    background-color: #202020;
-    color: #e0e0e0;
+    --textColor: #e0e0e0;
 }
 
 .light-theme {
@@ -60,24 +60,10 @@
 
     --centerBackdrop: #999999;
 
-    --gameBorder: #cccccc; // same as backdrop color
+    --siteBackground: #cccccc;
+    --gameBorder: var(--siteBackground);
 
-    background-color: var(--gameBorder);
-    color: #000000;
-}
-
-html, body {
-    height: 100%; // These are needed to enable the full-page div's use of 'height: 100%;'
-    width:  100%;
-}
-
-body {
-    font-family: Helvetica;
-}
-
-.full-page {
-    width:  100%;
-    height: 100%;
+    --textColor: #000000;
 }
 
 .colorA {
@@ -97,4 +83,23 @@ body {
 }
 .colorF {
     background-color: var(--colorF);
+}
+
+/*************** Full-site Styling  ***************/
+html, body {
+    height: 100%; // These are needed to enable the full-page div's use of 'height: 100%;'
+    width:  100%;
+}
+
+body {
+    font-family: Helvetica;
+    font-size:   18px;
+}
+
+.full-page {
+    width:  100%;
+    height: 100%;
+
+    background-color: var(--siteBackground);
+    color: var(--textColor);
 }

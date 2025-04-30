@@ -1,3 +1,8 @@
+<div class="darkMode">
+    <span class="label">Dark Mode:</span>
+    <app-toggle-switch [(value)]="darkMode" />
+</div>
+
 <div class="holder">
     <div class="backdrop">
         @for(row of funBackdrop(); track $index) {

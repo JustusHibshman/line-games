@@ -1,5 +1,7 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+
+import { ColorSchemeService } from '@local-services/color-scheme.service';
 
 @Component({
   selector: 'app-root',
@@ -8,5 +10,6 @@ import { RouterOutlet } from '@angular/router';
   styleUrl: './app.component.scss',
 })
 export class AppComponent {
-    colorScheme = signal<string>("dark-theme");
+    csService = inject(ColorSchemeService);
+    colorScheme = this.csService.getColorScheme();
 }
