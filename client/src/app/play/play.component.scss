@@ -16,23 +16,23 @@
     padding-top: 8px;
     padding-bottom: 8px;
 
-    border-left: 2px solid var(--gameBorder);
-    border-right: 2px solid var(--gameBorder);
+    border-left: 2px solid var(--game-border-color);
+    border-right: 2px solid var(--game-border-color);
 
     display: flex;
 }
 
 .column {
     display: inline-block;
-    background-color: var(--centerBackdrop);
-    border-top: 2px solid var(--gameBorder);
-    border-bottom: 2px solid var(--gameBorder);
+    background-color: var(--center-backdrop);
+    border-top: 2px solid var(--game-border-color);
+    border-bottom: 2px solid var(--game-border-color);
     flex-grow: 1;
 
 }
 
 .row {
-    border: 4px solid var(--gameBorder);
+    border: 4px solid var(--game-border-color);
     padding: 10px;
 }
 
@@ -81,27 +81,27 @@
 .hoverable {
     &:hover {
         .hover-A {
-            background-color: var(--colorA);
+            background-color: var(--color-A);
             opacity: 0.3;
         }
         .hover-B {
-            background-color: var(--colorB);
+            background-color: var(--color-B);
             opacity: 0.3;
         }
         .hover-C {
-            background-color: var(--colorC);
+            background-color: var(--color-C);
             opacity: 0.3;
         }
         .hover-D {
-            background-color: var(--colorD);
+            background-color: var(--color-D);
             opacity: 0.3;
         }
         .hover-E {
-            background-color: var(--colorE);
+            background-color: var(--color-E);
             opacity: 0.3;
         }
         .hover-F {
-            background-color: var(--colorF);
+            background-color: var(--color-F);
             opacity: 0.3;
         }
     }
