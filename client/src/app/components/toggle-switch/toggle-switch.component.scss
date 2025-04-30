@@ -13,7 +13,7 @@ input.slider {
     margin: 0;
 }
 
-span.sliderBackdrop {
+span.slider-backdrop {
     position: absolute;
     top: 0;
     bottom: 0;
@@ -26,8 +26,8 @@ span.sliderBackdrop {
     width: 46px;
     height: 26px;
     border-radius: 15px;
-    border: 2px solid var(--colorB);
-    background-color: var(--inputBackground);
+    border: 2px solid var(--color-B);
+    background-color: var(--input-background);
     transition: 0.5s;
 }
 
@@ -43,51 +43,51 @@ span.slider {
 
     width: 30px;
     height: 30px;
-    background-color: var(--colorB);
+    background-color: var(--color-B);
     transition: 0.5s;
     border-radius: 15px;
 }
 
 input:disabled ~ span.slider {
-    background-color: var(--inactiveColor);
+    background-color: var(--inactive-color);
     cursor: default;
 }
 
-input:checked ~ span.sliderBackdrop {
-    border: 2px solid var(--colorC);
+input:checked ~ span.slider-backdrop {
+    border: 2px solid var(--color-C);
 }
 
 input:checked ~ span.slider {
-    background-color: var(--colorC);
+    background-color: var(--color-C);
     transform: translateX(20px);
 }
 
-span.sliderBackdrop:hover {
-    background-color: var(--inputHoverBackground);
+span.slider-backdrop:hover {
+    background-color: var(--input-hover-background);
 }
 
-span.slider:hover ~ span.sliderBackdrop {
-    background-color: var(--inputHoverBackground);
+span.slider:hover ~ span.slider-backdrop {
+    background-color: var(--input-hover-background);
 }
 
-input:disabled ~ span.sliderBackdrop {
-    border: 2px solid var(--inactiveColor);
+input:disabled ~ span.slider-backdrop {
+    border: 2px solid var(--inactive-color);
     cursor: default;
 }
 
-input:disabled ~ span.sliderBackdrop:hover {
-    background-color: var(--inputBackground);
+input:disabled ~ span.slider-backdrop:hover {
+    background-color: var(--input-background);
 }
 
 input:disabled {
     & ~ span.slider:hover {
         & ~ span.sliderBackdrop {
-            background-color: var(--inputBackground);
+            background-color: var(--input-background);
         }
     }
 }
 
-span.useSpace {
+span.use-space {
     display: block;
     width: 50px;
 }

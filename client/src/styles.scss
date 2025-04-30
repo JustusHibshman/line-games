@@ -1,91 +1,152 @@
 /*************** Colors ***************/
 
 .dark-theme {
-    --colorA: #a0800c;
-    --lightColorA: #af8f1b;
+    --color-A: #a0800c;
+    --alt-color-A: #af8f1b;
 
-    --colorB: #06b0a2;
-    --lightColorB: #1bd4c5;
+    --color-B: #06b0a2;
+    --alt-color-B: #1bd4c5;
 
-    --colorC: #3a7f02;
-    --lightColorC: #4a7d21;
+    --color-C: #3a7f02;
+    --alt-color-C: #4a7d21;
 
-    --colorD: #582b90;
-    --colorE: #bb3a12;
-    --colorF: #555555;
+    --color-D: #582b90;
+    --color-E: #bb3a12;
+    --color-F: #555555;
 
-    --inactiveColor: #555555;
-    --inputHoverBackground: #000000;
+    --inactive-color: #555555;
+    --input-hover-background: #000000;
 
-    --inputBackground: #111111;
-    --inputBackgroundRed: 17;   // #11 is equal to 17
-    --inputBackgroundGreen: 17;
-    --inputBackgroundBlue: 17;
+    --input-background: #111111;
+    --input-background-red:   17;   // #11 is equal to 17
+    --input-background-green: 17;
+    --input-background-Blue:  17;
 
-    --centerBackdrop: #2f2f2f;
+    --center-backdrop: #2f2f2f;
 
-    --siteBackground: #202020;
-    --gameBorder: var(--siteBackground);
+    --site-background: #202020;
+    --game-border-color: var(--site-background);
 
-    --textColor: #e0e0e0;
+    --text-color: #e0e0e0;
 }
 
 .light-theme {
 
-    --colorA: #c34904; // Reddish orange
-    --lightColorA: #aa4005;
+    --color-A: #c34904; // Reddish orange
+    --alt-color-A: #aa4005;
 
-    --colorB: #001c7d; // Navy blue
-    --lightColorB: #001768;
+    --color-B: #001c7d; // Navy blue
+    --alt-color-B: #001768;
 
-    --colorC: #105903; // Dark green
-    --lightColorC: #146b04;
+    --color-C: #105903; // Dark green
+    --alt-color-C: #146b04;
 
-    --colorD: #770092; // Purple
+    --color-D: #770092; // Purple
     // --lightColorD: #66007d;
 
-    --colorE: #83680a; // Yellow-gold
+    --color-E: #83680a; // Yellow-gold
     // --lightColorE: #a3810c;
 
-    --colorF: #444444; // Gray
+    --color-F: #444444; // Gray
 
-    --inactiveColor: #555555;
+    --inactive-color: #555555;
 
-    --inputBackground: #bbbbbb;
-    --inputBackgroundRed: 187;   // #bb is equal to 187
-    --inputBackgroundGreen: 187;
-    --inputBackgroundBlue: 187;
+    --input-background: #bbbbbb;
+    --input-background-red:   187;   // #bb is equal to 187
+    --input-background-green: 187;
+    --input-background-blue:  187;
 
-    --inputHoverBackground: #aaaaaa;
+    --input-hover-background: #aaaaaa;
 
-    --centerBackdrop: #999999;
+    --center-backdrop: #999999;
 
-    --siteBackground: #cccccc;
-    --gameBorder: var(--siteBackground);
+    --site-background: #cccccc;
+    --game-border-color: var(--site-background);
 
-    --textColor: #000000;
+    --text-color: #000000;
 }
 
-.colorA {
-    background-color: var(--colorA);
+.solid-A {
+    background-color: var(--color-A);
 }
-.colorB {
-    background-color: var(--colorB);
+.solid-B {
+    background-color: var(--color-B);
 }
-.colorC {
-    background-color: var(--colorC);
+.solid-C {
+    background-color: var(--color-C);
 }
-.colorD {
-    background-color: var(--colorD);
+.solid-D {
+    background-color: var(--color-D);
 }
-.colorE {
-    background-color: var(--colorE);
+.solid-E {
+    background-color: var(--color-E);
 }
-.colorF {
-    background-color: var(--colorF);
+.solid-F {
+    background-color: var(--color-F);
 }
 
-/*************** Full-site Styling  ***************/
+.content-A {
+    color: var(--color-A);
+    border-color: var(--color-A);
+    &.hoverable {
+        &:hover {
+            color: var(--alt-color-A);
+            border-color: var(--alt-color-A);
+        }
+    }
+}
+.content-B {
+    color: var(--color-B);
+    border-color: var(--color-B);
+    &.hoverable {
+        &:hover {
+            color: var(--alt-color-B);
+            border-color: var(--alt-color-B);
+        }
+    }
+}
+.content-C {
+    color: var(--color-C);
+    border-color: var(--color-C);
+    &.hoverable {
+        &:hover {
+            color: var(--alt-color-C);
+            border-color: var(--alt-color-C);
+        }
+    }
+}
+.content-D {
+    color: var(--color-D);
+    border-color: var(--color-D);
+    &.hoverable {
+        &:hover {
+            color: var(--alt-color-D);
+            border-color: var(--alt-color-D);
+        }
+    }
+}
+.content-E {
+    color: var(--color-E);
+    border-color: var(--color-E);
+    &.hoverable {
+        &:hover {
+            color: var(--alt-color-E);
+            border-color: var(--alt-color-E);
+        }
+    }
+}
+.content-F {
+    color: var(--color-F);
+    border-color: var(--color-F);
+    &.hoverable {
+        &:hover {
+            color: var(--alt-color-F);
+            border-color: var(--alt-color-F);
+        }
+    }
+}
+
+/*************** Full-page Styling  ***************/
 html, body {
     height: 100%; // These are needed to enable the full-page div's use of 'height: 100%;'
     width:  100%;
@@ -100,6 +161,89 @@ body {
     width:  100%;
     height: 100%;
 
-    background-color: var(--siteBackground);
-    color: var(--textColor);
+    background-color: var(--site-background);
+    color: var(--text-color);
+}
+
+/*************** Inputs  ***************/
+
+.interface {
+
+    max-width: 100%;
+    word-wrap: break-word;
+
+    background-color: var(--input-background);
+
+    &.hoverable {
+        &:hover {
+            background-color: var(--input-hover-background);
+        }
+    }
+
+    &:disabled, &.disabled {
+        color: var(--inactive-color);
+        border-color: var(--inactive-color);
+
+        &.hoverable {
+            &:hover {
+                background-color: var(--input-background);
+                color: var(--inactive-color);
+                border-color: var(--inactive-color);
+            }
+        }
+    }
+
+    &.huge {
+        --font-size: 36px;  // A locally scoped variable useful for sub-classes
+        --border-width: 5px;
+        font-size: var(--font-size);
+        padding: 18px;
+        border-width: var(--border-width);
+        border-style: solid;
+
+        &.rounded {
+            border-radius: 9px;
+        }
+    }
+
+    &.large {
+        --font-size: 24px;  // A locally scoped variable useful for sub-classes
+        --border-width: 4px;
+        font-size: var(--font-size);
+        padding: 12px;
+        border-width: var(--border-width);
+        border-style: solid;
+
+        &.rounded {
+            border-radius: 6px;
+        }
+    }
+
+    &.medium {
+        --font-size: 18px;  // A locally scoped variable useful for sub-classes
+        --border-width: 3px;
+        font-size: var(--font-size);
+        padding: 9px;
+        border-width: var(--border-width);
+        border-style: solid;
+
+        &.rounded {
+            border-radius: 4.5px;
+        }
+        
+    }
+
+    &.small {
+        --font-size: 14px;  // A locally scoped variable useful for sub-classes
+        --border-width: 2.5px;
+        font-size: var(--font-size);
+        padding: 7px;
+        border-width: var(--border-width);
+        border-style: solid;
+
+        &.rounded {
+            border-radius: 3.5px;
+        }
+        
+    }
 }

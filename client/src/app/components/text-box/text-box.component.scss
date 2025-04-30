@@ -3,26 +3,9 @@ canvas {
 }
 
 input {
-    font-size: 24px;
     font-family: "Arial";
-    padding: 12px;
-    border-radius: 6px;
-
-    &.small {
-        font-size: 18px;
-        padding: 9px;
-        border-radius: 4.5px;
-    }
-
-    text-align: left;
-
-    background-color: var(--inputBackground);
-    color: var(--colorB);
-    border: 3px solid var(--colorB);
-
     &:focus {
         outline: none;
-        color: var(--colorB);
-        border: 3px solid var(--lightColorB);
+        background-color: var(--input-hover-background);
     }
 }

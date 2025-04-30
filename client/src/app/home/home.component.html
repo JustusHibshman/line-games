@@ -23,13 +23,13 @@
         </li>
         -->
         <li>
-            <app-nav-button [target]="'/host'" [pale]="true" [text]="'Start Game'" />
+            <app-nav-button [target]="'/host'"   [pale]="true" [text]="'Start Game'" />
         </li>
         <li>
             <app-nav-button [target]="'/design'" [pale]="true" [text]="'Design Custom Rules'" />
         </li>
         <li>
-            <app-nav-button [target]="'/play'" [pale]="true" [text]="'Return to Game'" [live]="setup.inGame()" />
+            <app-nav-button [target]="'/play'"   [pale]="true" [text]="'Return to Game'" [disable]="!setup.inGame()" />
         </li>
     </ul>
     </nav>

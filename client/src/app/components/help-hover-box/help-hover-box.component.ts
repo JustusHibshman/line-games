@@ -8,4 +8,7 @@ import { Component, input } from '@angular/core';
 })
 export class HelpHoverBoxComponent {
     text = input.required<string>();
+
+    color = input<string>("B");
+    size  = input<string>("small");
 }

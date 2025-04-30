@@ -8,15 +8,19 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './integer-input.component.scss'
 })
 export class IntegerInputComponent implements OnChanges{
-    disable = input<boolean>(false);
     min     = input<number>(1);
-    max     = input.required<number>();
+    max     = input<number | null>(null);
     value   = model.required<number>();
+
+    size    = input<string>("medium");
+    color   = input<string>("B");
+
+    disable = input<boolean>(false);
     status  = computed(() => this.disable() ? "dead" : "live");
-    /* text    = signal<string>(String(this.value)); */
 
     increment(): void {
-        if (this.value() < this.max()) {
+        let m: number | null = this.max();
+        if (m === null || this.value() < m) {
             this.value.set(this.value() + 1);
         }
     }
@@ -29,8 +33,9 @@ export class IntegerInputComponent implements OnChanges{
 
     checkLegal(): void {
         this.value.set(Math.round(this.value()));
-        if (this.value() > this.max()) {
-            this.value.set(this.max());
+        let m: number | null = this.max();
+        if (m !== null && this.value() > m) {
+            this.value.set(m);
         } else if (this.value() < this.min()) {
             this.value.set(this.min());
         }

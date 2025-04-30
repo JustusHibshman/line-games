@@ -4,7 +4,7 @@
     <div class="bigRowSpacer"></div>
     <div>
         <app-help-hover-box [text]="'Erases all saved presets other than Link Four, Pente, and Tic-Tac-Toe. If you have modified any of those three presets, they are returned to their original form.'" />
-        <app-action-button [bStyle]="true" [small]="true" [text]="'Clear Presets'" (click)="resetConfigs()" />
+        <app-action-button [color]="'B'" [size]="'small'" [text]="'Clear Presets'" (click)="resetConfigs()" />
     </div>
     <div class="bigRowSpacer"></div>
     <div>
@@ -71,13 +71,14 @@
 
         <div class="inputRowItem">
         <span class="label">Capture Size</span>
-        <app-integer-input [(value)]="gameSpec.rules.captureSize" [max]="gameSpec.board.height - 2"
+        <!-- [max]="gameSpec.board.height - 2" -->
+        <app-integer-input [(value)]="gameSpec.rules.captureSize"
                 [disable]="!gameSpec.rules.allowCaptures" />
         </div>
 
         <div class="inputRowItem">
         <span class="label">Winning # Captures</span>
-        <app-integer-input [(value)]="gameSpec.rules.winningNumCaptures" [max]="7"
+        <app-integer-input [(value)]="gameSpec.rules.winningNumCaptures"
                 [disable]="!gameSpec.rules.winByCaptures" />
         </div>
     </div>
@@ -85,8 +86,8 @@
     <div>
         <app-help-hover-box [text]="'If you like a particular custom set of rules, you can name it and save it as a preset. It will then appear as one of the preset buttons on the left. To load your saved settings, simply click the corresponding button.'" />
         <span class="label">Preset Name</span>
-        <app-text-box [(text)]="configName" [small]="true" [maxLength]="17" class="label" />
-        <app-action-button [bStyle]="true" [text]="'Save Rules as Preset'"
+        <app-text-box [(text)]="configName" [maxLength]="17" class="label" />
+        <app-action-button [color]="'B'" [text]="'Save Rules as Preset'"
                 [disable]="configName().trim() == ''"
                 (click)="saveConfigAsPreset()" />
     </div>

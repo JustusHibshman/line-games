@@ -1,3 +1,4 @@
-<button [routerLink]="targetHTML()" [class]="liveStr() + ' ' + paleStr()" [disabled]="!live()" >
+<button [routerLink]="target()" class="interface hoverable {{ size() }} content-{{ color() }} {{ paleStr() }}"
+        [disabled]="disable()" >
     {{ text() }}
 </button>

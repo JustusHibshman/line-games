@@ -9,8 +9,6 @@ import { Component, computed, input } from '@angular/core';
 export class ActionButtonComponent {
     text    = input.required<string>();
     disable = input<boolean>(false);
-    small   = input<boolean>(false);
-    bStyle  = input<boolean>(false);
-    size    = computed(() => this.small() ? "small" : "normal");
-    bStyleStr = computed(() => this.bStyle() ? "bStyle" : "");
+    size    = input<string>("medium");
+    color   = input<string>("C");
 }

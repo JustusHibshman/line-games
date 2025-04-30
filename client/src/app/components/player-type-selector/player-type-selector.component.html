@@ -1,20 +1,20 @@
-<div [class]="borderClass()">
+<div class="interface {{ borderClass() }} {{ size() }} group">
     <div>
         <input type="radio" id="human {{ formID() }}" [name]="formID()"
             (change)="setValue(PlayerTypes.Human)" [checked]="choice() == PlayerTypes.Human"
             [disabled]="disable()" >
-        <label for="human {{ formID() }}" [class]="hc()" >Human</label>
+        <label for="human {{ formID() }}" class="interface hoverable {{ size() }} clicker {{ hc() }}" >Human</label>
     </div>
     <div>
         <input type="radio" id="ai {{ formID() }}"    [name]="formID()"
             (change)="setValue(PlayerTypes.AI)"    [checked]="choice() == PlayerTypes.AI"
             [disabled]="disable()" >
-        <label for="ai {{ formID() }}" [class]="aic()" >AI</label>
+        <label for="ai {{ formID() }}" class="interface hoverable {{ size() }} clicker {{ aic() }}" >AI</label>
     </div>
     <div>
         <input type="radio" id="none {{ formID() }}"  [name]="formID()"
             (change)="setValue(PlayerTypes.None)"  [checked]="choice() == PlayerTypes.None"
             [disabled]="disable()" >
-        <label for="none {{ formID() }}" [class]="nc()" >None</label>
+        <label for="none {{ formID() }}" class="interface hoverable {{ size() }} clicker {{ nc() }}" >None</label>
     </div>
 </div>

@@ -1,6 +1,9 @@
-<div class="{{ status() }}">
-    <button (click)="decrement()" [class]="status()" [disabled]="disable()" >-</button>
+<div>
+    <button class="interface hoverable {{ size() }} content-{{ color() }} clicker"
+            (click)="decrement()" [disabled]="disable()" >-</button>
     <input type="number" step="1" [(ngModel)]="value" [min]="min()" [max]="max()"
-        [class]="status()" [disabled]="disable()" (focusout)="checkLegal()">
-    <button (click)="increment()" [class]="status()" [disabled]="disable()">+</button>
+            class="interface hoverable {{ size() }} content-{{ color() }} number"
+            [disabled]="disable()" (focusout)="checkLegal()">
+    <button class="interface hoverable {{ size() }} content-{{ color() }} clicker"
+            (click)="increment()" [disabled]="disable()" >+</button>
 </div>

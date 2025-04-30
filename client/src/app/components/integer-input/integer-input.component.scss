@@ -1,75 +1,35 @@
-div {
-    width: 132px;
-    border: 3px solid var(--colorB);
-}
+.clicker {
+    font-family: "Arial";  // Makes better + and - signs
+    height: calc(var(--font-size) * 2);
+    width:  calc(var(--font-size) * 2);
 
-div.dead {
-    border-color: var(--inactiveColor);
-}
-
-button {
-    font-size: 18px;
-    font-family: "Arial";
-    padding: 0;
-    padding-top: 9px;
-    padding-bottom: 9px;
-    border-radius: 0px;
     text-align: center;
 
-    width: 36px;
-
-    background-color: var(--inputBackground);
-    border: none;
-    color: var(--colorB);
-
-    cursor: pointer;
-
-    &:hover {
-        background-color: var(--inputHoverBackground);
-    }
+    vertical-align: middle;
+    line-height: calc(var(--font-size) / 2);
 }
 
-button.dead {
-    color: var(--inactiveColor);
-    cursor: default;
-    &:hover {
-        background-color: var(--inputBackground);
-    }
-}
-
-input {
-    font-size: 18px;
+.number {
     font-family: "Arial";
+
+    border-left: none;
+    border-right: none;
+
     padding: 0;
-    padding-top: 9px;
-    padding-bottom: 9px;
+    // It seems that number inputs don't count border in the size
+    height: calc(var(--font-size) * 2 - var(--border-width) * 2);
+    width:  calc(var(--font-size) * 2.5);
+
     text-align: center;
 
-    width: 54px;
+    vertical-align: middle;
+    line-height: calc(var(--font-size) / 2);
 
-    background-color: var(--inputBackground);
-    border: 3px solid var(--colorB);
-    border-top: none;
-    border-bottom: none;
-    color: var(--colorB);
-
-    -moz-appearance: textfield; /* Remove arrows in Firefox */
+    -moz-appearance: textfield; // Remove arrows in Firefox
 
     &:focus {
         outline: none;
-        background-color: var(--inputHoverBackground);
-    }
-
-    &:hover {
-        background-color: var(--inputHoverBackground);
-    }
-}
-
-input.dead {
-    color: var(--inactiveColor);
-    border-color: var(--inactiveColor);
-    &:hover {
-        background-color: var(--inputBackground);
+        background-color: var(--input-hover-background);
     }
 }
 

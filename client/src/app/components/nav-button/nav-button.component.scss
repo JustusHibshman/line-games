@@ -1,29 +1,11 @@
-button {
-    font-size: 36px;
-    padding: 18px;
-    border-radius: 9px;
-    text-align: center;
-    background-color: var(--inputBackground);
-}
-
-button.live {
-    color: var(--colorA);
-    border: 5px solid var(--colorA);
-
-    &:hover {
-        background-color: var(--inputHoverBackground);
-        border: 5px solid var(--lightColorA);
-        color:  var(--lightColorA);
-        cursor: pointer;
+.pale {
+    // We could use opacity, but this allows the text to remain fully opaque.
+    background-color: rgb(var(--input-background-red), var(--input-background-green), var(--input-background-blue), 0.95);
+    &.hoverable {
+        &:disabled {
+            &:hover {
+                background-color: rgb(var(--input-background-red), var(--input-background-green), var(--input-background-blue), 0.95);
+            }
+        }
     }
-}
-
-button.dead {
-    color: var(--inactiveColor);
-    border: 5px solid var(--inactiveColor);
-}
-
-button.pale {
-    // Could just use opacity. This option is handy for making the text not transparent.
-    background-color: rgb(var(--inputBackgroundRed), var(--inputBackgroundGreen), var(--inputBackgroundBlue), 0.95);
 }

@@ -14,8 +14,10 @@ export class PlayerTypeSelectorComponent {
     choice  = model.required<PlayerType>();
     disable = input<boolean>(false);
     formID  = input.required<string>();
+
+    size    = input<string>("medium");
     
-    colorClasses = ["bStyle", "inactive", "cStyle", "cStyle"];
+    colorClasses = ["content-B", "disabled", "content-C", "content-C"];
     hc  = computed(() => this.colorClasses[
             (+ (this.choice() == PlayerType.Human)) * 2 + (+ this.disable())]);
     aic = computed(() => this.colorClasses[

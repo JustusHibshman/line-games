@@ -8,11 +8,11 @@ import { RouterLink } from '@angular/router';
   styleUrl: './nav-button.component.scss'
 })
 export class NavButtonComponent {
-    target = input.required<string>();
-    text   = input.required<string>();
-    live   = input<boolean>(true);
-    pale   = input<boolean>(false);
-    targetHTML = computed(() => this.live() ? this.target() : 'null');
-    liveStr = computed(() => this.live() ? 'live' : 'dead');
+    target  = input.required<string>();
+    text    = input.required<string>();
+    color   = input<string>("A");
+    size    = input<string>("huge");
+    disable = input<boolean>(false);
+    pale    = input<boolean>(false);
     paleStr = computed(() => this.pale() ? 'pale' : ''); 
 }
