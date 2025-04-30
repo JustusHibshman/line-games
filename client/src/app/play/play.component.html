@@ -5,7 +5,7 @@
     <div class="status">
         <span class="statusText">Winner:</span>
         @if(winner() != -1) {
-            <span [class]="'winMarker color-' + colors[winner() + 1]"></span>
+            <span [class]="'winMarker solid-' + colors[winner() + 1]"></span>
         } @else {
             <span class="statusText">None</span>
         }
@@ -13,7 +13,7 @@
     <div>
         @for(numCaptures of captures(); track $index; let i = $index) {
         <div class="status">
-            <span [class]="'captureMarker color-' + colors[i + 1]"></span><span class="statusText">Captures: {{ numCaptures }}</span>
+            <span [class]="'captureMarker solid-' + colors[i + 1]"></span><span class="statusText">Captures: {{ numCaptures }}</span>
         </div>
         }
     </div>
@@ -24,7 +24,7 @@
     <div class="column {{ gravityStr() }}">
         @for(row of col; track $index; let r = $index) {
         <div class="row hoverable" (click)="selectSpot({row: r, col: c})">
-            <span [class]="'piece color-' + colors[row + 1] +
+            <span [class]="'piece solid-' + colors[row + 1] +
                            ' hover-' + colors[isLegalMove({row: r, col: c}) ? currentPlayer() + 1 : 0]"></span>
         </div>
         }

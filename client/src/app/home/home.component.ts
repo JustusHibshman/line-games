@@ -48,7 +48,7 @@ export class HomeComponent {
                 if (context.canBeSet(r, c)) {
                     if (Math.random() > 0.91) {
                         // Change the color
-                        result[r][c] = "color" + colors[Math.floor(Math.random() * colors.length)];
+                        result[r][c] = "solid-" + colors[Math.floor(Math.random() * colors.length)];
                     }
                 }
             }
