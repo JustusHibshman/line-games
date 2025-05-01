@@ -20,6 +20,16 @@ export class GameStateService {
         return gState.board[m.row][m.col] == -1;
     }
 
+    isLegal(m: Move, gSpec: GameSpec, gState: GameState): boolean {
+        if (gSpec.board.gravity) {
+            let below: Move = {row: m.row + 1, col: m.col};
+            if (!this.inBounds(below, gSpec) || this.unOccupied(below, gState)) {
+                return false;
+            }
+        }
+        return this.inBounds(m, gSpec) && this.unOccupied(m, gState);
+    }
+
     boardFull(gState: GameState, gSpec: GameSpec): boolean {
         for (let r = 0; r < gSpec.board.height; r++) {
             for (let c = 0; c < gSpec.board.width; c++) {

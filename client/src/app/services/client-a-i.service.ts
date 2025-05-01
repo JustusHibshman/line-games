@@ -19,10 +19,7 @@ export class ClientAIService {
     primitiveAIChoice(gState: GameState, gSpec: GameSpec, numPlayers: number): Move {
         this.setGame(gSpec, numPlayers);
 
-        let chosenDepth = Math.max(this.numPlayers, 3);
-        if (this.numPlayers == 2) {
-            chosenDepth += 1;
-        }
+        let chosenDepth = 3;
         if (this.gSpec.board.width < 8) {
             chosenDepth += 1;
         }
@@ -105,7 +102,7 @@ export class ClientAIService {
 
     ////////////// AI Decision-Making ///////////////
 
-    // Higher is Better -- Values are guaranteed to be in the range -4 <= x <= 4
+    // Higher is Better -- Values are guaranteed to be in the range -13 <= x <= 13
     heuristicScores(gState: GameState): Array<number> {
         // Captures
         var captureScores: Array<number>;
@@ -153,9 +150,51 @@ export class ClientAIService {
             }
         }
         let lineScores = this.normalizeHeuristicNumbers(rawLineScores);
-        return Array.from(captureScores, (v, i) => v + lineScores[i]);
+
+        // Ability to win immediately -- loosely calculated
+        let rawWinChances:  Array<number> = Array.from({length: this.numPlayers}, () => 0);
+        for (let r = 0; r < h; r++) {
+            for (let c = 0; c < w; c++) {
+                let m = {row: r, col: c};
+                if (this.gsService.isLegal(m, this.gSpec, gState)) {
+                    for (let player = 0; player < this.numPlayers; player++) {
+                        if (this.playerCouldWinHere(player, gState, m)) {
+                            rawWinChances[player] = rawWinChances[player] + 1;
+                        }
+                    }
+                }
+            }
+        }
+        let turnsUntilTurn: Array<number> = Array.from({length: this.numPlayers}, () => 0);
+        for (let t = 0; t < this.numPlayers; t++) {
+            let player = (gState.turn + t) % this.numPlayers;
+            turnsUntilTurn[player] = t;
+        }
+        let hadAWinner = false;
+        for (let player = 0; player < this.numPlayers; player++) {
+            rawWinChances[player] = Math.max(0, rawWinChances[player] - turnsUntilTurn[player]);
+            if (rawWinChances[player] > 0) {
+                hadAWinner = true;
+            }
+        }
+        let oneHotWinnerVector: Array<number> =
+                Array.from({length: this.numPlayers}, () => hadAWinner ? -1 : 0);
+        for (let t = 0; t < this.numPlayers; t++) {
+            let player = (gState.turn + t) % this.numPlayers;
+            if (rawWinChances[player] > 0) {
+                oneHotWinnerVector[player] = 1;
+                break;
+            }
+        }
+
+        let numNormalizedValues = 2;
+        let normalizedRange = 4;
+        let winChanceValue  = numNormalizedValues * normalizedRange + 1; // 9
+
+        return Array.from(captureScores, (v, i) => v + lineScores[i] + winChanceValue * oneHotWinnerVector[i]);
     }
 
+    // Normalized values are guaranteed to be in the range -2 <= x <= 2
     normalizeHeuristicNumbers(a: Array<number>): Array<number> {
         let sum = 0;
         for (let v of a) {
@@ -187,8 +226,8 @@ export class ClientAIService {
 
     // Higher is Better
     scores(stn: SearchTreeNode): Array<number> {
-        // Heuristic values are guaranteed to be in the range -4 <= x <= 4
-        const WinValue: number = 9; // (4 - -4) + 1   [i.e. more than the full range]
+        // Heuristic values are guaranteed to be in the range -13 <= x <= 13
+        const WinValue: number = 27; // (13 - -13) + 1   [i.e. more than the full range]
         let result: Array<number> = this.heuristicScores(stn.state);
         if (stn.winner != -1) {
             for (let i = 0; i < this.numPlayers; i++) {
@@ -200,6 +239,17 @@ export class ClientAIService {
             }
         }
         return result;
+    }
+
+    // Acts as if it were player's turn regardless of whose turn it actually is.
+    // Acts as if the spot were open regardless of whether it actually is.
+    playerCouldWinHere(player: number, gState: GameState, m: Move): boolean {
+        let newGS: GameState = copyGameState(gState);
+        newGS.board[m.row][m.col] = -1;
+        newGS.player = player;
+        this.gsService.makeMove(m, newGS, this.gSpec, this.numPlayers);
+        let winner = this.gsService.checkForVictor(m, newGS, this.gSpec);
+        return winner == player;
     }
 
     primitiveAIChoiceHelper(gState: GameState, depth: number): Move {
