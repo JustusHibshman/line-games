@@ -1,8 +1,7 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
-import { KeyValuePipe, NgFor } from '@angular/common';
 
 import { ActionButtonComponent } from '@local-components/action-button/action-button.component';
-import { HelpHoverBoxComponent } from '@local-components/help-hover-box/help-hover-box.component';
+import { DropdownMenuComponent } from '@local-components/dropdown-menu/dropdown-menu.component';
 import { IntegerInputComponent } from '@local-components/integer-input/integer-input.component';
 import { NavButtonComponent } from '@local-components/nav-button/nav-button.component';
 import { TextBoxComponent } from '@local-components/text-box/text-box.component';
@@ -16,9 +15,8 @@ import { RulePresetsService } from '@local-services/rule-presets.service';
 
 @Component({
   selector: 'app-host',
-  imports: [KeyValuePipe, NgFor,
-            ActionButtonComponent, HelpHoverBoxComponent, IntegerInputComponent,
-            NavButtonComponent, VerticalRadioComponent],
+  imports: [ActionButtonComponent, DropdownMenuComponent,
+            IntegerInputComponent, NavButtonComponent, VerticalRadioComponent],
   templateUrl: './host.component.html',
   styleUrl: './host.component.scss'
 })
@@ -29,17 +27,19 @@ export class HostComponent implements OnInit {
     setup = inject(SetupService);
     presets = inject(RulePresetsService);
 
-    chosenPreset = signal<string>("[none]");
+    chosenPreset = signal<string>("");
     rulesReady = signal<boolean>(false);
 
     gameSpec: GameSpec = this.presets.ticTacToeConfig();
     specs: { [id: string]: GameSpec } = this.presets.getSpecs();
+    specNames: Array<string> = this.presets.getSpecNames();
 
     gameName = signal<string>("<placeholder>");
     password = signal<string>("");
 
     numPlayers = signal<number>(2);
     numHumans  = signal<number>(0);
+    numSelected = signal<number>(0);
 
     playerTypes = signal<Array<PlayerType>>([]);
 
@@ -58,6 +58,9 @@ export class HostComponent implements OnInit {
             if (l[l.length - 1] == PlayerType.Human) {
                 this.numHumans.set(this.numHumans() - 1);
             }
+            if (l[l.length - 1] != PlayerType.None) {
+                this.numSelected.set(this.numSelected() - 1);
+            }
             l.pop();
         }
         while (l.length < this.numPlayers()) {
@@ -68,6 +71,9 @@ export class HostComponent implements OnInit {
 
     setPlayerType(idx: number, value: string) {
         let l = this.playerTypes();
+        if (l[idx] == PlayerType.None) {
+            this.numSelected.set(this.numSelected() + 1);
+        }
         if (value == "Human") {
             if (l[idx] != PlayerType.Human) {
                 this.numHumans.set(this.numHumans() + 1);

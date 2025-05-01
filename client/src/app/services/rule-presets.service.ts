@@ -29,6 +29,10 @@ export class RulePresetsService {
         return specsCopy;
     }
 
+    getSpecNames(): Array<string> {
+        return Object.keys(this.specs);
+    }
+
     saveConfigAsPreset(name: string, gs: GameSpec): void {
         this.specs[name.trim()] = copyGameSpec(gs);
         localStorage.setItem(this.DataPrefix + 'specs', JSON.stringify(this.specs));

@@ -1,20 +1,11 @@
 <div class="menu">
     <app-nav-button [target]='"/"' [text]='"Home"' />
-
-    <div class="bigRowSpacer"></div>
-    <div>
-        <app-help-hover-box [text]="'Clicking on one of these green preset buttons loads a saved set of game rules.'" />
-        <span>Presets:</span>
-    </div>
-    <div class="smallRowSpacer"></div>
-    <div *ngFor="let gameSpec of specs | keyvalue" class="preset">
-        <app-action-button [text]="gameSpec.key" (click)="loadConfig(gameSpec.key)" />
-        <div class="tinyRowSpacer"></div>
-    </div>
 </div>
 
 <div class="main">
-    <span class="header">Loaded Preset: {{ chosenPreset() }}</span>
+    <span class="header">Choose the Game</span>
+    <div class="smallRowSpacer"></div>
+    <app-dropdown-menu [options]="specNames" (madeChoice)="loadConfig($event)" />
     <div class="bigRowSpacer"></div>
     <span class="header">Choose the Number of AI and Human Players</span>
     <div class="bigRowSpacer"></div>
@@ -56,7 +47,8 @@
     <div class="bigRowSpacer"></div>
     <div>
         <app-action-button [text]="'Launch Game'"
-                [disable]="!rulesReady() || gameName().trim() == '' || numHumans() == 0"
+                [disable]="!rulesReady() || gameName().trim() == '' ||
+                           numHumans() == 0 || numSelected() < numPlayers()"
                 (click)="hostGame()" />
     </div>
 </div>
