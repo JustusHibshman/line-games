@@ -1,0 +1,6 @@
+@for(option of options(); track $index; let i = $index) {
+<button class="interface hoverable {{ size() }} content-{{ color() }} {{ unSelectedStyle[i]() }}"
+        (click)="select(i)">
+    {{ option }}
+</button>
+}

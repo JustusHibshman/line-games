@@ -1,4 +1,4 @@
-import { Component, computed, input, model, OnChanges, signal, SimpleChanges } from '@angular/core';
+import { Component, computed, input, model, OnChanges, output, signal, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -18,16 +18,20 @@ export class IntegerInputComponent implements OnChanges{
     disable = input<boolean>(false);
     status  = computed(() => this.disable() ? "dead" : "live");
 
+    mayHaveChanged = output<void>();
+
     increment(): void {
         let m: number | null = this.max();
         if (m === null || this.value() < m) {
             this.value.set(this.value() + 1);
+            this.mayHaveChanged.emit();
         }
     }
 
     decrement(): void {
         if (this.value() > this.min()) {
             this.value.set(this.value() - 1);
+            this.mayHaveChanged.emit();
         }
     }
 
@@ -39,6 +43,7 @@ export class IntegerInputComponent implements OnChanges{
         } else if (this.value() < this.min()) {
             this.value.set(this.min());
         }
+        this.mayHaveChanged.emit();
     }
 
     ngOnChanges(changes: SimpleChanges): void {

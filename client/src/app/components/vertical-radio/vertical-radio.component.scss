@@ -1,0 +1,11 @@
+button {
+    display: block;
+    width: 100%;
+}
+
+.un-selected {
+    border-color: var(--input-background);
+    &:hover {
+        border-color: var(--input-hover-background);
+    }
+}

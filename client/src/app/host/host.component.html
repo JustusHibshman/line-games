@@ -18,20 +18,16 @@
     <div class="bigRowSpacer"></div>
     <span class="header">Choose the Number of AI and Human Players</span>
     <div class="bigRowSpacer"></div>
+    <div class="inputRow">
+        <div class="inputRowItem">
+            <span class="label">Number of Players</span>
+            <app-integer-input [(value)]="numPlayers"  [min]="2" [max]="6" (mayHaveChanged)="resizePlayerTypes()" />
+        </div>
+    </div>
     <div class="playerTypeSelectors">
-        <div></div> <!-- I am not sure yet why this is necessary -->
-        <app-player-type-selector [(choice)]="playerTypes[0]" [formID]="'0'" 
-                    [disable]="ptDisabled[0]()" />
-        <app-player-type-selector [(choice)]="playerTypes[1]" [formID]="'1'" 
-                    [disable]="ptDisabled[1]()" />
-        <app-player-type-selector [(choice)]="playerTypes[2]" [formID]="'2'" 
-                    [disable]="ptDisabled[2]()" />
-        <app-player-type-selector [(choice)]="playerTypes[3]" [formID]="'3'" 
-                    [disable]="ptDisabled[3]()" />
-        <app-player-type-selector [(choice)]="playerTypes[4]" [formID]="'4'" 
-                    [disable]="ptDisabled[4]()" />
-        <app-player-type-selector [(choice)]="playerTypes[5]" [formID]="'5'" 
-                    [disable]="ptDisabled[5]()" />
+        @for(pt of playerTypes(); track $index; let i = $index) {
+            <app-vertical-radio [options]="['Human', 'AI']" (value)="setPlayerType(i, $event)" />
+        }
         <span>
         <!--
         <div class="aiTime">
@@ -60,7 +56,7 @@
     <div class="bigRowSpacer"></div>
     <div>
         <app-action-button [text]="'Launch Game'"
-                [disable]="!rulesReady() || gameName().trim() == '' || playerTypes[1]() == PlayerTypes.None"
+                [disable]="!rulesReady() || gameName().trim() == '' || numHumans() == 0"
                 (click)="hostGame()" />
     </div>
 </div>

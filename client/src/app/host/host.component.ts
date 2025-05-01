@@ -1,13 +1,12 @@
-import { Component, computed, inject, OnInit, signal, ChangeDetectorRef, AfterContentChecked } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { KeyValuePipe, NgFor } from '@angular/common';
 
 import { ActionButtonComponent } from '@local-components/action-button/action-button.component';
 import { HelpHoverBoxComponent } from '@local-components/help-hover-box/help-hover-box.component';
 import { IntegerInputComponent } from '@local-components/integer-input/integer-input.component';
 import { NavButtonComponent } from '@local-components/nav-button/nav-button.component';
-import { PlayerTypeSelectorComponent } from '@local-components/player-type-selector/player-type-selector.component';
 import { TextBoxComponent } from '@local-components/text-box/text-box.component';
-import { ToggleSwitchComponent } from '@local-components/toggle-switch/toggle-switch.component';
+import { VerticalRadioComponent } from '@local-components/vertical-radio/vertical-radio.component';
 
 import { GameSpec, copyGameSpec }   from '@local-types/game-spec.type';
 import { PlayerType } from '@local-types/player-type.type';
@@ -18,12 +17,12 @@ import { RulePresetsService } from '@local-services/rule-presets.service';
 @Component({
   selector: 'app-host',
   imports: [KeyValuePipe, NgFor,
-            ActionButtonComponent, HelpHoverBoxComponent, NavButtonComponent,
-            PlayerTypeSelectorComponent],
+            ActionButtonComponent, HelpHoverBoxComponent, IntegerInputComponent,
+            NavButtonComponent, VerticalRadioComponent],
   templateUrl: './host.component.html',
   styleUrl: './host.component.scss'
 })
-export class HostComponent implements OnInit, AfterContentChecked {
+export class HostComponent implements OnInit {
 
     public PlayerTypes = PlayerType;
 
@@ -39,30 +38,48 @@ export class HostComponent implements OnInit, AfterContentChecked {
     gameName = signal<string>("<placeholder>");
     password = signal<string>("");
 
-    playerTypes = [signal<PlayerType>(PlayerType.Human), signal<PlayerType>(PlayerType.None),
-                   signal<PlayerType>(PlayerType.None),  signal<PlayerType>(PlayerType.None),
-                   signal<PlayerType>(PlayerType.None),  signal<PlayerType>(PlayerType.None)];
-    ptDisabled  = [signal<boolean>(true),
-                   computed(() => this.playerTypes[0]() == PlayerType.None || 
-                                    this.playerTypes[2]() != PlayerType.None),
-                   computed(() => this.playerTypes[1]() == PlayerType.None || 
-                                    this.playerTypes[3]() != PlayerType.None),
-                   computed(() => this.playerTypes[2]() == PlayerType.None ||
-                                    this.playerTypes[4]() != PlayerType.None),
-                   computed(() => this.playerTypes[3]() == PlayerType.None ||
-                                    this.playerTypes[5]() != PlayerType.None),
-                   computed(() => this.playerTypes[4]() == PlayerType.None)]
+    numPlayers = signal<number>(2);
+    numHumans  = signal<number>(0);
+
+    playerTypes = signal<Array<PlayerType>>([]);
 
     aiComputeTime = signal<number>(4);
 
-    constructor(private changeDetector: ChangeDetectorRef) {}
+    constructor() {}
 
     ngOnInit(): void {
         this.setup.quitGame();
+        this.resizePlayerTypes();
     }
 
-    ngAfterContentChecked(): void {
-        this.changeDetector.detectChanges();
+    resizePlayerTypes(): void {
+        let l = this.playerTypes();
+        while (l.length > this.numPlayers()) {
+            if (l[l.length - 1] == PlayerType.Human) {
+                this.numHumans.set(this.numHumans() - 1);
+            }
+            l.pop();
+        }
+        while (l.length < this.numPlayers()) {
+            l.push(PlayerType.None);
+        }
+        this.playerTypes.set(l);
+    }
+
+    setPlayerType(idx: number, value: string) {
+        let l = this.playerTypes();
+        if (value == "Human") {
+            if (l[idx] != PlayerType.Human) {
+                this.numHumans.set(this.numHumans() + 1);
+            }
+            l[idx] = PlayerType.Human;
+        } else {
+            if (l[idx] == PlayerType.Human) {
+                this.numHumans.set(this.numHumans() - 1);
+            }
+            l[idx] = PlayerType.AI;
+        }
+        this.playerTypes.set(l);
     }
 
     loadConfig(name: string) {
@@ -74,17 +91,7 @@ export class HostComponent implements OnInit, AfterContentChecked {
     }
 
     hostGame(): void {
-        /* Filter out the None "players" */
-        let numPlayers = 2;
-        for (; numPlayers < 6; numPlayers++) {
-            if (this.playerTypes[numPlayers]() == PlayerType.None) {
-                break;
-            }
-        }
-        let pt: Array<PlayerType> =
-            Array.from({length: numPlayers}, (v, i) => this.playerTypes[i]());
-
-        this.setup.hostGame(this.gameName(), this.password(), this.gameSpec, pt);
+        this.setup.hostGame(this.gameName(), this.password(), this.gameSpec, this.playerTypes());
     }
 
     goFullscreen(): void {
