@@ -3,12 +3,12 @@
 
     <div class="bigRowSpacer"></div>
     <div>
-        <app-help-hover-box [text]="'Erases all saved presets other than Link Four, Pente, and Tic-Tac-Toe. If you have modified any of those three presets, they are returned to their original form.'" />
+        <app-help-hover-box class="label" [text]="'Erases all saved presets other than Link Four, Pente, and Tic-Tac-Toe. If you have modified any of those three presets, they are returned to their original form.'" />
         <app-action-button [color]="'B'" [size]="'small'" [text]="'Clear Presets'" (click)="resetConfigs()" />
     </div>
     <div class="bigRowSpacer"></div>
     <div>
-        <app-help-hover-box [text]="'Clicking on one of these green preset buttons loads a saved set of game rules into the menu in the center.'" />
+        <app-help-hover-box class="label" [text]="'Clicking on one of these green preset buttons loads a saved set of game rules into the menu in the center.'" />
         <span>Presets:</span>
     </div>
     <div class="smallRowSpacer"></div>
@@ -23,21 +23,21 @@
     <div class="bigRowSpacer"></div>
     <div class="inputRow">
         <div class="inputRowItem">
-            <app-help-hover-box [text]="'[how wide the game board should be]'" />
+            <app-help-hover-box class="label" [text]="'[how wide the game board should be]'" />
             <span class="label">Width</span>
             <app-integer-input [(value)]="gameSpec.board.width"  [min]="3" [max]="19"
                     [disable]="false" />
         </div>
         <div class="inputRowItem">
-            <app-help-hover-box [text]="'[how tall the game board should be]'" />
+            <app-help-hover-box class="label" [text]="'[how tall the game board should be]'" />
             <span class="label">Height</span>
             <app-integer-input [(value)]="gameSpec.board.height" [min]="3"
                     [max]="gameSpec.board.width" [disable]="false" />
         </div>
 
         <div class="inputRowItem">
-            <app-help-hover-box [text]="'[how many pieces in a row you need to win]'" />
-            <span class="label">Winning Line Size</span>
+            <app-help-hover-box class="label" [text]="'[how many pieces in a row you need to win]'" />
+            <span class="label">Winning<br/>Line Size</span>
             <app-integer-input [(value)]="gameSpec.rules.winningLength" [min]="3"
                     [max]="gameSpec.board.height" [disable]="false" />
         </div>
@@ -45,21 +45,21 @@
     <div class="bigRowSpacer"></div>
     <div class="inputRow">
         <div class="inputRowItem">
-            <app-help-hover-box [text]="'When gravity is turned on, pieces can only be placed on the bottom row or stacked on top of other pieces.'" />
+            <app-help-hover-box class="label" [text]="'When gravity is turned on, pieces can only be placed on the bottom row or stacked on top of other pieces.'" />
             <span class="label">Gravity</span>
             <app-toggle-switch [defaultValue]="false" [(value)]="gameSpec.board.gravity" 
                                [disable]="gameSpec.rules.allowCaptures" />
         </div>
 
         <div class="inputRowItem">
-            <app-help-hover-box [text]="'When captures are turned on, then whenever you sandwich exactly X opponent pieces between your own pieces, the opponent pieces are removed from the board. The value of X is set by Capture Size (below).'" />
+            <app-help-hover-box class="label" [text]="'When captures are turned on, then whenever you sandwich exactly X opponent pieces between your own pieces, the opponent pieces are removed from the board. The value of X is set by Capture Size (below).'" />
             <span class="label">Allow Captures</span>
             <app-toggle-switch [defaultValue]="false" [(value)]="gameSpec.rules.allowCaptures"
                                [disable]="gameSpec.board.gravity" />
         </div>
 
         <div class="inputRowItem">
-            <app-help-hover-box [text]="'When winning by captures is turned on, a player wins as soon as they have Y or more captures. The value of Y is set by Winning # Captures (below).'" />
+            <app-help-hover-box class="label" [text]="'When winning by captures is turned on, a player wins as soon as they have Y or more captures. The value of Y is set by Winning # Captures (below).'" />
             <span class="label">Win by Captures</span>
             <app-toggle-switch [defaultValue]="false" [(value)]="gameSpec.rules.winByCaptures"
                     [disable]="!gameSpec.rules.allowCaptures" />
@@ -77,14 +77,14 @@
         </div>
 
         <div class="inputRowItem">
-        <span class="label">Winning # Captures</span>
+        <span class="label">Winning #<br/>Captures</span>
         <app-integer-input [(value)]="gameSpec.rules.winningNumCaptures"
                 [disable]="!gameSpec.rules.winByCaptures" />
         </div>
     </div>
     <div class="bigRowSpacer"></div>
     <div>
-        <app-help-hover-box [text]="'If you like a particular custom set of rules, you can name it and save it as a preset. It will then appear as one of the preset buttons on the left. To load your saved settings, simply click the corresponding button.'" />
+        <app-help-hover-box class="label" [text]="'If you like a particular custom set of rules, you can name it and save it as a preset. It will then appear as one of the preset buttons on the left. To load your saved settings, simply click the corresponding button.'" />
         <span class="label">Preset Name</span>
         <app-text-box [(text)]="configName" [maxLength]="17" class="label" />
         <app-action-button [color]="'B'" [text]="'Save Rules as Preset'"

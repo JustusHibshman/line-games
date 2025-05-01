@@ -7,20 +7,22 @@
     <div class="smallRowSpacer"></div>
     <app-dropdown-menu [options]="specNames" (madeChoice)="loadConfig($event)" />
     <div class="bigRowSpacer"></div>
+    <div class="bigRowSpacer"></div>
     <span class="header">Choose the Number of AI and Human Players</span>
     <div class="bigRowSpacer"></div>
     <div class="inputRow">
         <div class="inputRowItem">
-            <span class="label">Number of Players</span>
+            <span class="label">Number of<br/>Players</span>
             <app-integer-input [(value)]="numPlayers"  [min]="2" [max]="6" (mayHaveChanged)="resizePlayerTypes()" />
         </div>
     </div>
+    <div class="bigRowSpacer"></div>
     <div class="playerTypeSelectors">
         @for(pt of playerTypes(); track $index; let i = $index) {
             <app-vertical-radio [options]="['Human', 'AI']" (value)="setPlayerType(i, $event)" />
         }
-        <span>
         <!--
+        <span>
         <div class="aiTime">
             <div>AI Compute Time</div>
             <div class="tinyRowSpacer"></div>
@@ -31,8 +33,9 @@
                            playerTypes[3]() != PlayerTypes.AI &&
                            playerTypes[4]() != PlayerTypes.AI &&
                            playerTypes[5]() != PlayerTypes.AI" />
-        </div> -->
+        </div>
         </span>
+        -->
     </div>
 
     <!--
