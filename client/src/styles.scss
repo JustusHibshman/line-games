@@ -176,6 +176,7 @@ body {
 
     &.hoverable {
         &:hover {
+            cursor: pointer;
             background-color: var(--input-hover-background);
         }
     }
@@ -186,6 +187,7 @@ body {
 
         &.hoverable {
             &:hover {
+                cursor: default;
                 background-color: var(--input-background);
                 color: var(--inactive-color);
                 border-color: var(--inactive-color);
