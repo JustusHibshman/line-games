@@ -20,16 +20,17 @@
 </div>
 
 <div class="main">
-    @for(col of transposedBoard(); track $index; let c = $index) {
-    <div class="column {{ gravityStr() }}">
-        @for(row of col; track $index; let r = $index) {
-        <div class="row hoverable" (click)="selectSpot({row: r, col: c})">
-            <span [class]="'piece solid-' + colors[row + 1] +
-                           ' hover-' + colors[isLegalMove({row: r, col: c}) ? currentPlayer() + 1 : 0]"></span>
-        </div>
+    <div class="the-grid" style="{{ gridStyle() }}" >
+        @for(row of board(); track $index; let r = $index) {
+            @for(col of row; track $index; let c = $index) {
+            <div class="spot" (click)="selectSpot({row: r, col: c})"
+                    (mouseenter)="beginHover({row: r, col: c})" (mouseleave)="endHover()" >
+                <div class="piece solid-{{ colors[board()[r][c] + 1] }} hover-{{ hoverAs(r == hoverY() && c == hoverX()) }}">
+                </div>
+            </div>
+            }
+        } @empty {
+            <p>[No Game]</p>
         }
     </div>
-    } @empty {
-        <p>[No Game]</p>
-    }
 </div>
