@@ -66,6 +66,7 @@ export class PlayComponent implements OnInit {
                 return;
             }
             this.gameplay.makeMove(m);
+            this.endHover();
             return;
         }
 
