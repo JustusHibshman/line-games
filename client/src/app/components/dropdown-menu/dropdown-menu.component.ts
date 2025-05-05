@@ -13,7 +13,7 @@ export class DropdownMenuComponent {
     options = input.required<Array<string>>();
     text = signal<string>("");
 
-    maxLength = input<number>(20);
+    maxLength = input<number>(11);
     size = input<string>("medium");
     color = input<string>("B");
 

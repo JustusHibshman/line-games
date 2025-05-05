@@ -86,7 +86,7 @@
     <div>
         <app-help-hover-box class="label" [text]="'If you like a particular custom set of rules, you can name it and save it as a preset. It will then appear as one of the preset buttons on the left. To load your saved settings, simply click the corresponding button.'" />
         <span class="label">Preset Name</span>
-        <app-text-box [(text)]="configName" [maxLength]="17" class="label" />
+        <app-text-box [(text)]="configName" [maxLength]="11" class="label" />
         <app-action-button [color]="'B'" [text]="'Save Rules as Preset'"
                 [disable]="configName().trim() == ''"
                 (click)="saveConfigAsPreset()" />
