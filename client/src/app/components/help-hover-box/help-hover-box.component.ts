@@ -11,4 +11,6 @@ export class HelpHoverBoxComponent {
 
     color = input<string>("B");
     size  = input<string>("small");
+
+    aboveOrBelow = input<string>("below");
 }

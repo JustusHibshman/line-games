@@ -1,36 +1,42 @@
-<div class="darkMode">
-    <span class="label">Dark Mode:</span>
+<div class="side-menu">
+    <span class="dark-mode">Dark Mode</span>
     <app-toggle-switch [(value)]="darkMode" />
 </div>
-
-<div class="holder">
-    <div class="backdrop">
-        @for(row of funBackdrop(); track $index) {
-        <div class="backdropRow">
-            @for(col of row; track $index) {
-                <span class="backdropItem {{ col }}"></span>
+<div class="main">
+    <div class="horizontally-centered-main">
+    <!-- Even though we don't want the color from color-strip, we want the spacing. -->
+    <div class="main-vertical-color-strip">
+    <div class="vertically-centered-main">
+        <div class="the-content">
+            @for(row of funBackdrop(); track $index) {
+                <div class="dot-row">
+                @for(col of row; track $index) {
+                    <span class="dot {{ col }}" style="{{ dotStyle() }}"></span>
+                }
+                </div>
             }
+            <div class="the-buttons">
+                <nav>
+                <ul>
+                    <!--
+                    <li>
+                        <app-nav-button [target]="'/join'" [text]="'Join'" [live]="false" />
+                    </li>
+                    -->
+                    <li>
+                        <app-nav-button [target]="'/host'"   [size]="buttonSize()" [pale]="true" [text]="'New Game'" />
+                    </li>
+                    <li>
+                        <app-nav-button [target]="'/design'" [size]="buttonSize()" [pale]="true" [text]="'Custom Rules'" />
+                    </li>
+                    <li>
+                        <app-nav-button [target]="'/play'"   [size]="buttonSize()" [pale]="true" [text]="'Resume Game'" [disable]="!setup.inGame()" />
+                    </li>
+                </ul>
+                </nav>
+            </div>
         </div>
-        }
     </div>
-</div>
-<div class="holder">
-    <nav>
-    <ul>
-        <!--
-        <li>
-            <app-nav-button [target]="'/join'" [text]="'Join'" [live]="false" />
-        </li>
-        -->
-        <li>
-            <app-nav-button [target]="'/host'"   [pale]="true" [text]="'Start Game'" />
-        </li>
-        <li>
-            <app-nav-button [target]="'/design'" [pale]="true" [text]="'Design Custom Rules'" />
-        </li>
-        <li>
-            <app-nav-button [target]="'/play'"   [pale]="true" [text]="'Return to Game'" [disable]="!setup.inGame()" />
-        </li>
-    </ul>
-    </nav>
+    </div>
+    </div>
 </div>

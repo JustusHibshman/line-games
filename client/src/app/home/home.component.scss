@@ -1,54 +1,51 @@
-div.holder {
+.main-vertical-color-strip {
+    background-color: transparent;
+}
+
+.the-content {
+    // Enables the-buttons to be positioned relative to this container,
+    //  including top: 50% referencing the size of this container.
+    position: relative;
+}
+
+.the-buttons {
     position: absolute;
-    height: 500px;
-    width: 1200px;
-    top: 0;
-    bottom: 0;
+    // Move this up half the height of it's parent (.the-content), which
+    //  turns out to be half the height of the dots
+    top: 50%;
     left: 0;
     right: 0;
-    margin: auto;
-
-    padding-bottom: 100px;
+    transform: translate(0, -50%);  // Move this up half it's own height
 
     display: flex;
-    align-items: center;
     justify-content: center;
 }
 
-div.backdrop {
-    display: block;
+.dot-row {
+    margin: 0;
+    line-height: 0px;
 }
 
-span.backdropItem {
+.dot {
     display: inline-block;
-    width: 36px;
-    height: 36px;
-    margin: 2px; // Total height and width of 40px
-    border-radius: 18px;
+    margin: 1px;
 }
 
-div.darkMode {
-    padding: 10px;
-}
-
-span.label {
-    margin-right: 10px;
+.dark-mode {
+    display: block;
+    margin-bottom: 10px;
 }
 
 nav {
+    width: 80%;
 
     ul {
         width: 100%;
-
         list-style: none;
-        display: inline-flex;
-        justify-content: center;
 
         li {
-            margin-left:   15px;
-            margin-right:  15px;
-            margin-top:    0px;
-            margin-bottom: 0px;
+            margin-top:    10px;
+            margin-bottom: 10px;
         }
     }
 }

@@ -20,7 +20,7 @@
     --input-background: #111111;
     --input-background-red:   17;   // #11 is equal to 17
     --input-background-green: 17;
-    --input-background-Blue:  17;
+    --input-background-blue:  17;
 
     --center-backdrop: #2f2f2f;
 
@@ -147,9 +147,9 @@
 }
 
 /*************** Full-page Styling  ***************/
+
 html, body {
-    height: 100%; // These are needed to enable the full-page div's use of 'height: 100%;'
-    width:  100%;
+    height: 100%; // These are needed to enable the full-page div's use of 'min-height: 100%;'
 }
 
 body {
@@ -158,11 +158,19 @@ body {
 }
 
 .full-page {
-    width:  100%;
-    height: 100%;
+    min-height: 100%;
 
     background-color: var(--site-background);
+
     color: var(--text-color);
+
+    // Since .main and .side-menu are inline-block, this centers them when .main
+    //  drops below .side-menu
+    text-align: center;
+
+    --side-menu-width: 160px;  // This number is also hard-coded into play/play.component.ts
+    // The smallest a typical phone screen gets -- also hard-coded into play/play.component.ts
+    --main-min-width:  360px;
 }
 
 /*************** Inputs  ***************/
@@ -248,4 +256,137 @@ body {
         }
         
     }
+}
+
+/*************** Page Layout -- Placing Chunks  ***************/
+
+.side-menu {
+    display: inline-block;  // Sits to the left of .main
+    vertical-align: top;
+    text-align: center;
+
+    --side-menu-padding: 8px;
+    padding: var(--side-menu-padding);
+    width: calc(var(--side-menu-width) - 2 * var(--side-menu-padding));
+}
+
+// The central content-holder
+//
+// This is guaranteed to be at least --main-min-width wide.
+.main {
+    display: inline-block;
+
+    // Either this sits to the right of .side-menu, or if the total available
+    //  width is less than --side-menu-width + --main-menu-width, then this
+    //  drops below the 'side' menu. If it drops below the 'side' menu, then it
+    //  has a width of --main-min-width.
+    --actual-main-width: max(calc(100vw - var(--side-menu-width)), var(--main-min-width));
+    width: var(--actual-main-width);
+}
+
+// If you want the content inside main to be in the center of the page rather
+//  than in the center of the space between the side menu and the right edge
+//
+// This is guaranteed to be at least --main-min-width wide.
+.horizontally-centered-main {
+    // There are three cases:
+    //
+    //  (1) .main sits to the right of .side-menu and has a width greater than:
+    //          (--side-menu-width + --main-min-width)
+    //  (2) .main sits to the right of .side-menu and has a width less than:
+    //          (--side-menu-width + --main-min-width)
+    //  (3) .main sits below .side-menu, is centered, and has a width of:
+    //          --main-min-width
+    //
+    // In case (1), we want no left margin and the margin on the right to be
+    //      --side-menu-width for balance.
+    // In case (2), we want no left margin and the margin on the right to be
+    //      (100% - --main-mid-width).
+    // In case (3), we want no margin.
+    //
+    // Fortunately, all three cases can be expressed as
+    //      min(--side-menu-width, --actual-main-width - --main-min-width).
+
+    --right-margin: min(var(--side-menu-width), calc(var(--actual-main-width) - var(--main-min-width)));
+    width: calc(100% - var(--right-margin));
+    margin-right: var(--right-margin);
+
+    text-align: center;
+    font-size: 18px;
+}
+
+.main-vertical-color-strip {
+    min-height: 100vh;
+    --mvcs-three-fourths-width: calc((100% + var(--main-min-width)) / 2);
+    min-width: var(--mvcs-three-fourths-width);
+
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--center-backdrop);
+}
+
+.vertically-centered-main {
+    --vcm-padding: 30px;
+    width: calc(100% - 2 * var(--vcm-padding));
+    padding: var(--vcm-padding);
+}
+
+/*************** Page Layout -- Small Pieces  ***************/
+
+.spacer {
+    &.huge {
+        height: 48px;
+    }
+    &.large {
+        height: 36px;
+    }
+    &.medium {
+        height: 24px;
+    }
+    &.small {
+        height: 12px;
+    }
+    &.tiny {
+        height: 6px;
+    }
+}
+
+.input-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, 250px);
+    column-gap: 20px;
+    row-gap: 10px;
+    justify-content: center;
+}
+
+.input {
+    display: inline-flex;
+    align-items: center;
+    justify-content: end;
+}
+
+.label {
+    display: inline-block;
+    margin-right: 10px;
+    overflow-wrap: break-word;
+    max-width: 100px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.labeled {
+    margin-left: 10px;
+}
+
+.aligned {
+    display: inline-flex;
+    align-items: center;
+    justify-content: end;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+h2 {
+    font-size: 24px;
 }

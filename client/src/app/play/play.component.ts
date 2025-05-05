@@ -1,4 +1,4 @@
-import { Component, computed, HostListener, inject, OnInit, signal, Signal } from '@angular/core';
+import { Component, computed, inject, signal, Signal } from '@angular/core';
 
 import { NavButtonComponent } from '@local-components/nav-button/nav-button.component';
 
@@ -7,6 +7,7 @@ import { Move } from '@local-types/move.type';
 
 import { SetupService } from '@local-services/setup.service';
 import { GameplayService } from '@local-services/gameplay.service';
+import { ScreenSizeService } from '@local-services/screen-size.service';
 
 @Component({
   selector: 'app-play',
@@ -14,10 +15,11 @@ import { GameplayService } from '@local-services/gameplay.service';
   templateUrl: './play.component.html',
   styleUrl: './play.component.scss'
 })
-export class PlayComponent implements OnInit {
+export class PlayComponent {
 
     setup = inject(SetupService);
     gameplay = inject(GameplayService);
+    screenSize = inject(ScreenSizeService);
 
     rawBoard = this.gameplay.getBoard();
     board = computed(() => this.safeBoard(this.rawBoard()));
@@ -27,8 +29,8 @@ export class PlayComponent implements OnInit {
 
     colors = ["empty", "B", "C", "F", "E", "D", "A"];
 
-    screenWidth = signal<number>(0);
-    screenHeight = signal<number>(0);
+    screenWidth  = this.screenSize.getWidth();
+    screenHeight = this.screenSize.getHeight();
 
     borderWidth: number = 4;
     // cellPadding: number = 10; -- not needed -- grid takes care of sizing cells
@@ -48,17 +50,6 @@ export class PlayComponent implements OnInit {
 
     hoverX = signal<number | null>(null);
     hoverY = signal<number | null>(null);
-
-    ngOnInit() {
-        this.screenWidth.set(window.innerWidth);
-        this.screenHeight.set(window.innerHeight);
-    }
-
-    @HostListener('window:resize', ['$event'])
-    onWindowResize() {
-        this.screenWidth.set(window.innerWidth);
-        this.screenHeight.set(window.innerHeight);
-    }
 
     selectSpot(m: Move): void {
         if (!this.gameplay.getGravity()) {
@@ -100,7 +91,11 @@ export class PlayComponent implements OnInit {
     }
 
     rawCellCalc(screenWidth: number, screenHeight: number) {
-        let maxWidth = screenWidth - (160 + 2 * this.borderWidth);
+        // 360 is the minimum width for the main content.
+        // 160 is the width of the side menu.
+        //
+        // These numbers are also hard-coded in ../../styles.scss
+        let maxWidth = Math.max(360, screenWidth - 160) - 2 * this.borderWidth;
         let maxHeight = screenHeight - 2 * this.borderWidth;
 
         let widthLimited  = maxWidth / this.numCols();

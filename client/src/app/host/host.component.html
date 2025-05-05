@@ -1,57 +1,61 @@
-<div class="menu">
+<div class="side-menu">
     <app-nav-button [target]='"/"' [text]='"Home"' />
 </div>
 
 <div class="main">
-    <span class="header">Choose the Game</span>
-    <div class="smallRowSpacer"></div>
-    <app-dropdown-menu [options]="specNames" (madeChoice)="loadConfig($event)" />
-    <div class="bigRowSpacer"></div>
-    <div class="bigRowSpacer"></div>
-    <span class="header">Choose the Number of AI and Human Players</span>
-    <div class="bigRowSpacer"></div>
-    <div class="inputRow">
-        <div class="inputRowItem">
-            <span class="label">Number of<br/>Players</span>
+    <div class="horizontally-centered-main">
+    <div class="main-vertical-color-strip">
+    <div class="vertically-centered-main">
+        <h2>Choose the Game</h2>
+        <div class="spacer small"></div>
+        <app-dropdown-menu [options]="specNames" [maxLength]="15" (madeChoice)="loadConfig($event)" />
+        <div class="spacer medium"></div>
+        <div class="spacer medium"></div>
+        <h2>Choose the Number of AI and Human Players</h2>
+        <div class="spacer medium"></div>
+        <div class="input">
+            <span class="label">Number of Players</span>
             <app-integer-input [(value)]="numPlayers"  [min]="2" [max]="6" (mayHaveChanged)="resizePlayerTypes()" />
         </div>
-    </div>
-    <div class="bigRowSpacer"></div>
-    <div class="playerTypeSelectors">
-        @for(pt of playerTypes(); track $index; let i = $index) {
-            <app-vertical-radio [options]="['Human', 'AI']" (value)="setPlayerType(i, $event)" />
-        }
-        <!--
-        <span>
-        <div class="aiTime">
-            <div>AI Compute Time</div>
-            <div class="tinyRowSpacer"></div>
-            <app-integer-input [min]="1" [max]="20" [(value)]="aiComputeTime" 
-                [disable]="playerTypes[0]() != PlayerTypes.AI && 
-                           playerTypes[1]() != PlayerTypes.AI &&
-                           playerTypes[2]() != PlayerTypes.AI &&
-                           playerTypes[3]() != PlayerTypes.AI &&
-                           playerTypes[4]() != PlayerTypes.AI &&
-                           playerTypes[5]() != PlayerTypes.AI" />
+        <div class="spacer medium"></div>
+        <div class="input-group">
+            @for(pt of playerTypes(); track $index; let i = $index) {
+                <app-vertical-radio [options]="['Human', 'AI']" (value)="setPlayerType(i, $event)" />
+            }
+            <!--
+            <span>
+            <div class="input">
+                <div>AI Compute Time</div>
+                <div class="spacer tiny"></div>
+                <app-integer-input [min]="1" [max]="20" [(value)]="aiComputeTime" 
+                    [disable]="playerTypes[0]() != PlayerTypes.AI && 
+                               playerTypes[1]() != PlayerTypes.AI &&
+                               playerTypes[2]() != PlayerTypes.AI &&
+                               playerTypes[3]() != PlayerTypes.AI &&
+                               playerTypes[4]() != PlayerTypes.AI &&
+                               playerTypes[5]() != PlayerTypes.AI" />
+            </div>
+            </span>
+            -->
         </div>
-        </span>
-        -->
-    </div>
 
-    <!--
-    <div class="bigRowSpacer"></div>
-    <div>
-        <span class="label">Game Name</span>
-        <app-text-box [(text)]="gameName" [maxLength]="13" class="label" />
-        <span class="label">Password</span>
-        <app-text-box [(text)]="password" [maxLength]="10" class="label" />
+        <!--
+        <div class="spacer medium"></div>
+        <div>
+            <span class="label">Game Name</span>
+            <app-text-box [(text)]="gameName" [maxLength]="13" class="label" />
+            <span class="label">Password</span>
+            <app-text-box [(text)]="password" [maxLength]="10" class="label" />
+        </div>
+        -->
+        <div class="spacer medium"></div>
+        <div>
+            <app-action-button [text]="'Launch Game'"
+                    [disable]="!rulesReady() || gameName().trim() == '' ||
+                               numHumans() == 0 || numSelected() < numPlayers()"
+                    (click)="hostGame()" />
+        </div>
     </div>
-    -->
-    <div class="bigRowSpacer"></div>
-    <div>
-        <app-action-button [text]="'Launch Game'"
-                [disable]="!rulesReady() || gameName().trim() == '' ||
-                           numHumans() == 0 || numSelected() < numPlayers()"
-                (click)="hostGame()" />
+    </div>
     </div>
 </div>

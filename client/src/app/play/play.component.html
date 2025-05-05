@@ -1,25 +1,28 @@
-<div class="menu">
+<div class="side-menu">
     <app-nav-button [target]='"/"' [text]='"Home"' />
 
-    <div class="bigRowSpacer"></div>
+    <div class="spacer medium"></div>
     <div class="status">
-        <span class="statusText">Winner:</span>
+        <span class="status-text">Winner:</span>
         @if(winner() != -1) {
-            <span [class]="'winMarker solid-' + colors[winner() + 1]"></span>
+            <span [class]="'win-marker solid-' + colors[winner() + 1]"></span>
         } @else {
-            <span class="statusText">None</span>
+            <span class="status-text">None</span>
         }
     </div>
     <div>
         @for(numCaptures of captures(); track $index; let i = $index) {
         <div class="status">
-            <span [class]="'captureMarker solid-' + colors[i + 1]"></span><span class="statusText">Captures: {{ numCaptures }}</span>
+            <span [class]="'capture-marker solid-' + colors[i + 1]"></span>
+            <span class="status-text">Captures: {{ numCaptures }}</span>
         </div>
         }
     </div>
 </div>
 
 <div class="main">
+    <div class="horizontally-centered-main">
+    <div class="main-vertical-color-strip">
     <div class="the-grid" style="{{ gridStyle() }}" >
         @for(row of board(); track $index; let r = $index) {
             @for(col of row; track $index; let c = $index) {
@@ -32,5 +35,7 @@
         } @empty {
             <p>[No Game]</p>
         }
+    </div>
+    </div>
     </div>
 </div>
