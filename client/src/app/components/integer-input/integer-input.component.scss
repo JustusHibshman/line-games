@@ -1,3 +1,7 @@
+div {
+    width: max-content;
+}
+
 .clicker {
     font-family: "Arial";  // Makes better + and - signs
     height: calc(var(--font-size) * 2);
