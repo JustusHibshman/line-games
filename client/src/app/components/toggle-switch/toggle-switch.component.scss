@@ -3,6 +3,8 @@ label.slider {
     position: relative;
     margin: 0px;
     padding: 0px;
+
+    height: 30px;
 }
 
 
@@ -54,11 +56,11 @@ input:disabled ~ span.slider {
 }
 
 input:checked ~ span.slider-backdrop {
-    border: 2px solid var(--color-C);
+    border: 2px solid var(--alt-color-A);
 }
 
 input:checked ~ span.slider {
-    background-color: var(--color-C);
+    background-color: var(--alt-color-A);
     transform: translateX(20px);
 }
 

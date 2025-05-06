@@ -4,15 +4,17 @@
     --color-A: #a0800c;
     --alt-color-A: #af8f1b;
 
-    --color-B: #06b0a2;
-    --alt-color-B: #1bd4c5;
+    --color-B: #17b2a5;
+    --alt-color-B: #18bfb1;
+    // --color-B: #06b0a2;      // old
+    // --alt-color-B: #1bd4c5;  // old
 
     --color-C: #3a7f02;
     --alt-color-C: #4a7d21;
 
-    --color-D: #582b90;
+    --color-D: #081675;
     --color-E: #bb3a12;
-    --color-F: #555555;
+    --color-F: #444444;
 
     --inactive-color: #555555;
     --input-hover-background: #000000;
@@ -22,48 +24,51 @@
     --input-background-green: 17;
     --input-background-blue:  17;
 
-    --center-backdrop: #2f2f2f;
+    --center-backdrop: #181818;
+    --game-backdrop: #141414;
 
-    --site-background: #202020;
+    --site-background: black;
     --game-border-color: var(--site-background);
 
-    --text-color: #e0e0e0;
+    --text-color: #d0d0d0;
 }
 
 .light-theme {
+    // --original-A: #78a680;
+    --color-A: #5f8566; // Light green
+    --alt-color-A: #4d7454; // (darker)
 
-    --color-A: #c34904; // Reddish orange
-    --alt-color-A: #aa4005;
+    --color-B: #2f316b; // Navy blue
+    --alt-color-B: #222461; // (darker) -- the original
 
-    --color-B: #001c7d; // Navy blue
-    --alt-color-B: #001768;
+    --color-C: #c5b533; // Yellow-green
+    --alt-color-C: #ab9d2d; // (darker)
 
-    --color-C: #105903; // Dark green
-    --alt-color-C: #146b04;
+    --color-D: #8da8ae; // Light blue-gray
+    --alt-color-D: #a8bdc2; // (lighter)
 
-    --color-D: #770092; // Purple
-    // --lightColorD: #66007d;
+    --color-E: #ac5723; // Red-orange-brown
+    // --alt-color-E: #ac5723;
 
-    --color-E: #83680a; // Yellow-gold
-    // --lightColorE: #a3810c;
+    --color-F: #e5a938; // Orange
+    // --alt-color-F: #e5a938;
 
-    --color-F: #444444; // Gray
+    --inactive-color: #aaaaaa;
 
-    --inactive-color: #555555;
+    --input-background: #dddddd;
+    --input-background-red:   208;   // #dd is equal to 208
+    --input-background-green: 208;
+    --input-background-blue:  208;
 
-    --input-background: #bbbbbb;
-    --input-background-red:   187;   // #bb is equal to 187
-    --input-background-green: 187;
-    --input-background-blue:  187;
+    --input-hover-background: #cccccc;
 
-    --input-hover-background: #aaaaaa;
+    --center-backdrop: var(--alt-color-D);
+    --game-backdrop: #cedee0;  // halfway between white and alt-color-D
 
-    --center-backdrop: #999999;
-
-    --site-background: #cccccc;
+    --site-background: #ffffff;
     --game-border-color: var(--site-background);
 
-    --text-color: #000000;
+    --text-color: var(--alt-color-B);
 }
 
 .solid-A {

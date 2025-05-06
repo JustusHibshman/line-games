@@ -27,7 +27,7 @@ export class PlayComponent {
     winner = this.gameplay.getWinner();
     captures = this.gameplay.getCaptures();
 
-    colors = ["empty", "B", "C", "F", "E", "D", "A"];
+    colors = ["empty", "E", "F", "A", "B", "C", "D"];
 
     screenWidth  = this.screenSize.getWidth();
     screenHeight = this.screenSize.getHeight();

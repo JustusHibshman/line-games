@@ -30,7 +30,7 @@ export class LobbyComponent implements OnInit {
     seatSelected = signal<Array<boolean>>([]);
     visibilityText: any = [];
 
-    colors = ["B", "C", "F", "E", "D", "A"];
+    colors = ["E", "F", "A", "B", "C", "D"];
 
     requestedSeats = signal<number>(1);
     requestedSeatsText = computed(() => "Claim " + this.requestedSeats() + " Seat" + 
