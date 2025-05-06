@@ -9,7 +9,7 @@
     <div class="spacer medium"></div>
     <div>
         <app-help-hover-box class="label" [text]="'Clicking on one of these green preset buttons loads a saved set of game rules into the menu in the center.'" />
-        <span>Presets:</span>
+        <span>Presets</span>
     </div>
     <div class="spacer small"></div>
     @for(key of specNames; track $index) {
@@ -24,7 +24,7 @@
     <div class="horizontally-centered-main">
     <div class="main-vertical-color-strip">
     <div class="vertically-centered-main">
-        <h2>Adjust the Game Specifications</h2>
+        <h2>Create Your Own Game Rules</h2>
         <div class="spacer medium"></div>
         <div class="input-group">
             <div class="input">
@@ -96,7 +96,7 @@
             <app-text-box [(text)]="configName" [maxLength]="15" />
         </span>
         <span class="aligned">
-            <app-action-button class="labeled" [color]="'B'" [text]="'Save Rules as Preset'"
+            <app-action-button class="labeled" [text]="'Save Rules as Preset'"
                     [disable]="configName().trim() == ''"
                     (click)="saveConfigAsPreset()" />
         </span>

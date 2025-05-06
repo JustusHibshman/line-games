@@ -60,10 +60,11 @@
     --input-background-green: 208;
     --input-background-blue:  208;
 
-    --input-hover-background: #cccccc;
+    --input-hover-background: #eeeeee;
 
-    --center-backdrop: var(--alt-color-D);
-    --game-backdrop: #cedee0;  // halfway between white and alt-color-D
+    // halfway between white and alt-color-D
+    --center-backdrop: #cedee0;
+    --game-backdrop: #cedee0;
 
     --site-background: #ffffff;
     --game-border-color: var(--site-background);

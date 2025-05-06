@@ -10,5 +10,5 @@ export class ActionButtonComponent {
     text    = input.required<string>();
     disable = input<boolean>(false);
     size    = input<string>("medium");
-    color   = input<string>("C");
+    color   = input<string>("A");
 }

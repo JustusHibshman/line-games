@@ -10,7 +10,7 @@ import { RouterLink } from '@angular/router';
 export class NavButtonComponent {
     target  = input.required<string>();
     text    = input.required<string>();
-    color   = input<string>("A");
+    color   = input<string>("B");
     size    = input<string>("huge");
     disable = input<boolean>(false);
     pale    = input<boolean>(false);
