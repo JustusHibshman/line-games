@@ -280,7 +280,7 @@ body {
     //  width is less than --side-menu-width + --main-menu-width, then this
     //  drops below the 'side' menu. If it drops below the 'side' menu, then it
     //  has a width of --main-min-width.
-    --actual-main-width: max(calc(100vw - var(--side-menu-width)), var(--main-min-width));
+    --actual-main-width: max(calc(100% - var(--side-menu-width)), var(--main-min-width));
     width: var(--actual-main-width);
 }
 
