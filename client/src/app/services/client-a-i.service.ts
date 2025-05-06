@@ -112,12 +112,25 @@ export class ClientAIService {
             captureScores = Array.from({length: this.numPlayers}, () => 0);
         }
 
-        // Sub-lines
+        // Sub-lines and win chances
         let rawLineScores: Array<number> = Array.from({length: this.numPlayers}, () => 0);
+        let rawWinChances:  Array<number> = Array.from({length: this.numPlayers}, () => 0);
+
         let lineSize: number = this.gSpec.rules.winningLength;
-        let checkSize: number = Math.max(lineSize - 2, 2);
         let w = this.gSpec.board.width;
         let h = this.gSpec.board.height;
+
+        let withinCaptureWinRange: boolean = false;
+        let withinCaptureWinRangeByPlayer: Array<boolean> = Array.from({length: this.numPlayers}, () => false);
+        if (this.gSpec.rules.winByCaptures) {
+            for (let p = 0; p < this.numPlayers; p++) {
+                if (gState.captures[p] == this.gSpec.rules.winningNumCaptures - 1) {
+                    withinCaptureWinRangeByPlayer[p] = true;
+                    withinCaptureWinRange = true;
+                }
+            }
+        }
+
         for (let r = 0; r < h; r++) {
             for (let c = 0; c < w; c++) {
                 let rInc = [0,  1, 1, 1];
@@ -127,10 +140,16 @@ export class ClientAIService {
                                                   col: c + lineSize * cInc[dir]}, this.gSpec)) {
                         continue;
                     }
+
                     let firstPlayer = -1;
+                    let emptySpot = {row: -1, col: -1};
                     let count = 0;
+
+                    // Check lines
                     for (let step = 0; step < lineSize; step++) {
-                        let p = gState.board[r + step * rInc[dir]][c + step * cInc[dir]];
+                        let rCheck = r + step * rInc[dir];
+                        let cCheck = c + step * cInc[dir];
+                        let p = gState.board[rCheck][cCheck];
                         if (p != -1) {
                             if (firstPlayer == -1) {
                                 firstPlayer = p;
@@ -141,30 +160,48 @@ export class ClientAIService {
                                 count = 0;
                                 break;
                             }
+                        } else {
+                            emptySpot = {row: rCheck, col: cCheck};
                         }
                     }
                     if (count > 0) {
                         rawLineScores[firstPlayer] += count * count * count * count * count;
+                        if (count == lineSize - 1 && this.gsService.isLegal(emptySpot, this.gSpec, gState)) {
+                            rawWinChances[firstPlayer] = rawWinChances[firstPlayer] + 1;
+                        }
                     }
-                }
-            }
-        }
-        let lineScores = this.normalizeHeuristicNumbers(rawLineScores);
 
-        // Ability to win immediately -- loosely calculated
-        let rawWinChances:  Array<number> = Array.from({length: this.numPlayers}, () => 0);
-        for (let r = 0; r < h; r++) {
-            for (let c = 0; c < w; c++) {
-                let m = {row: r, col: c};
-                if (this.gsService.isLegal(m, this.gSpec, gState)) {
-                    for (let player = 0; player < this.numPlayers; player++) {
-                        if (this.playerCouldWinHere(player, gState, m)) {
-                            rawWinChances[player] = rawWinChances[player] + 1;
+                    if (withinCaptureWinRange) {
+                        // Check captures as potential raw win chances
+                        let endRow = r + this.gSpec.rules.captureSize * rInc[dir];
+                        let endCol = c + this.gSpec.rules.captureSize * cInc[dir];
+                        let p1 = gState.board[r][c];
+                        let p2 = gState.board[endRow][endCol];
+                        if ((p1 == -1) != (p2 == -1)) {
+                            // One is empty and the other is not
+                            p1 = Math.max(p1, p2);
+                            if (withinCaptureWinRangeByPlayer[p1]) {
+                                let couldCapture = true;
+                                for (let step = 1; step < this.gSpec.rules.captureSize - 1; step++) {
+                                    p2 = gState.board[r + step * rInc[dir]][c + step * cInc[dir]];
+                                    if (p2 == -1 || p2 == p1) {
+                                        couldCapture = false;
+                                        break;
+                                    }
+                                }
+                                if (couldCapture) {
+                                    rawWinChances[p1] = rawWinChances[p1] + 1;
+                                }
+                            }
                         }
                     }
                 }
             }
         }
+        // Post-process raw line scores
+        let lineScores = this.normalizeHeuristicNumbers(rawLineScores);
+
+        // Post-process raw win chances
         let turnsUntilTurn: Array<number> = Array.from({length: this.numPlayers}, () => 0);
         for (let t = 0; t < this.numPlayers; t++) {
             let player = (gState.turn + t) % this.numPlayers;
@@ -239,17 +276,6 @@ export class ClientAIService {
             }
         }
         return result;
-    }
-
-    // Acts as if it were player's turn regardless of whose turn it actually is.
-    // Acts as if the spot were open regardless of whether it actually is.
-    playerCouldWinHere(player: number, gState: GameState, m: Move): boolean {
-        let newGS: GameState = copyGameState(gState);
-        newGS.board[m.row][m.col] = -1;
-        newGS.player = player;
-        this.gsService.makeMove(m, newGS, this.gSpec, this.numPlayers);
-        let winner = this.gsService.checkForVictor(m, newGS, this.gSpec);
-        return winner == player;
     }
 
     primitiveAIChoiceHelper(gState: GameState, depth: number): Move {
