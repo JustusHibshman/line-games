@@ -9,12 +9,15 @@ import { ToggleSwitchComponent } from '@local-components/toggle-switch/toggle-sw
 
 import { GameSpec, copyGameSpec }   from '@local-types/game-spec.type';
 
+import { SortedPipe } from '@local-pipes/sorted.pipe';
+
 import { RulePresetsService } from '@local-services/rule-presets.service';
 
 @Component({
   selector: 'app-design',
   imports: [ActionButtonComponent, HelpHoverBoxComponent, IntegerInputComponent,
-            NavButtonComponent, TextBoxComponent, ToggleSwitchComponent],
+            NavButtonComponent, TextBoxComponent, ToggleSwitchComponent,
+            SortedPipe],
   templateUrl: './design.component.html',
   styleUrl: './design.component.scss'
 })

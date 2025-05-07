@@ -30,7 +30,7 @@ export class RulePresetsService {
     }
 
     getSpecNames(): Array<string> {
-        return Object.keys(this.specs).sort(this.stringComp);
+        return Object.keys(this.specs);
     }
 
     saveConfigAsPreset(name: string, gs: GameSpec): void {
@@ -105,20 +105,5 @@ export class RulePresetsService {
                 winningNumCaptures: 5,
             },
         }
-    }
-
-    stringComp(a: string, b: string): number {
-        let aLow = a.toLowerCase();
-        let bLow = b.toLowerCase();
-        if (aLow < bLow) {
-            return -1;
-        } else if (aLow > bLow) {
-            return 1;
-        } else if (a < b) {
-            return -1;
-        } else if (a > b) {
-            return -1;
-        }
-        return 0;
     }
 }

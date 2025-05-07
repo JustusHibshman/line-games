@@ -12,6 +12,7 @@ export class DropdownMenuComponent {
 
     options = input.required<Array<string>>();
     text = signal<string>("");
+    filteredOptions = computed(() => this.options().filter(this.containsFn(this.text())));
 
     maxLength = input<number>(15);
     size = input<string>("medium");
@@ -21,51 +22,22 @@ export class DropdownMenuComponent {
 
     madeChoice = output<string>();
 
-    filteredOptions = computed(() => this.filterOptions(this.text(), this.options()));
-
     focused(): void {
         this.hidden.set("");
     }
 
     unFocused(): void {
-        let filtOp: Array<string> = this.filteredOptions();
-        if (filtOp.length == 1) {
-            this.makeChoice(filtOp[0]);
+        if (this.filteredOptions().length == 1) {
+            this.makeChoice(this.filteredOptions()[0]);
+        } else {
+            this.hideDropdown();
         }
-        this.hideDropdown();
     }
 
     makeChoice(choice: string) {
         this.text.set(choice);
         this.madeChoice.emit(choice);
         this.hideDropdown();
-    }
-
-    filterOptions(text: string, options: Array<string>): Array<string> {
-        text = text.toLowerCase();
-        let result: Array<string> = [];
-        for (let i = 0; i < options.length; i++) {
-            if (options[i].toLowerCase().includes(text)) {
-                result.push(options[i])
-            }
-        }
-        result = result.sort((a, b) => this.stringComp(a, b));
-        return result;
-    }
-
-    stringComp(a: string, b: string): number {
-        let aLow = a.toLowerCase();
-        let bLow = b.toLowerCase();
-        if (aLow < bLow) {
-            return -1;
-        } else if (aLow > bLow) {
-            return 1;
-        } else if (a < b) {
-            return -1;
-        } else if (a > b) {
-            return -1;
-        }
-        return 0;
     }
 
     hideDropdown(): void {
@@ -75,5 +47,10 @@ export class DropdownMenuComponent {
 
     hideDropdownHelper(context: DropdownMenuComponent): void {
         context.hidden.set("hidden");
+    }
+
+    containsFn(subString: string): (s: string) => boolean {
+        let lowerSubString = subString.toLowerCase();
+        return (s: string) => s.toLowerCase().includes(lowerSubString);
     }
 }

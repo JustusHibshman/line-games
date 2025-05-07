@@ -10,13 +10,16 @@ import { VerticalRadioComponent } from '@local-components/vertical-radio/vertica
 import { GameSpec, copyGameSpec }   from '@local-types/game-spec.type';
 import { PlayerType } from '@local-types/player-type.type';
 
+import { SortedPipe } from '@local-pipes/sorted.pipe';
+
 import { SetupService } from '@local-services/setup.service';
 import { RulePresetsService } from '@local-services/rule-presets.service';
 
 @Component({
   selector: 'app-host',
   imports: [ActionButtonComponent, IntegerInputComponent, NavButtonComponent,
-            ToggleSwitchComponent, VerticalRadioComponent],
+            ToggleSwitchComponent, VerticalRadioComponent,
+            SortedPipe],
   templateUrl: './host.component.html',
   styleUrl: './host.component.scss'
 })

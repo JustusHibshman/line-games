@@ -13,7 +13,7 @@
                 <app-help-hover-box [text]="'Clicking on one of these green preset buttons loads a saved set of game rules into the menu in the center.'" />
                 <span>Presets</span>
             </div>
-            @for(key of specNames; track $index) {
+            @for(key of specNames | sorted; track $index) {
                 <app-action-button [text]="key" (click)="loadConfig(key)" />
             }
         </div>

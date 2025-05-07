@@ -6,11 +6,14 @@ import { TextBoxComponent } from '@local-components/text-box/text-box.component'
 
 import { GameListing } from '@local-types/game-listing.type';
 
+import { SortedPipe } from '@local-pipes/sorted.pipe';
+
 import { SetupService } from '@local-services/setup.service';
 
 @Component({
   selector: 'app-join',
-  imports: [ActionButtonComponent, NavButtonComponent, TextBoxComponent],
+  imports: [ActionButtonComponent, NavButtonComponent, TextBoxComponent,
+            SortedPipe],
   templateUrl: './join.component.html',
   styleUrl: './join.component.scss'
 })
@@ -22,6 +25,8 @@ export class JoinComponent implements OnInit {
         { gameID: 1, name: "Fried Chicken" },
         { gameID: 17, name: "Lucky 17"},
     ];
+
+    test = ["Hello", "Abc", "1dchess", "Zeta"];
 
     typed: any = [];
 
@@ -44,5 +49,9 @@ export class JoinComponent implements OnInit {
         } else {
             return 0;
         }
+    }
+
+    getGameName(g: GameListing): string {
+        return g.name;
     }
 }

@@ -9,7 +9,7 @@
     <div class="main-vertical-color-strip">
     <div class="spaced-column padded">
         <h2>Choose the Game</h2>
-        <app-vertical-radio [options]="specNames" (value)="loadConfig($event)" />
+        <app-vertical-radio [options]="specNames | sorted" (value)="loadConfig($event)" />
         <span></span>
         <h2>Choose the Number of AI and Human Players</h2>
         <div class="middle-aligned-row">
