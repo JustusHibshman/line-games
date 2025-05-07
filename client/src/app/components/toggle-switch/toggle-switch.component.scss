@@ -1,9 +1,6 @@
 label.slider {
     display: inline-block;
     position: relative;
-    margin: 0px;
-    padding: 0px;
-
     height: 30px;
 }
 
@@ -12,7 +9,6 @@ input.slider {
     opacity: 0;
     width: 0;
     height: 0;
-    margin: 0;
 }
 
 span.slider-backdrop {

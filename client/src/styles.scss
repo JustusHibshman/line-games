@@ -152,7 +152,7 @@
     }
 }
 
-/*************** Full-page Styling  ***************/
+/*************** Full-site Styling  ***************/
 
 html, body {
     height: 100%; // These are needed to enable the full-page div's use of 'min-height: 100%;'
@@ -163,20 +163,11 @@ body {
     font-size:   18px;
 }
 
-.full-page {
-    min-height: 100%;
+.color-theme {
+    min-height: 100%; // Needed to ensure the whole background is the proper color
 
     background-color: var(--site-background);
-
     color: var(--text-color);
-
-    // Since .main and .side-menu are inline-block, this centers them when .main
-    //  drops below .side-menu
-    text-align: center;
-
-    --side-menu-width: 160px;  // This number is also hard-coded into play/play.component.ts
-    // The smallest a typical phone screen gets -- also hard-coded into play/play.component.ts
-    --main-min-width:  360px;
 }
 
 /*************** Inputs  ***************/
@@ -260,17 +251,22 @@ body {
         &.rounded {
             border-radius: 3.5px;
         }
-        
     }
 }
 
 /*************** Page Layout -- Placing Chunks  ***************/
 
-.side-menu {
-    display: inline-block;  // Sits to the left of .main
-    vertical-align: top;
-    text-align: center;
+.full-page {
+    --side-menu-width: 160px;  // This number is also hard-coded into play/play.component.ts
+    // The smallest a typical phone screen gets -- also hard-coded into play/play.component.ts
+    --main-min-width:  360px;
 
+    text-align: center;
+}
+
+.side-menu {
+    display: inline-block;
+    vertical-align: top;
     --side-menu-padding: 8px;
     padding: var(--side-menu-padding);
     width: calc(var(--side-menu-width) - 2 * var(--side-menu-padding));
@@ -281,7 +277,6 @@ body {
 // This is guaranteed to be at least --main-min-width wide.
 .main {
     display: inline-block;
-
     // Either this sits to the right of .side-menu, or if the total available
     //  width is less than --side-menu-width + --main-menu-width, then this
     //  drops below the 'side' menu. If it drops below the 'side' menu, then it
@@ -326,35 +321,48 @@ body {
     --mvcs-three-fourths-width: calc((100% + var(--main-min-width)) / 2);
     min-width: var(--mvcs-three-fourths-width);
 
-    display: inline-flex;
-    justify-content: center;
+    display: inline-flex;  // The inline- aspect causes this to be no wider than necessary
     align-items: center;
+    justify-content: center;
     background-color: var(--center-backdrop);
-}
-
-.vertically-centered-main {
-    --vcm-padding: 30px;
-    width: calc(100% - 2 * var(--vcm-padding));
-    padding: var(--vcm-padding);
 }
 
 /*************** Page Layout -- Small Pieces  ***************/
 
-.spacer {
-    &.huge {
-        height: 48px;
+.padded {
+    --padding: 30px;
+    width: calc(100% - 2 * var(--padding));
+    padding: var(--padding);
+}
+
+.spaced-column {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+
+    &.close {
+        gap: 12px;
     }
-    &.large {
-        height: 36px;
+}
+
+.middle-aligned-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    justify-content: center;
+    gap: 10px;
+
+    &.spread-out {
+        justify-content: space-evenly;
     }
-    &.medium {
-        height: 24px;
+
+    &.right-justified {
+        justify-content: end;
     }
-    &.small {
-        height: 12px;
-    }
-    &.tiny {
-        height: 6px;
+
+    &.wrap {
+        flex-wrap: wrap;
     }
 }
 
@@ -366,31 +374,10 @@ body {
     justify-content: center;
 }
 
-.input {
-    display: inline-flex;
-    align-items: center;
-    justify-content: end;
-}
-
 .label {
     display: inline-block;
-    margin-right: 10px;
     overflow-wrap: break-word;
     max-width: 100px;
-    margin-top: 5px;
-    margin-bottom: 5px;
-}
-
-.labeled {
-    margin-left: 10px;
-}
-
-.aligned {
-    display: inline-flex;
-    align-items: center;
-    justify-content: end;
-    margin-top: 5px;
-    margin-bottom: 5px;
 }
 
 h2 {

@@ -128,12 +128,19 @@ export class PlayComponent {
         this.hoverY.set(null);
     }
 
-    hoverAs(shouldHover: boolean) {
-        if (shouldHover) {
-            return this.colors[this.currentPlayer() + 1];
-        } else {
-            return "";
+    displayColor(r: number, c: number, player: number): string {
+        if (this.empty(r, c)) {
+            return this.colors[player + 1];
         }
+        return this.colors[this.board()[r][c] + 1];
+    }
+
+    hover(r: number, c: number, hoverX: number | null, hoverY: number | null): boolean {
+        return r == hoverY && c == hoverX;
+    }
+
+    empty(r: number, c: number): boolean {
+        return this.board()[r][c] == -1;
     }
 
     safeBoard(b: Array<Array<number>> | undefined): Array<Array<number>> {

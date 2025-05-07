@@ -1,12 +1,16 @@
-<div class="side-menu">
-    <span class="dark-mode">Dark Mode</span>
-    <app-toggle-switch [(value)]="darkMode" />
-</div>
-<div class="main">
+<div class="full-page">
+
+    <div class="side-menu">
+        <div class="spaced-column close">
+            <span>Dark Mode</span>
+            <app-toggle-switch [(value)]="darkMode" />
+        </div>
+    </div>
+
+    <div class="main">
     <div class="horizontally-centered-main">
     <!-- Even though we don't want the color from color-strip, we want the spacing. -->
     <div class="main-vertical-color-strip">
-    <div class="vertically-centered-main">
         <div class="the-content">
             @for(row of funBackdrop(); track $index) {
                 <div class="dot-row">
@@ -39,4 +43,5 @@
     </div>
     </div>
     </div>
+
 </div>

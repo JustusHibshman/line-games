@@ -22,7 +22,6 @@
 }
 
 .dot-row {
-    margin: 0;
     line-height: 0px;
 }
 
@@ -31,21 +30,14 @@
     margin: 1px;
 }
 
-.dark-mode {
-    display: block;
-    margin-bottom: 10px;
-}
-
 nav {
     width: 80%;
 
     ul {
         width: 100%;
         list-style: none;
-
-        li {
-            margin-top:    10px;
-            margin-bottom: 10px;
-        }
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
     }
 }

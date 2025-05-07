@@ -1,3 +1,5 @@
+<div class="full-page">
+
 <div class="side-menu">
     <app-nav-button [target]='"/"' [text]='"Home"' />
 </div>
@@ -5,19 +7,15 @@
 <div class="main">
     <div class="horizontally-centered-main">
     <div class="main-vertical-color-strip">
-    <div class="vertically-centered-main">
+    <div class="spaced-column padded">
         <h2>Choose the Game</h2>
-        <div class="spacer small"></div>
         <app-vertical-radio [options]="specNames" (value)="loadConfig($event)" />
-        <div class="spacer medium"></div>
-        <div class="spacer medium"></div>
+        <span></span>
         <h2>Choose the Number of AI and Human Players</h2>
-        <div class="spacer medium"></div>
-        <div class="input">
+        <div class="middle-aligned-row">
             <span class="label">Number of Players</span>
             <app-integer-input [(value)]="numPlayers"  [min]="2" [max]="6" (mayHaveChanged)="resizePlayerTypes()" />
         </div>
-        <div class="spacer medium"></div>
         <div class="input-group">
             @for(pt of ptChoices(); track $index; let i = $index) {
                 <div class="player-selector interface medium content-B">
@@ -25,25 +23,8 @@
                     <span>Human</span><app-toggle-switch [(value)]="pt" /><span>AI</span>
                 </div>
             }
-            <!--
-            <span>
-            <div class="input">
-                <div>AI Compute Time</div>
-                <div class="spacer tiny"></div>
-                <app-integer-input [min]="1" [max]="20" [(value)]="aiComputeTime" 
-                    [disable]="playerTypes[0]() != PlayerTypes.AI && 
-                               playerTypes[1]() != PlayerTypes.AI &&
-                               playerTypes[2]() != PlayerTypes.AI &&
-                               playerTypes[3]() != PlayerTypes.AI &&
-                               playerTypes[4]() != PlayerTypes.AI &&
-                               playerTypes[5]() != PlayerTypes.AI" />
-            </div>
-            </span>
-            -->
         </div>
-
         <!--
-        <div class="spacer medium"></div>
         <div>
             <span class="label">Game Name</span>
             <app-text-box [(text)]="gameName" [maxLength]="13" class="label" />
@@ -51,7 +32,6 @@
             <app-text-box [(text)]="password" [maxLength]="10" class="label" />
         </div>
         -->
-        <div class="spacer medium"></div>
         <div>
             <app-action-button [text]="'Launch Game'"
                     [disable]="!rulesReady() || gameName().trim() == '' || numHumans() == 0"
@@ -60,4 +40,6 @@
     </div>
     </div>
     </div>
+</div>
+
 </div>

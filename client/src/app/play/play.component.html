@@ -1,26 +1,29 @@
-<div class="side-menu">
-    <app-nav-button [target]='"/"' [text]='"Home"' />
+<div class="full-page">
 
-    <div class="spacer medium"></div>
-    <div class="status">
-        <span class="status-text">Winner:</span>
-        @if(winner() != -1) {
-            <span [class]="'win-marker solid-' + colors[winner() + 1]"></span>
-        } @else {
-            <span class="status-text">None</span>
-        }
-    </div>
-    <div>
-        @for(numCaptures of captures(); track $index; let i = $index) {
-        <div class="status">
-            <span [class]="'capture-marker solid-' + colors[i + 1]"></span>
-            <span class="status-text">Captures: {{ numCaptures }}</span>
+    <div class="side-menu">
+    <div class="spaced-column">
+        <app-nav-button [target]='"/"' [text]='"Home"' />
+
+        <div class="middle-aligned-row spread-out">
+            <span>Winner:</span>
+            @if(winner() != -1) {
+                <span [class]="'win-marker solid-' + colors[winner() + 1]"></span>
+            } @else {
+                <span>None</span>
+            }
         </div>
-        }
+        <div class="spaced-column close">
+            @for(numCaptures of captures(); track $index; let i = $index) {
+            <div class="middle-aligned-row">
+                <span [class]="'capture-marker solid-' + colors[i + 1]"></span>
+                <span>Captures: {{ numCaptures }}</span>
+            </div>
+            }
+        </div>
     </div>
-</div>
+    </div>
 
-<div class="main">
+    <div class="main">
     <div class="horizontally-centered-main">
     <div class="main-vertical-color-strip">
     <div class="the-grid" style="{{ gridStyle() }}" >
@@ -28,13 +31,16 @@
             @for(col of row; track $index; let c = $index) {
             <div class="spot" (click)="selectSpot({row: r, col: c})"
                     (mouseenter)="beginHover({row: r, col: c})" (mouseleave)="endHover()" >
-                <div class="piece solid-{{ colors[board()[r][c] + 1] }} hover-{{ hoverAs(r == hoverY() && c == hoverX()) }}">
+                <div class="piece solid-{{ displayColor(r, c, currentPlayer()) }}"
+                     [class.empty]="empty(r, c)"
+                     [class.hover]="hover(r, c, hoverX(), hoverY())" >
                 </div>
             </div>
             }
         } @empty {
             <p>[No Game]</p>
         }
+    </div>
     </div>
     </div>
     </div>

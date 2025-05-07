@@ -1,105 +1,99 @@
-<div class="side-menu">
-    <app-nav-button [target]='"/"' [text]='"Home"' />
+<div class="full-page">
 
-    <div class="spacer medium"></div>
-    <div>
-        <app-help-hover-box class="label" [text]="'Erases all saved presets other than Link Four, Pente, and Tic-Tac-Toe. If you have modified any of those three presets, they are returned to their original form.'" />
-        <app-action-button [color]="'B'" [size]="'small'" [text]="'Clear Presets'" (click)="resetConfigs()" />
-    </div>
-    <div class="spacer medium"></div>
-    <div>
-        <app-help-hover-box class="label" [text]="'Clicking on one of these green preset buttons loads a saved set of game rules into the menu in the center.'" />
-        <span>Presets</span>
-    </div>
-    <div class="spacer small"></div>
-    @for(key of specNames; track $index) {
-    <div class="preset">
-        <app-action-button [text]="key" (click)="loadConfig(key)" />
-        <div class="spacer tiny"></div>
-    </div>
-    }
-</div>
+    <div class="side-menu">
+    <div class="spaced-column">
+        <app-nav-button [target]='"/"' [text]='"Home"' />
 
-<div class="main">
+        <div class="middle-aligned-row">
+            <app-help-hover-box [text]="'Erases all saved presets other than Link Four, Pente, and Tic-Tac-Toe. If you have modified any of those three presets, they are returned to their original form.'" />
+            <app-action-button [color]="'B'" [size]="'small'" [text]="'Clear Presets'" (click)="resetConfigs()" />
+        </div>
+        <div class="spaced-column close">
+            <div class="middle-aligned-row">
+                <app-help-hover-box [text]="'Clicking on one of these green preset buttons loads a saved set of game rules into the menu in the center.'" />
+                <span>Presets</span>
+            </div>
+            @for(key of specNames; track $index) {
+                <app-action-button [text]="key" (click)="loadConfig(key)" />
+            }
+        </div>
+    </div>
+    </div>
+
+    <div class="main">
     <div class="horizontally-centered-main">
     <div class="main-vertical-color-strip">
-    <div class="vertically-centered-main">
+    <div class="spaced-column padded">
         <h2>Create Your Own Game Rules</h2>
-        <div class="spacer medium"></div>
         <div class="input-group">
-            <div class="input">
-                <app-help-hover-box class="label" [text]="'[how wide the game board should be]'" />
-                <span class="label">Width</span>
+            <div class="middle-aligned-row right-justified">
+                <app-help-hover-box [text]="'[how wide the game board should be]'" />
+                <span>Width</span>
                 <app-integer-input [(value)]="gameSpec.board.width"  [min]="3" [max]="19"
                         [disable]="false" />
             </div>
-            <div class="input">
-                <app-help-hover-box class="label" [text]="'[how tall the game board should be]'" />
-                <span class="label">Height</span>
+            <div class="middle-aligned-row right-justified">
+                <app-help-hover-box [text]="'[how tall the game board should be]'" />
+                <span>Height</span>
                 <app-integer-input [(value)]="gameSpec.board.height" [min]="3"
                         [max]="gameSpec.board.width" [disable]="false" />
             </div>
 
-            <div class="input">
-                <app-help-hover-box class="label" [text]="'[how many pieces in a row you need to win]'" />
-                <span class="label">Winning Line Size</span>
+            <div class="middle-aligned-row right-justified">
+                <app-help-hover-box [text]="'[how many pieces in a row you need to win]'" />
+                <span>Winning Line Size</span>
                 <app-integer-input [(value)]="gameSpec.rules.winningLength" [min]="3"
                         [max]="gameSpec.board.height" [disable]="false" />
             </div>
         </div>
-        <div class="spacer medium"></div>
         <div class="input-group">
-            <div class="input">
+            <div class="middle-aligned-row right-justified">
                 <app-help-hover-box class="label" [text]="'When gravity is turned on, pieces can only be placed on the bottom row or stacked on top of other pieces.'" />
-                <span class="label">Gravity</span>
+                <span>Gravity</span>
                 <app-toggle-switch [defaultValue]="false" [(value)]="gameSpec.board.gravity" 
                                    [disable]="gameSpec.rules.allowCaptures" />
             </div>
 
-            <div class="input">
-                <app-help-hover-box class="label" [text]="'When captures are turned on, then whenever you sandwich exactly X opponent pieces between your own pieces, the opponent pieces are removed from the board. The value of X is set by Capture Size (below).'" />
-                <span class="label">Allow Captures</span>
+            <div class="middle-aligned-row right-justified">
+                <app-help-hover-box [text]="'When captures are turned on, then whenever you sandwich exactly X opponent pieces between your own pieces, the opponent pieces are removed from the board. The value of X is set by Capture Size (below).'" />
+                <span>Allow Captures</span>
                 <app-toggle-switch [defaultValue]="false" [(value)]="gameSpec.rules.allowCaptures"
                                    [disable]="gameSpec.board.gravity" />
             </div>
 
-            <div class="input">
-                <app-help-hover-box class="label" [text]="'When winning by captures is turned on, a player wins as soon as they have Y or more captures. The value of Y is set by Winning # Captures (below).'" />
-                <span class="label">Win by Captures</span>
+            <div class="middle-aligned-row right-justified">
+                <app-help-hover-box [text]="'When winning by captures is turned on, a player wins as soon as they have Y or more captures. The value of Y is set by Winning # Captures (below).'" />
+                <span>Win by Captures</span>
                 <app-toggle-switch [defaultValue]="false" [(value)]="gameSpec.rules.winByCaptures"
                         [disable]="!gameSpec.rules.allowCaptures" />
             </div>
         </div>
-        <div class="spacer small"></div>
         <div class="input-group">
-            <div class="input"></div>
+            <div></div>
 
-            <div class="input">
-            <span class="label">Capture Size</span>
-            <!-- [max]="gameSpec.board.height - 2" -->
-            <app-integer-input [(value)]="gameSpec.rules.captureSize"
-                    [disable]="!gameSpec.rules.allowCaptures" />
+            <div class="middle-aligned-row right-justified">
+                <span>Capture Size</span>
+                <!-- [max]="gameSpec.board.height - 2" -->
+                <app-integer-input [(value)]="gameSpec.rules.captureSize"
+                        [disable]="!gameSpec.rules.allowCaptures" />
             </div>
 
-            <div class="input">
-            <span class="label">Winning # Captures</span>
-            <app-integer-input [(value)]="gameSpec.rules.winningNumCaptures"
-                    [disable]="!gameSpec.rules.winByCaptures" />
+            <div class="middle-aligned-row right-justified">
+                <span>Winning # Captures</span>
+                <app-integer-input [(value)]="gameSpec.rules.winningNumCaptures"
+                        [disable]="!gameSpec.rules.winByCaptures" />
             </div>
         </div>
-        <div class="spacer medium"></div>
-        <span class="aligned">
-            <app-help-hover-box class="label" [aboveOrBelow]="'above'" [text]="'If you like a particular custom set of rules, you can name it and save it as a preset. It will then appear as one of the preset buttons on the left. To load your saved settings, simply click the corresponding button.'" />
-            <span class="label">Preset Name</span>
-        </span>
-        <span class="aligned">
+
+        <div class="middle-aligned-row wrap">
+            <app-help-hover-box [aboveOrBelow]="'above'" [text]="'If you like a particular custom set of rules, you can name it and save it as a preset. It will then appear as one of the preset buttons on the left. To load your saved settings, simply click the corresponding button.'" />
+            <span>Preset Name</span>
             <app-text-box [(text)]="configName" [maxLength]="15" />
-        </span>
-        <span class="aligned">
-            <app-action-button class="labeled" [text]="'Save Rules as Preset'"
+            <app-action-button [text]="'Save Rules as Preset'"
                     [disable]="configName().trim() == ''"
                     (click)="saveConfigAsPreset()" />
-        </span>
+        </div>
+    </div>
     </div>
     </div>
     </div>

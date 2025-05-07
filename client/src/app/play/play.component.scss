@@ -22,53 +22,24 @@
     transition: 1.5s;
 }
 
-.status {
-    margin-top: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: space-evenly;
-}
-
-.status-text {
-    display: inline-block;
-    font-size: 18px;
-}
-
 .win-marker {
     display: inline-block;
     width: 36px;
     height: 36px;
-    border-radius: 18px;
+    border-radius: 50%;
 }
 
 .capture-marker {
     display: inline-block;
     width: 24px;
     height: 24px;
-    border-radius: 12px;
+    border-radius: 50%;
 }
 
-.hover-A {
-    background-color: var(--color-A);
-    opacity: 0.3;
-}
-.hover-B {
-    background-color: var(--color-B);
-    opacity: 0.3;
-}
-.hover-C {
-    background-color: var(--color-C);
-    opacity: 0.3;
-}
-.hover-D {
-    background-color: var(--color-D);
-    opacity: 0.3;
-}
-.hover-E {
-    background-color: var(--color-E);
-    opacity: 0.3;
-}
-.hover-F {
-    background-color: var(--color-F);
-    opacity: 0.3;
+.empty {
+    opacity: 0;
+
+    &.hover {
+        opacity: 0.3;
+    }
 }
