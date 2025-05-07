@@ -1,5 +1,4 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
-import { NgFor } from '@angular/common';
 import { Router } from '@angular/router';
 
 import { ActionButtonComponent } from '@local-components/action-button/action-button.component';
@@ -12,8 +11,7 @@ import { SetupService } from '@local-services/setup.service';
 
 @Component({
   selector: 'app-lobby',
-  imports: [NgFor,
-            ActionButtonComponent, IntegerInputComponent, NavButtonComponent],
+  imports: [ActionButtonComponent, IntegerInputComponent, NavButtonComponent],
   templateUrl: './lobby.component.html',
   styleUrl: './lobby.component.scss'
 })

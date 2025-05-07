@@ -1,69 +1,10 @@
-div.menu {
-    margin-left: 8px;
-    margin-top: 8px;
-}
-
-div.main {
-    padding: 30px;
-    padding-top: 50px;
-    position: absolute;
-    left: 0;
-    right: 0;
-    width: 860px;
-    margin: auto;
-
-    text-align: center;
-
-    background-color: var(--center-backdrop);
-    font-size: 18px;
-}
-
-div.row {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-span.label {
-    margin-right: 10px;
-}
-
-span.type {
-    font-size: 24px;
-    margin: 6px;
-    padding-top: 12px;
-    padding-bottom: 12px;
-    background-color: #111111;
-    display: block;
-    width: 131px;
-    justify-content: center;
-}
-
-div.selectionMarker {
-    height: 60px;
-    width: 131px;
-    margin: 6px;
-}
-
-div.playerDisc {
+.player-disc {
     display: inline-block;
     height: 60px;
     width: 60px;
     border-radius: 30px;
 }
 
-div.bigRowSpacer {
-    height: 30px;
-}
-
-div.smallRowSpacer {
-    height: 20px;
-}
-
-div.tinyRowSpacer {
-    height: 5px;
-}
-
-div.invisible {
+.invisible {
     opacity: 0;
 }

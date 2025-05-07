@@ -1,35 +1,43 @@
-<div class="menu">
+<div class="side-menu">
     <app-nav-button [target]='"/"' [text]='"Quit"' />
 </div>
 
 <div class="main">
-    <div class="row">
-        <span class="label">How many players will be at your PC?</span>
-        <app-integer-input [min]=1 [max]=6 [(value)]="requestedSeats"
-            [disable]="awaitingResponse() || requestGranted()" />
-    </div>
-    <div class="bigRowSpacer"></div>
-    <div>
-        <app-action-button [text]="requestedSeatsText()" (click)="requestSeats()"
-            [disable]="awaitingResponse() || requestGranted()" />
-    </div>
-    <div class="bigRowSpacer"></div>
-    <div class="row">
-        <div *ngFor="let selected of seatSelected(); index as i" class="selectionMarker">
-            <div class="playerDisc color-{{ colors[i] }} {{ visibilityText[i]() }}">
-
+    <div class="horizontally-centered-main">
+    <div class="main-vertical-color-strip">
+    <div class="vertically-centered-main">
+        <div>
+            <span class="label">How many players will be at your PC?</span>
+            <app-integer-input [min]=1 [max]=6 [(value)]="requestedSeats"
+                [disable]="awaitingResponse() || requestGranted()" />
+        </div>
+        <div class="spacer medium"></div>
+        <div>
+            <app-action-button [text]="requestedSeatsText()" (click)="requestSeats()"
+                [disable]="awaitingResponse() || requestGranted()" />
+        </div>
+        <div class="spacer medium"></div>
+        <div>
+            @for(selected of seatSelected(); track $index; let i = $index) {
+            <div>
+                <div class="player-disc solid-{{ colors[i] }} {{ visibilityText[i]() }}">
+                </div>
             </div>
+            }
+        </div>
+        <div>
+            @for(playerType of playerTypeTexts; track $index) {
+            <span>
+                {{ playerType }}
+            </span>
+            }
+        </div>
+        <div class="spacer medium"></div>
+        <div>
+            <app-action-button [text]="'Enter Game'" (click)="enterGame()"
+                [disable]="emptySeats" />
         </div>
     </div>
-    <div class="row">
-        <span *ngFor="let playerType of playerTypeTexts; index as i" class="type">
-            {{ playerType }}
-        </span>
     </div>
-    <div class="bigRowSpacer"></div>
-    <div class="row">
-        <app-action-button [text]="'Enter Game'" (click)="enterGame()"
-            [disable]="emptySeats" />
     </div>
-    
 </div>

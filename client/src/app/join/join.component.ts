@@ -1,5 +1,4 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { NgFor } from '@angular/common';
 
 import { ActionButtonComponent } from '@local-components/action-button/action-button.component';
 import { NavButtonComponent } from '@local-components/nav-button/nav-button.component';
@@ -11,8 +10,7 @@ import { SetupService } from '@local-services/setup.service';
 
 @Component({
   selector: 'app-join',
-  imports: [NgFor,
-            ActionButtonComponent, NavButtonComponent, TextBoxComponent],
+  imports: [ActionButtonComponent, NavButtonComponent, TextBoxComponent],
   templateUrl: './join.component.html',
   styleUrl: './join.component.scss'
 })

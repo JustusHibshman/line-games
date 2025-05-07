@@ -1,31 +1,11 @@
-div.menu {
-    padding-left: 8px;
-    padding-top: 8px;
-}
-
-div.main {
-    padding: 30px;
-    padding-top: 50px;
-    position: absolute;
-    left: 0;
-    right: 0;
-    width: 860px;
-    margin: auto;
-
-    text-align: center;
-
-    background-color: var(--center-backdrop);
-    font-size: 18px;
-}
-
-div.listing {
+.listing {
     background-color: var(--input-background);
     padding: 6px;
     margin-bottom: 8px;
     border: 2px solid #000000;
 }
 
-span.gameName {
+.game-name {
     display: inline-block;
     width: 300px;
     font-size: 24px;
