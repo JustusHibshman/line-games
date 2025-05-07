@@ -8,7 +8,7 @@
     <div class="vertically-centered-main">
         <h2>Choose the Game</h2>
         <div class="spacer small"></div>
-        <app-dropdown-menu [options]="specNames" [maxLength]="15" (madeChoice)="loadConfig($event)" />
+        <app-vertical-radio [options]="specNames" (value)="loadConfig($event)" />
         <div class="spacer medium"></div>
         <div class="spacer medium"></div>
         <h2>Choose the Number of AI and Human Players</h2>
@@ -19,8 +19,11 @@
         </div>
         <div class="spacer medium"></div>
         <div class="input-group">
-            @for(pt of playerTypes(); track $index; let i = $index) {
-                <app-vertical-radio [options]="['Human', 'AI']" (value)="setPlayerType(i, $event)" />
+            @for(pt of ptChoices(); track $index; let i = $index) {
+                <div class="player-selector interface medium content-B">
+                    <span></span>     <span>Player {{ i + 1 }}</span> <span></span>
+                    <span>Human</span><app-toggle-switch [(value)]="pt" /><span>AI</span>
+                </div>
             }
             <!--
             <span>
@@ -51,8 +54,7 @@
         <div class="spacer medium"></div>
         <div>
             <app-action-button [text]="'Launch Game'"
-                    [disable]="!rulesReady() || gameName().trim() == '' ||
-                               numHumans() == 0 || numSelected() < numPlayers()"
+                    [disable]="!rulesReady() || gameName().trim() == '' || numHumans() == 0"
                     (click)="hostGame()" />
         </div>
     </div>

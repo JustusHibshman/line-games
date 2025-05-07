@@ -1,10 +1,10 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal, WritableSignal } from '@angular/core';
 
 import { ActionButtonComponent } from '@local-components/action-button/action-button.component';
-import { DropdownMenuComponent } from '@local-components/dropdown-menu/dropdown-menu.component';
 import { IntegerInputComponent } from '@local-components/integer-input/integer-input.component';
 import { NavButtonComponent } from '@local-components/nav-button/nav-button.component';
 import { TextBoxComponent } from '@local-components/text-box/text-box.component';
+import { ToggleSwitchComponent } from '@local-components/toggle-switch/toggle-switch.component';
 import { VerticalRadioComponent } from '@local-components/vertical-radio/vertical-radio.component';
 
 import { GameSpec, copyGameSpec }   from '@local-types/game-spec.type';
@@ -15,8 +15,8 @@ import { RulePresetsService } from '@local-services/rule-presets.service';
 
 @Component({
   selector: 'app-host',
-  imports: [ActionButtonComponent, DropdownMenuComponent,
-            IntegerInputComponent, NavButtonComponent, VerticalRadioComponent],
+  imports: [ActionButtonComponent, IntegerInputComponent, NavButtonComponent,
+            ToggleSwitchComponent, VerticalRadioComponent],
   templateUrl: './host.component.html',
   styleUrl: './host.component.scss'
 })
@@ -38,10 +38,11 @@ export class HostComponent implements OnInit {
     password = signal<string>("");
 
     numPlayers = signal<number>(2);
-    numHumans  = signal<number>(0);
-    numSelected = signal<number>(0);
 
-    playerTypes = signal<Array<PlayerType>>([]);
+    PTHUMAN: boolean = false;
+
+    ptChoices = signal<Array<WritableSignal<boolean>>>([]);
+    numHumans = this.numHumansFormula();
 
     aiComputeTime = signal<number>(4);
 
@@ -53,39 +54,24 @@ export class HostComponent implements OnInit {
     }
 
     resizePlayerTypes(): void {
-        let l = this.playerTypes();
+        let l = this.ptChoices();
         while (l.length > this.numPlayers()) {
-            if (l[l.length - 1] == PlayerType.Human) {
-                this.numHumans.set(this.numHumans() - 1);
-            }
-            if (l[l.length - 1] != PlayerType.None) {
-                this.numSelected.set(this.numSelected() - 1);
-            }
             l.pop();
         }
         while (l.length < this.numPlayers()) {
-            l.push(PlayerType.None);
+            let choice: boolean = l.length == 0 ? this.PTHUMAN : l[l.length - 1]();
+            l.push(signal<boolean>(choice));
         }
-        this.playerTypes.set(l);
+        this.ptChoices.set(l);
+        // Update to include only the latest sub-signals so that the computed()
+        //  will reference the correct things.
+        this.numHumans = this.numHumansFormula();
     }
 
-    setPlayerType(idx: number, value: string) {
-        let l = this.playerTypes();
-        if (l[idx] == PlayerType.None) {
-            this.numSelected.set(this.numSelected() + 1);
-        }
-        if (value == "Human") {
-            if (l[idx] != PlayerType.Human) {
-                this.numHumans.set(this.numHumans() + 1);
-            }
-            l[idx] = PlayerType.Human;
-        } else {
-            if (l[idx] == PlayerType.Human) {
-                this.numHumans.set(this.numHumans() - 1);
-            }
-            l[idx] = PlayerType.AI;
-        }
-        this.playerTypes.set(l);
+    numHumansFormula() {
+        return computed(() => this.ptChoices().reduce(
+                                (sum: number, theBool: WritableSignal<boolean>) =>
+                                    sum + (theBool() == this.PTHUMAN ? 1 : 0), 0));
     }
 
     loadConfig(name: string) {
@@ -97,7 +83,8 @@ export class HostComponent implements OnInit {
     }
 
     hostGame(): void {
-        this.setup.hostGame(this.gameName(), this.password(), this.gameSpec, this.playerTypes());
+        let playerTypes = Array.from(this.ptChoices(), (v) => v() ? PlayerType.AI : PlayerType.Human);
+        this.setup.hostGame(this.gameName(), this.password(), this.gameSpec, playerTypes);
     }
 
     goFullscreen(): void {
