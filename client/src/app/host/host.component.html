@@ -33,7 +33,7 @@
         </div>
         -->
         <div>
-            <app-action-button [text]="'Launch Game'" [disable]="!gameSet() || numHumans() == 0"
+            <app-action-button [text]="'Launch Game'" [disable]="!readyToLaunch()"
                     (click)="hostGame()" />
         </div>
     </div>

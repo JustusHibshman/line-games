@@ -45,27 +45,21 @@ export class HostComponent implements OnInit {
     PTHUMAN: boolean = false;
 
     ptChoices = signal<Array<WritableSignal<boolean>>>([]);
-    // To get the actual number of humans, you must write this.numHumans()();
-    numHumans = this.numHumansSignal();
-    wat = computed(() => this.lengthAnnouncement(this.numPlayers()));
+    numHumans = computed(() => this.booleanSignalSum(this.ptChoices(), this.PTHUMAN));
 
-    lengthAnnouncement(n: number): number {
-        console.log("Calculated " + String(n));
-        return n;
-    }
-
-    gameSet = computed(() => this.gameName().trim().length > 0 &&
-                             this.rulesReady());
+    readyToLaunch = computed(() => this.gameName().trim().length > 0 &&
+                                   this.rulesReady() && this.numHumans() > 0);
 
     constructor() {}
 
     ngOnInit(): void {
-        console.log("Running init");
         this.setup.quitGame();
         this.resizePlayerTypes();
     }
 
     resizePlayerTypes(): void {
+        // l is a reference to the array. Thus changes to l will change the
+        //  array referenced by ptChoices.
         let l = this.ptChoices();
         while (l.length > this.numPlayers()) {
             l.pop();
@@ -74,16 +68,9 @@ export class HostComponent implements OnInit {
             let choice: boolean = l.length == 0 ? this.PTHUMAN : l[l.length - 1]();
             l.push(signal<boolean>(choice));
         }
-        this.ptChoices.set(l);
-        // This should not be necessary, but the Angular lazy calculation does
-        //  not seem to consider this.ptChoices itself to be one of the variables
-        //  defining its output -- only the sub-signals already referenced in
-        //  the calculation.
-        this.numHumans = this.numHumansSignal();
-    }
-
-    numHumansSignal(): Signal<number> {
-        return computed(() => this.booleanSignalSum(this.ptChoices(), this.PTHUMAN));
+        // Here we copy the array, which makes the reference change, which in turn
+        //  causes downstream signals to update.
+        this.ptChoices.update((old) => [...old]);
     }
 
     booleanSignalSum(signals: Array<WritableSignal<boolean>>, target: boolean): number {
