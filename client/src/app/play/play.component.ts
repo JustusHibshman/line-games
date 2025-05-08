@@ -39,11 +39,6 @@ export class PlayComponent {
                                     this.borderWidth * 2);
     gridHeight = computed(() => this.heightCalc(this.screenWidth(), this.screenHeight()) -
                                     this.borderWidth * 2);
-    // not needed -- grid takes care of sizing cells
-    // cellSize   = computed(() => this.cellCalc(this.screenWidth(), this.screenHeight()) -
-    //                                 (this.borderWidth + this.cellPadding) * 2);
-    gridStyle  = computed(() => "width: " + this.gridWidth() + "px; height: " + this.gridHeight() + 
-                                "px; grid-template-columns: repeat(" + this.numCols() + ", 1fr);");
 
     numRows = computed(() => this.board().length);
     numCols = computed(() => this.board()[0].length);
