@@ -18,12 +18,12 @@ export class DropdownMenuComponent {
     size = input<string>("medium");
     color = input<string>("B");
 
-    hidden = signal<string>("hidden");
+    hidden = signal<boolean>(true);
 
     madeChoice = output<string>();
 
     focused(): void {
-        this.hidden.set("");
+        this.hidden.set(false);
     }
 
     unFocused(): void {
@@ -46,7 +46,7 @@ export class DropdownMenuComponent {
     }
 
     hideDropdownHelper(context: DropdownMenuComponent): void {
-        context.hidden.set("hidden");
+        context.hidden.set(true);
     }
 
     containsFn(subString: string): (s: string) => boolean {

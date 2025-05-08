@@ -1,7 +1,7 @@
 <div class="container">
     <app-text-box [(text)]="text" (focusin)="focused()" (focusout)="unFocused()" 
                   [size]="size()" [color]="color()" [expanding]="false" [maxLength]="maxLength()" />
-    <div class="{{ hidden() }} options-holder">
+    <div class="options-holder" [class.hidden]="hidden()">
     <div class="options">
         @for(name of filteredOptions(); track $index) {
         <button class="option interface hoverable {{ size() }} content-{{ color() }}" (click)="makeChoice(name)">
