@@ -5,6 +5,8 @@ import { NavButtonComponent } from '@local-components/nav-button/nav-button.comp
 import { GameState } from '@local-types/game-state.type';
 import { Move } from '@local-types/move.type';
 
+import { safe } from '@local-utilities/safe';
+
 import { SetupService } from '@local-services/setup.service';
 import { GameplayService } from '@local-services/gameplay.service';
 import { ScreenSizeService } from '@local-services/screen-size.service';
@@ -22,9 +24,10 @@ export class PlayComponent {
     screenSize = inject(ScreenSizeService);
 
     rawBoard = this.gameplay.getBoard();
-    board = computed(() => this.safeBoard(this.rawBoard()));
+    board = computed(() => safe(this.rawBoard(), [[]]));
     currentPlayer: Signal<number> = this.gameplay.getPlayer();
-    winner = this.gameplay.getWinner();
+
+    winner = computed(() => safe(this.gameplay.getWinner()(), -1));
     captures = this.gameplay.getCaptures();
 
     colors = ["empty", "E", "F", "A", "B", "C", "D"];
@@ -33,8 +36,6 @@ export class PlayComponent {
     screenHeight = this.screenSize.getHeight();
 
     borderWidth: number = 4;
-    // cellPadding: number = 10; -- not needed -- grid takes care of sizing cells
-
     gridWidth  = computed(() => this.widthCalc(this.screenWidth(), this.screenHeight()) -
                                     this.borderWidth * 2);
     gridHeight = computed(() => this.heightCalc(this.screenWidth(), this.screenHeight()) -
@@ -136,12 +137,5 @@ export class PlayComponent {
 
     empty(r: number, c: number): boolean {
         return this.board()[r][c] == -1;
-    }
-
-    safeBoard(b: Array<Array<number>> | undefined): Array<Array<number>> {
-        if (b === undefined) {
-            return [[]];
-        }
-        return b;
     }
 }

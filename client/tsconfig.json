@@ -23,7 +23,8 @@
         "@local-types/*":       ["./src/app/model/*"],
         "@local-services/*":    ["./src/app/services/*"],
         "@local-pipes/*":       ["./src/app/pipes/*"],
-        "@local-directives/*":  ["./src/app/directives/*"]
+        "@local-directives/*":  ["./src/app/directives/*"],
+        "@local-utilities/*":   ["./src/app/utilities/*"]
     }
   },
   "angularCompilerOptions": {

@@ -1,13 +1,12 @@
 import { computed, inject, Injectable,
          signal, Signal, WritableSignal } from '@angular/core';
 
+import { Game } from '@local-types/game';
 import { GameLink } from '@local-types/game-link.type';
 import { GameSpec, copyGameSpec } from '@local-types/game-spec.type';
-import { GameState, copyGameState } from '@local-types/game-state.type';
 import { Move } from '@local-types/move.type';
 import { PlayerType } from '@local-types/player-type.type';
 
-import { GameStateService } from '@local-services/game-state.service';
 import { ClientAIService } from '@local-services/client-a-i.service';
 
 @Injectable({
@@ -15,24 +14,19 @@ import { ClientAIService } from '@local-services/client-a-i.service';
 })
 export class GameplayService {
 
-    gsService = inject(GameStateService);
     clientAIService = inject(ClientAIService);
 
     gameLink: WritableSignal<GameLink>;
-    gameSpec: GameSpec | null;
-    gameState = signal<GameState | null>(null);
+    game: WritableSignal<Game>;
     playerTypes: Array<PlayerType>;
     seats: Array<number> = [];
-    gameOver = signal<boolean>(false);
-    winner   = signal<number>(-1);
 
     // Initializing
 
     constructor() {
         this.gameLink = signal<GameLink>(this.emptyGameLink());
-        this.gameSpec = null;
-        this.gameState.set(null);
         this.playerTypes = [];
+        this.game = signal<Game>(new Game());
         try {
             this.loadData();
         }
@@ -46,22 +40,18 @@ export class GameplayService {
 
     saveData(): void {
         localStorage.setItem(this.DataPrefix + 'gameLink',    JSON.stringify(this.gameLink()));
-        localStorage.setItem(this.DataPrefix + 'gameSpec',    JSON.stringify(this.gameSpec));
-        localStorage.setItem(this.DataPrefix + 'gameState',   JSON.stringify(this.gameState()));
+        localStorage.setItem(this.DataPrefix + 'game',   JSON.stringify(this.game()));
         localStorage.setItem(this.DataPrefix + 'playerTypes', JSON.stringify(this.playerTypes));
-        localStorage.setItem(this.DataPrefix + 'gameOver',    JSON.stringify(this.gameOver()));
         localStorage.setItem(this.DataPrefix + 'seats',  JSON.stringify(this.seats));
-        localStorage.setItem(this.DataPrefix + 'winner', JSON.stringify(this.winner()));
     }
 
     loadData(): void {
         this.gameLink.set( JSON.parse(localStorage[this.DataPrefix + 'gameLink']));
-        this.gameSpec =    JSON.parse(localStorage[this.DataPrefix + 'gameSpec']);
-        this.gameState.set(JSON.parse(localStorage[this.DataPrefix + 'gameState']));
+        // The use of new Game() is necessary to restore the presence of methods
+        //  like .winner()
+        this.game.set(new Game(JSON.parse(localStorage[this.DataPrefix + 'game'])));
         this.playerTypes = JSON.parse(localStorage[this.DataPrefix + 'playerTypes']);
-        this.gameOver.set( JSON.parse(localStorage[this.DataPrefix + 'gameOver']));
-        this.seats =    JSON.parse(localStorage[this.DataPrefix + 'seats']);
-        this.winner.set(JSON.parse(localStorage[this.DataPrefix + 'winner']));
+        this.seats =       JSON.parse(localStorage[this.DataPrefix + 'seats']);
     }
 
     getGameLink() {
@@ -73,10 +63,11 @@ export class GameplayService {
     }
 
     getGravity(): boolean {
-        if (this.gameSpec === null) {
+        let g: Game | null = this.game();
+        if (g === null) {
             return false;
         }
-        return this.gameSpec.board.gravity;
+        return g.spec.board.gravity;
     }
 
     setGameLink(gl: GameLink): void {
@@ -85,17 +76,8 @@ export class GameplayService {
     }
 
     setGame(gs: GameSpec, pt: Array<PlayerType>, startingSeat: number): void {
-        this.gameSpec = copyGameSpec(gs);
-        this.gameState.set({
-            player: startingSeat,
-            turn:   0,
-            board: Array.from({length: gs.board.height},
-                                () => Array.from({length: gs.board.width}, () => -1)),
-            captures: gs.rules.allowCaptures ? Array.from({length: pt.length}, () => 0) : []
-        });
+        this.game.set(new Game(copyGameSpec(gs), pt.length, startingSeat));
         this.playerTypes = [ ...pt ];
-        this.gameOver.set(false);
-        this.winner.set(-1);
 
         this.saveData();
 
@@ -104,7 +86,7 @@ export class GameplayService {
 
     quitGame(): void {
         this.gameLink.set(this.emptyGameLink());
-        this.gameSpec = null;
+        this.game.set(new Game());
         this.playerTypes = [];
         this.saveData();
     }
@@ -127,26 +109,19 @@ export class GameplayService {
     /* Playing */
 
     getBoard() {
-        return computed(() => this.gameState()?.board);
+        return computed(() => this.game().board());
     }
 
     getWinner() {
-        return computed(() => this.winner());
+        return computed(() => this.game().winner());
     }
 
     getCaptures() {
-        return computed(() => this.gameState()?.captures);
-    }
-
-    zeroIfUndefined(n: number | undefined): number {
-        if (n === undefined) {
-            return 0;
-        }
-        return n;
+        return computed(() => this.game().captures());
     }
 
     getPlayer(): Signal<number> {
-        return computed(() => this.zeroIfUndefined(this.gameState()?.player));
+        return computed(() => this.game().player());
     }
 
     isLocalPlayer(player: number | undefined): boolean {
@@ -157,34 +132,20 @@ export class GameplayService {
     }
 
     isLegalMove(m: Move): boolean {
-        if (this.gameOver()) {
-            return false;
-        } else if (this.gameState()?.board[m.row][m.col] != -1) {
-            return false;
-        } else if (this.gameSpec?.board.gravity &&
-                   m.row != this.gameSpec?.board.height - 1 &&
-                   this.gameState()?.board[m.row + 1][m.col] == -1) {
+        let g: Game | null = this.game();
+        if (g === null) {
             return false;
         }
-        return true;
+        return g.isLegal(m);
     }
 
     makeMove(m: Move): void {
-        let gState: GameState | null = this.gameState();
-        if (gState === null) {
+        let g: Game | null = this.game();
+        if (g === null) {
             return;
         }
-        if (this.gameSpec === null) {
-            return;
-        }
-        let newGS: GameState = copyGameState(gState);
-        this.gsService.makeMove(m, newGS, this.gameSpec, this.playerTypes.length);
-        this.gameState.set(newGS);
-        let winningPlayer = this.gsService.checkForVictor(m, newGS, this.gameSpec);
-        if (winningPlayer != -1 || this.gsService.boardFull(newGS, this.gameSpec)) {
-            this.gameOver.set(true);
-            this.winner.set(winningPlayer);
-        }
+        g.makeMove(m);
+        this.game.set(g.copy());  // Ensures downstream signals are updated
 
         this.saveData();
 
@@ -192,25 +153,23 @@ export class GameplayService {
     }
 
     takeAIMovesIfNeeded(): void {
-        if (this.gameOver()) {
+        let g: Game | null = this.game();
+        if (g === null) {
             return;
         }
-        let gState: GameState | null = this.gameState();
-        if (gState === null) {
+        if (g.gameOver()) {
             return;
         }
-        if (this.gameSpec === null) {
+        if (this.playerTypes[g.player()] != PlayerType.AI) {
             return;
         }
-        if (this.playerTypes[gState.player] != PlayerType.AI) {
-            return;
-        }
-        setTimeout(this.takeAIMovesHelper, 500, gState, this.gameSpec, this);
+
+        setTimeout(this.takeAIMovesHelper, 500, g, this);
     }
 
-    takeAIMovesHelper(gState: GameState, gSpec: GameSpec, obj: GameplayService): void {
+    takeAIMovesHelper(g: Game, obj: GameplayService): void {
         let choice: Move =
-            obj.clientAIService.primitiveAIChoice(gState, gSpec, obj.playerTypes.length);
+            obj.clientAIService.primitiveAIChoice(g);
         obj.makeMove(choice);
     }
 }
