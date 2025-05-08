@@ -1,7 +1,7 @@
 <span class="help">
     <div class="q-mark interface {{ size() }} content-{{ color() }}">?</div>
     <div class="popup">
-        <div class="content {{ aboveOrBelow() }}">
+        <div class="content" [class.above]="popupAboveQMark()">
             {{ text() }}
         </div>
     </div>

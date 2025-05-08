@@ -86,7 +86,7 @@
         </div>
 
         <div class="middle-aligned-row wrap">
-            <app-help-hover-box [aboveOrBelow]="'above'" [text]="'If you like a particular custom set of rules, you can name it and save it as a preset. It will then appear as one of the preset buttons on the left. To load your saved settings, simply click the corresponding button.'" />
+            <app-help-hover-box [popupAboveQMark]="true" [text]="'If you like a particular custom set of rules, you can name it and save it as a preset. It will then appear as one of the preset buttons on the left. To load your saved settings, simply click the corresponding button.'" />
             <span>Preset Name</span>
             <app-text-box [(text)]="configName" [maxLength]="15" />
             <app-action-button [text]="'Save Rules as Preset'"
