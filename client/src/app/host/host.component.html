@@ -33,8 +33,7 @@
         </div>
         -->
         <div>
-            <app-action-button [text]="'Launch Game'"
-                    [disable]="!rulesReady() || gameName().trim() == '' || numHumans() == 0"
+            <app-action-button [text]="'Launch Game'" [disable]="!gameSet() || numHumans() == 0"
                     (click)="hostGame()" />
         </div>
     </div>

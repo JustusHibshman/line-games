@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnInit, signal, WritableSignal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal, Signal, WritableSignal } from '@angular/core';
 
 import { ActionButtonComponent } from '@local-components/action-button/action-button.component';
 import { IntegerInputComponent } from '@local-components/integer-input/integer-input.component';
@@ -45,13 +45,22 @@ export class HostComponent implements OnInit {
     PTHUMAN: boolean = false;
 
     ptChoices = signal<Array<WritableSignal<boolean>>>([]);
-    numHumans = this.numHumansFormula();
+    // To get the actual number of humans, you must write this.numHumans()();
+    numHumans = this.numHumansSignal();
+    wat = computed(() => this.lengthAnnouncement(this.numPlayers()));
 
-    aiComputeTime = signal<number>(4);
+    lengthAnnouncement(n: number): number {
+        console.log("Calculated " + String(n));
+        return n;
+    }
+
+    gameSet = computed(() => this.gameName().trim().length > 0 &&
+                             this.rulesReady());
 
     constructor() {}
 
     ngOnInit(): void {
+        console.log("Running init");
         this.setup.quitGame();
         this.resizePlayerTypes();
     }
@@ -66,15 +75,20 @@ export class HostComponent implements OnInit {
             l.push(signal<boolean>(choice));
         }
         this.ptChoices.set(l);
-        // Update to include only the latest sub-signals so that the computed()
-        //  will reference the correct things.
-        this.numHumans = this.numHumansFormula();
+        // This should not be necessary, but the Angular lazy calculation does
+        //  not seem to consider this.ptChoices itself to be one of the variables
+        //  defining its output -- only the sub-signals already referenced in
+        //  the calculation.
+        this.numHumans = this.numHumansSignal();
     }
 
-    numHumansFormula() {
-        return computed(() => this.ptChoices().reduce(
-                                (sum: number, theBool: WritableSignal<boolean>) =>
-                                    sum + (theBool() == this.PTHUMAN ? 1 : 0), 0));
+    numHumansSignal(): Signal<number> {
+        return computed(() => this.booleanSignalSum(this.ptChoices(), this.PTHUMAN));
+    }
+
+    booleanSignalSum(signals: Array<WritableSignal<boolean>>, target: boolean): number {
+        return  signals.reduce((sum: number, theBool: WritableSignal<boolean>) =>
+                                sum + (theBool() == target ? 1 : 0), 0);
     }
 
     loadConfig(name: string) {
