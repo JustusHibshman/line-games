@@ -25,27 +25,13 @@ export class HomeComponent {
 
     darkMode = this.csService.getDarkModeSignal();
 
-    /*
-    // LINES
-    validSpots = [
-                    [1,1,0,0,0,0,1,1,0,1,1,0,0,0,1,1,0,1,1,1,1,1,0,0,0,1,1,1,1,0],
-                    [1,1,0,0,0,0,1,1,0,1,1,0,0,0,1,1,0,1,1,1,1,1,0,0,1,1,1,1,1,1],
-                    [1,1,0,0,0,0,1,1,0,1,1,1,0,0,1,1,0,1,1,0,0,0,0,1,1,1,0,0,1,1],
-                    [1,1,0,0,0,0,1,1,0,1,1,1,1,0,1,1,0,1,1,1,1,0,0,0,1,1,1,1,0,0],
-                    [1,1,0,0,0,0,1,1,0,1,1,0,1,1,1,1,0,1,1,1,1,0,0,0,0,1,1,1,1,0],
-                    [1,1,0,0,0,0,1,1,0,1,1,0,0,1,1,1,0,1,1,0,0,0,0,1,1,0,0,1,1,1],
-                    [1,1,1,1,1,0,1,1,0,1,1,0,0,0,1,1,0,1,1,1,1,1,0,1,1,1,1,1,1,0],
-                    [1,1,1,1,1,0,1,1,0,1,1,0,0,0,1,1,0,1,1,1,1,1,0,0,1,1,1,1,0,0],
-                 ];
-    */
-
-    validSpots: Array<Array<number>>;
+    validSpots: Array<Array<boolean>>;
 
     height: number;
     width:  number;
     funBackdrop = signal<Array<Array<string>>>([]);
 
-    dotStyle = computed(() => this.dotStyleString(this.screenWidth()));
+    dotWidth = computed(() => this.dotWidthCalc(this.screenWidth()));
 
     constructor() {
         this.validSpots = this.filledInCircle(23);
@@ -76,22 +62,19 @@ export class HomeComponent {
     }
 
     canBeSet(r: number, c: number): boolean {
-        return this.validSpots[r][c] == 1;
+        return this.validSpots[r][c];
     }
 
-    dotStyleString(w: number): string {
+    dotWidthCalc(w: number): number {
         // TODO: Refactor this to minimize use of constants.
         let totalPadding = 60;
         let availableWidth = Math.min(600, Math.max(360, w - 2 * 160) - totalPadding);
-        let dotRadius = Math.floor(availableWidth / (2 * this.validSpots[0].length));
-        let totalMargin = 2;
-        let dotSizeStr = String(dotRadius * 2 - totalMargin) + "px";
-        return "width: " + dotSizeStr + "; height: " + dotSizeStr + "; border-radius: " + String(dotRadius) + "px;";
+        return 2 * Math.floor(availableWidth / (2 * this.validSpots[0].length));
     }
 
-    filledInCircle(diameter: number) {
+    filledInCircle(diameter: number): Array<Array<boolean>> {
         let radius = diameter / 2;
-        let result = Array.from({length: diameter}, () => Array.from({length: diameter}, () => 0));
+        let result = Array.from({length: diameter}, () => Array.from({length: diameter}, () => false));
         let centerX = radius;
         let centerY = radius;
         for (let r = 0; r < diameter; r++) {
@@ -101,7 +84,7 @@ export class HomeComponent {
                 let distanceSquared = (centerX - x) * (centerX - x) +
                                       (centerY - y) * (centerY - y);
                 if (distanceSquared <= radius * radius) {
-                    result[r][c] = 1;
+                    result[r][c] = true;
                 }
             }
         }

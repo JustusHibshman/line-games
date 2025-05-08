@@ -15,7 +15,7 @@
             @for(row of funBackdrop(); track $index) {
                 <div class="dot-row">
                 @for(col of row; track $index) {
-                    <span class="dot {{ col }}" style="{{ dotStyle() }}"></span>
+                    <span class="dot {{ col }}" [style.width.px]="dotWidth()" [style.height.px]="dotWidth()"></span>
                 }
                 </div>
             }
@@ -34,7 +34,8 @@
                         <app-nav-button [target]="'/design'" [size]="buttonSize()" [pale]="true" [text]="'Custom Rules'" />
                     </li>
                     <li>
-                        <app-nav-button [target]="'/play'"   [size]="buttonSize()" [pale]="true" [text]="'Resume Game'" [disable]="!setup.inGame()" />
+                        <app-nav-button [target]="'/play'"   [size]="buttonSize()" [pale]="true" [text]="'Resume Game'"
+                                [disable]="!setup.inGame()" />
                     </li>
                 </ul>
                 </nav>
