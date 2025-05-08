@@ -1,5 +1,6 @@
 @for(option of options(); track $index; let i = $index) {
-<button class="interface hoverable {{ size() }} content-{{ color() }} {{ unSelectedStyle[i]() }}"
+<button class="interface hoverable {{ size() }} content-{{ color() }}"
+        [class.un-selected]="chosenIdx() != i"
         (click)="select(i)">
     {{ option }}
 </button>
