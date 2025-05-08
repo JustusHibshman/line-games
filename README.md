@@ -25,7 +25,7 @@ The goal is to eventually have all of the following features.
 
 ## Development Phases
 
- - [ ] Phase I: Client interface with working hotseat and in-browser AI
+ - [x] Phase I: Client interface with working hotseat and in-browser AI
  - [ ] Phase II: Back end for online multiplayer -- will also broadcast the host's client AI moves
  - [ ] Phase III: Move AI to the back end; make it more powerful and efficient
 
