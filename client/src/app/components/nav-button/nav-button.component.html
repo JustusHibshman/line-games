@@ -1,4 +1,4 @@
-<button [routerLink]="target()" class="interface hoverable {{ size() }} content-{{ color() }} {{ paleStr() }}"
-        [disabled]="disable()" >
+<button [routerLink]="target()" class="interface hoverable {{ size() }} content-{{ color() }}"
+        [class.pale]="pale()" [disabled]="disable()" >
     {{ text() }}
 </button>

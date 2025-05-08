@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -14,5 +14,4 @@ export class NavButtonComponent {
     size    = input<string>("huge");
     disable = input<boolean>(false);
     pale    = input<boolean>(false);
-    paleStr = computed(() => this.pale() ? 'pale' : ''); 
 }
