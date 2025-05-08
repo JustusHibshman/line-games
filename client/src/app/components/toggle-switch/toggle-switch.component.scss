@@ -1,17 +1,18 @@
-label.slider {
+.full-switch {
     display: inline-block;
     position: relative;
     height: 30px;
+    width: 50px;
 }
 
 
-input.slider {
+.hidden {
     opacity: 0;
     width: 0;
     height: 0;
 }
 
-span.slider-backdrop {
+.slider-backdrop {
     position: absolute;
     top: 0;
     bottom: 0;
@@ -29,7 +30,7 @@ span.slider-backdrop {
     transition: 0.5s;
 }
 
-span.slider {
+.slider {
     position: absolute;
     top: 0;
     bottom: 0;
@@ -46,46 +47,41 @@ span.slider {
     border-radius: 15px;
 }
 
-input:disabled ~ span.slider {
+input:disabled ~ .slider {
     background-color: var(--inactive-color);
     cursor: default;
 }
 
-input:checked ~ span.slider-backdrop {
+input:checked ~ .slider-backdrop {
     border: 2px solid var(--alt-color-A);
 }
 
-input:checked ~ span.slider {
+input:checked ~ .slider {
     background-color: var(--alt-color-A);
     transform: translateX(20px);
 }
 
-span.slider-backdrop:hover {
+.slider-backdrop:hover {
     background-color: var(--input-hover-background);
 }
 
-span.slider:hover ~ span.slider-backdrop {
+.slider:hover ~ .slider-backdrop {
     background-color: var(--input-hover-background);
 }
 
-input:disabled ~ span.slider-backdrop {
+input:disabled ~ .slider-backdrop {
     border: 2px solid var(--inactive-color);
     cursor: default;
 }
 
-input:disabled ~ span.slider-backdrop:hover {
+input:disabled ~ .slider-backdrop:hover {
     background-color: var(--input-background);
 }
 
 input:disabled {
-    & ~ span.slider:hover {
-        & ~ span.sliderBackdrop {
+    & ~ .slider:hover {
+        & ~ .slider-backdrop {
             background-color: var(--input-background);
         }
     }
-}
-
-span.use-space {
-    display: block;
-    width: 50px;
 }
