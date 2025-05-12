@@ -1,4 +1,6 @@
 import { computed, inject, Injectable, Signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
 import { GameSpec, copyGameSpec } from '@local-types/game-spec.type';
@@ -15,6 +17,7 @@ export class SetupService {
 
     router = inject(Router);
     gameplay = inject(GameplayService);
+    http = inject(HttpClient);
 
     gameLink: Signal<GameLink> = this.gameplay.getGameLink();
 
@@ -22,9 +25,14 @@ export class SetupService {
 
     inGame = computed(() => this.gameLink().inGame);
 
+    randomStringToRemove =
+        toSignal(this.http.get<string>("http://192.168.1.18:8080/http-call-worked"),
+                         {initialValue: "No Http Result"});
+
     constructor() { }
 
     enterGame(): void {
+        console.log(this.randomStringToRemove());
         this.router.navigate(['/play']);
     }
 
