@@ -1,14 +1,17 @@
 package main
 
 import (
-    "fmt"
+    "encoding/json"
     "html"
     "log"
     "net/http"
 )
 
 func basicReplyHandler(w http.ResponseWriter, r *http.Request) {
-    fmt.Fprintf(w, "Hello %q", html.EscapeString(r.URL.Path));
+    jsonStr, err := json.Marshal("Hello " + html.EscapeString(r.URL.Path));
+    if err == nil {
+        w.Write(jsonStr);
+    }
 }
 
 func main() {

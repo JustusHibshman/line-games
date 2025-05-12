@@ -18,7 +18,6 @@ import { SetupService } from '@local-services/setup.service';
 export class LobbyComponent implements OnInit {
 
     setup = inject(SetupService);
-    router = inject(Router);
 
     players: any = [];
     playerTypeTexts: Array<string> = [];
@@ -75,7 +74,7 @@ export class LobbyComponent implements OnInit {
     }
 
     enterGame(): void {
-        this.router.navigate(['/play']);
+        this.setup.enterGame();
     }
 
     contains(a: number, l: Array<number>): boolean {

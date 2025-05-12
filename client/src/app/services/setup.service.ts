@@ -26,7 +26,7 @@ export class SetupService {
     inGame = computed(() => this.gameLink().inGame);
 
     randomStringToRemove =
-        toSignal(this.http.get<string>("http://192.168.1.18:8080/http-call-worked"),
+        toSignal(this.http.get<string>("http://127.0.0.1:8080/http-call-worked"),
                          {initialValue: "No Http Result"});
 
     constructor() { }
