@@ -1,6 +1,7 @@
 package storage
 
 import (
+    "fmt"
     "testing"
     "time"
 )
@@ -60,6 +61,8 @@ func TestRemovalPeriod(t *testing.T) {
     if (cm.Len() != 0) {
         t.Errorf("Timeout removal did not occur.")
     }
+
+    cm.Destroy()
 }
 
 func TestReadReset(t *testing.T) {
@@ -83,9 +86,137 @@ func TestReadReset(t *testing.T) {
     if (cm.Len() != 0) {
         t.Errorf("Timeout removal did not occur. %d", cm.Len())
     }
+
+    cm.Destroy()
 }
 
 func TestMaxElements(t *testing.T) {
     cm := new(CappedMap[int, string])
-    cm.Init(0, false, 0, false, 7)
+
+    // * Max of 5 elements
+    // * Evict oldest (eventually) when overfull
+    // * Perform evictions every 2 seconds
+    cm.Init(0, false, 5, true, 2)
+
+    cm.Set(0 ,"A")
+    time.Sleep(1 * time.Second)
+    cm.Set(1, "B")
+    cm.Set(2, "C")
+    cm.Set(3, "D")
+    cm.Set(4, "E")
+    cm.Set(5, "F")
+
+    if (cm.Len() != 6) {
+        t.Errorf("Prevented insertions rather then awaiting eviction")
+    }
+
+    time.Sleep(2 * time.Second)
+
+    if (cm.Len() != 5) {
+        t.Errorf("Did not bring down to size")
+    }
+    if (cm.Contains(0)) {
+        t.Errorf("Did not delete oldest key")
+    }
+
+    cm.Destroy()
+
+    cm = new(CappedMap[int, string])
+    // * Max of 5 elements
+    // * Prevent insertions when full
+    // * Perform evictions every 2 seconds
+    cm.Init(0, false, 5, false, 2)
+    cm.Set(0 ,"A")
+    time.Sleep(1 * time.Second)
+    cm.Set(1, "B")
+    cm.Set(2, "C")
+    cm.Set(3, "D")
+    cm.Set(4, "E")
+    cm.Set(5, "F")
+
+    if (cm.Len() != 5) {
+        t.Errorf("Allowed insertions beyond size limit though old-eviction disabled")
+    }
+    if (cm.Contains(5)) {
+        t.Errorf("Kept the wrong element (kept the one set after map already full)")
+    }
+
+    cm.Destroy()
+
+    cm = new(CappedMap[int, string])
+    // * Max of 5 elements
+    // * Evict oldest (immediately) when overfull
+    // * Perform evictions when interface is called
+    cm.Init(0, false, 5, true, 0)
+    cm.Set(0 ,"A")
+    time.Sleep(1 * time.Second)
+    cm.Set(1, "B")
+    cm.Set(2, "C")
+    cm.Set(3, "D")
+    cm.Set(4, "E")
+    cm.Set(5, "F")
+
+    if (cm.Len() != 5) {
+        t.Errorf("Did not bring down to size")
+    }
+    if (cm.Contains(0)) {
+        t.Errorf("Did not delete oldest key")
+    }
+
+    cm.Destroy()
+
+    cm = new(CappedMap[int, string])
+    // * Max of 5 elements
+    // * Prevent insertions when full
+    // * Perform evictions when interface is called
+    cm.Init(0, false, 5, false, 0)
+    cm.Set(0 ,"A")
+    time.Sleep(1 * time.Second)
+    cm.Set(1, "B")
+    cm.Set(2, "C")
+    cm.Set(3, "D")
+    cm.Set(4, "E")
+    cm.Set(5, "F")
+
+    if (cm.Len() != 5) {
+        t.Errorf("Allowed insertions beyond size limit though old-eviction disabled")
+    }
+    if (cm.Contains(5)) {
+        t.Errorf("Kept the wrong element (kept the one set after map already full)")
+    }
+
+    cm.Destroy()
+}
+
+
+func TestBothMainFeatures(t *testing.T) {
+    cm := new(CappedMap[int, string])
+    // * Elements auto-timeout after 4 seconds
+    // * Read resets eviction timer
+    // * Max of 3 elements
+    // * Evict oldest (eventually) when overfull
+    // * Perform evictions every 2 seconds
+    cm.Init(4, true, 3, true, 2)
+    cm.Set(0, "A")
+    time.Sleep(1 * time.Second)
+    cm.Set(1, "B")
+    cm.Set(2, "C")
+    cm.Set(3, "D")
+
+    time.Sleep(2 * time.Second)
+    if (cm.Contains(0)) {
+        t.Errorf("Kept oldest key which should have been evicted due to size. " + fmt.Sprint(cm.Len()))
+    }
+
+    cm.Get(1)
+
+    time.Sleep((7 * time.Second) / 2)  // 3.5 seconds
+    if (cm.Len() != 1) {
+        t.Errorf("Generic timeout failed. " + fmt.Sprint(cm.Len()))
+    }
+    if (!cm.Contains(1)) {
+        t.Errorf("Timer reset on read failed")
+    }
+
+    cm.Destroy()
 }
