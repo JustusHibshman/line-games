@@ -41,6 +41,9 @@ import (
     Remove(key S) error
     Contains(key S) bool
 
+    // This function is by nature O(n) both in time and space -- use infrequently
+    UnorderedKeysAndValues() (keys []S, values []T)
+
     // Stops the key-removal thread if it is still running
     Destroy()
 */
@@ -137,6 +140,15 @@ func (m *CappedMap[S, T]) Remove(key S) error {
     }
     defer m.lock.Unlock()
     return m.data.Remove(key)
+}
+
+func (m *CappedMap[S, T]) UnorderedKeysAndValues() ([]S, []T) {
+    m.lock.Lock()
+    if (m.removalPeriod == 0) {
+        m.locklessOneTimeRegulate()
+    }
+    defer m.lock.Unlock()
+    return m.data.UnorderedKeysAndValues()
 }
 
 func (m *CappedMap[S, T]) Destroy() {

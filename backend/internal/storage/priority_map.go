@@ -14,6 +14,8 @@ type PriorityMap[S comparable, T any, P cmp.Ordered] interface {
     Len() int
     Contains(key S) bool
 
+    UnorderedKeysAndValues() ([]S, []T)
+
     Set(key S, value T, priority P)
     SetValue(key S, value T) error
     SetPriority(key S, priority P) error
@@ -76,6 +78,16 @@ func (pm *PriorityMapCore[S, T, P, C]) Len() int {
 
 func (pm *PriorityMapCore[S, T, P, C]) Contains(key S) bool {
     return pm.priorityMap.Contains(key)
+}
+
+func (pm *PriorityMapCore[S, T, P, C]) UnorderedKeysAndValues() ([]S, []T) {
+    keys := make([]S, pm.Len())
+    values := make([]T, pm.Len())
+    for i, pmItem := range pm.data {
+        keys[i] = pmItem.key
+        values[i] = pmItem.value
+    }
+    return keys, values
 }
 
 func (pm *PriorityMapCore[S, T, P, C]) Get(key S) (value T, err error) {
