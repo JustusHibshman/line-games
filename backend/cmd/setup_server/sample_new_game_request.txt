@@ -1,0 +1,19 @@
+{
+    "name": "hello",
+    "password": "insecure",
+    "seats": [0, 1],
+    "spec": {
+        "board": {
+            "width": 7,
+            "height": 6,
+            "gravity": true
+        },
+        "rules": {
+            "winningLength": 4,
+            "allowCaptures": false,
+            "winByCaptures": false,
+            "captureSize":   0,
+            "winningNumCaptures": 0
+        }
+    }
+}

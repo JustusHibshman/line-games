@@ -2,19 +2,11 @@ package main
 
 import (
     "encoding/json"
-    "html"
     "linegames/backend/internal/random"
     "linegames/backend/internal/storage"
     "log"
     "net/http"
 )
-
-func basicReplyHandler(w http.ResponseWriter, r *http.Request) {
-    jsonStr, err := json.Marshal("Hello " + html.EscapeString(r.URL.Path));
-    if err == nil {
-        w.Write(jsonStr);
-    }
-}
 
 type ID = uint64
 type SeatType uint
@@ -41,10 +33,14 @@ type GameSpec struct {
 }
 
 type createRequest struct {
-    Name string
-    Password string
-    Seats []SeatType
-    Spec GameSpec
+    Name string         `json:"name"`
+    Password string     `json:"password"`
+    Seats []SeatType    `json:"seats"`
+    Spec GameSpec       `json:"spec"`
+}
+
+type CreateSuccess struct {
+    GameId ID `json:"gameId"`
 }
 
 type pendingGame struct {
@@ -64,6 +60,8 @@ func newGameHandler(w http.ResponseWriter, r *http.Request, pendingGames *Pendin
     err := json.NewDecoder(r.Body).Decode(newGame)
     if (err != nil) {
         w.WriteHeader(http.StatusBadRequest)
+        errText, _ := json.Marshal(err.Error())
+        w.Write(errText)
         return
     }
 
@@ -85,7 +83,7 @@ func newGameHandler(w http.ResponseWriter, r *http.Request, pendingGames *Pendin
     }
 
     w.Header().Set("Content-Type", "application/json; charset=utf-8") // normal header
-    marshalled, _ := json.Marshal(pg.GameId)
+    marshalled, _ := json.Marshal(CreateSuccess{GameId: pg.GameId})
     w.Write(marshalled)
 }
 
