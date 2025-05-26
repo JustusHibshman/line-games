@@ -49,7 +49,7 @@ import (
 */
 
 type CappedMap[S comparable, T any] struct {
-    timeout uint
+    timeout time.Duration
     resetTimeoutOnRead bool
     maxElements uint
     evictWhenFull bool
@@ -63,20 +63,20 @@ type CappedMap[S comparable, T any] struct {
     // The "priorities" are the seconds times since `referenceTime`.
     //
     // Thus smaller numbers mean older elements.
-    data PriorityMap[S, T, uint]
+    data PriorityMap[S, T, time.Duration]
 }
 
 func (m *CappedMap[S, T]) Init(timeout uint, resetTimeoutOnRead bool,
                                maxElements uint, evictWhenFull bool,
                                removalPeriod uint) {
-    m.timeout = timeout
+    m.timeout = time.Duration(timeout) * time.Second
     m.resetTimeoutOnRead = resetTimeoutOnRead
     m.maxElements = maxElements
     m.evictWhenFull = evictWhenFull
     m.removalPeriod = removalPeriod
     m.destroyed = false
 
-    m.data = new(MinPriorityMap[S, T, uint])
+    m.data = new(MinPriorityMap[S, T, time.Duration])
     m.data.Init()
     m.referenceTime = time.Now()
 
@@ -85,8 +85,8 @@ func (m *CappedMap[S, T]) Init(timeout uint, resetTimeoutOnRead bool,
     }
 }
 
-func (m *CappedMap[S, T]) secondsSinceInit() uint {
-    return uint(time.Now().Sub(m.referenceTime) / time.Second)
+func (m *CappedMap[S, T]) timeSinceInit() time.Duration {
+    return time.Now().Sub(m.referenceTime)
 }
 
 func (m *CappedMap[S, T]) Len() int {
@@ -108,7 +108,7 @@ func (m *CappedMap[S, T]) Set(key S, value T) error {
             !m.data.Contains(key) && uint(m.data.Len()) >= m.maxElements) {
         return errors.New("Cannot set new key when CappedMap is full and evictWhenFull is disabled")
     }
-    m.data.Set(key, value, m.secondsSinceInit())
+    m.data.Set(key, value, m.timeSinceInit())
     return nil
 }
 
@@ -119,7 +119,7 @@ func (m *CappedMap[S, T]) Get(key S) (value T, err error) {
     }
     defer m.lock.Unlock()
     if (m.resetTimeoutOnRead && m.data.Contains(key)) {
-        m.data.SetPriority(key, m.secondsSinceInit())
+        m.data.SetPriority(key, m.timeSinceInit())
     }
     return m.data.Get(key)
 }
@@ -168,7 +168,7 @@ func (m *CappedMap[S, T]) locklessEvict() bool {
         return true;
     } else if (m.timeout != 0 && m.data.Len() > 0) {
         _, _, timeInserted, _ := m.data.Peek()
-        if (m.secondsSinceInit() - timeInserted >= m.timeout) {
+        if (m.timeSinceInit() - timeInserted >= m.timeout) {
             m.data.Pop()
             return true
         }
