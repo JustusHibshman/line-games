@@ -11,13 +11,15 @@ import (
 )
  
 const (
-    host     = "localhost"
     port     = 5432
     user     = "postgres"
     dbname   = "postgres"
 )
  
 func main() {
+    time.Sleep(10 * time.Second)
+
+    host := os.Getenv("DATABASE_HOST")
     password_file := os.Getenv("POSTGRES_PASSWORD_FILE")
     password, err := os.ReadFile(password_file)
     CheckError(err)

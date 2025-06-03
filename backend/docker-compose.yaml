@@ -1,0 +1,23 @@
+services:
+    frontend:
+        container_name: frontend
+        environment:
+            - DATABASE_HOST=database
+            - POSTGRES_PASSWORD_FILE=/run/secrets/postgres-password
+        volumes:
+            - ./database/postgres-password.txt:/run/secrets/postgres-password:ro
+        ports:
+            - '8080:8080'
+        restart: unless-stopped
+        image: 'sutsuj/local-proof-of-concept'
+    postgres:
+        container_name: database
+        environment:
+            - POSTGRES_PASSWORD_FILE=/run/secrets/postgres-password
+        volumes:
+            - ./database/postgres-password.txt:/run/secrets/postgres-password:ro
+            - 'pgdata:/var/lib/postgresql/data'
+        restart: unless-stopped
+        image: 'postgres:17.5-alpine3.22'
+volumes:
+    pgdata:
