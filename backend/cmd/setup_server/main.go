@@ -4,9 +4,12 @@ import (
     "encoding/json"
     "linegames/backend/internal/random"
     "linegames/backend/internal/storage"
+    "linegames/backend/internal/util"
     "log"
     "math/rand"
     "net/http"
+    "sync"
+    "time"
 )
 
 type ID = uint64
@@ -59,6 +62,7 @@ type SeatsRequest struct {
 }
 type SeatsSuccess struct {
     Seats []int `json:"seats"`
+    GameServer string `json:"gameServer"`
 }
 
 type GamesList struct {
@@ -144,18 +148,41 @@ func deleteGameHandler(w http.ResponseWriter, r *http.Request, pendingGames *Pen
     w.WriteHeader(http.StatusOK)
 }
 
-func gamesListHandler(w http.ResponseWriter, r *http.Request, pendingGames *PendingGames) {
+func gamesListUpdater(pendingGames *PendingGames,
+                      names **[]string, ids **[]ID, lock *sync.Mutex, delay time.Duration) {
 
-    _, games := pendingGames.UnorderedKeysAndValues()
-    names := make([]string, len(games))
-    ids   := make([]ID, len(games))
-    for i, game := range games {
-        names[i] = game.Name
-        ids[i] = game.GameId
+    for true {
+        _, games := pendingGames.UnorderedKeysAndValues()
+        namesList := make([]string, len(games))
+        idsList   := make([]ID, len(games))
+        for i, game := range games {
+            namesList[i] = game.Name
+            idsList[i] = game.GameId
+        }
+
+        lock.Lock()
+        *names = &namesList
+        *ids   = &idsList
+        lock.Unlock()
+
+        time.Sleep(delay)
     }
+}
+
+func gamesListHandler(w http.ResponseWriter, r *http.Request,
+                      names **[]string, ids **[]ID, lock *sync.Mutex) {
 
     w.Header().Set("Content-Type", "application/json; charset=utf-8") // normal header
-    marshalled, _ := json.Marshal(GamesList{Names: names, Ids: ids})
+    lock.Lock()
+    namesPtr := *names
+    idsPtr   := *ids
+    lock.Unlock()
+    if namesPtr == nil {
+        marshalled, _ := json.Marshal(GamesList{Names: make([]string, 0), Ids: make([]ID, 0)})
+        w.Write(marshalled)
+        return
+    }
+    marshalled, _ := json.Marshal(GamesList{Names: *namesPtr, Ids: *idsPtr})
     w.Write(marshalled)
 }
 
@@ -181,7 +208,7 @@ func joinGameHandler(w http.ResponseWriter, r *http.Request, pendingGames *Pendi
     }
 
     playerId := random.Random64()
-    for contains(game.PlayerIds, playerId) {  // Ensure the player id is new
+    for util.Contains(game.PlayerIds, playerId) {  // Ensure the player id is new
         playerId = random.Random64()
     }
     game.PlayerIds = append(game.PlayerIds, playerId)
@@ -212,7 +239,7 @@ func requestSeatsHandler(w http.ResponseWriter, r *http.Request, pendingGames *P
         w.WriteHeader(http.StatusBadRequest)
         return
     }
-    if !contains(game.PlayerIds, seatsRequest.PlayerId) {  // Only a player may request seats
+    if !util.Contains(game.PlayerIds, seatsRequest.PlayerId) {  // Only a player may request seats
         w.WriteHeader(http.StatusBadRequest)
         return
     }
@@ -240,25 +267,33 @@ func requestSeatsHandler(w http.ResponseWriter, r *http.Request, pendingGames *P
     }
 
     w.Header().Set("Content-Type", "application/json; charset=utf-8") // normal header
-    marshalled, _ := json.Marshal(SeatsSuccess{Seats: claimedSeats})
+    marshalled, _ := json.Marshal(SeatsSuccess{Seats: claimedSeats, GameServer: ""})
     w.Write(marshalled)
 }
 
 func main() {
-    pendingGames := new(PendingGames)
-
-    // Lobby games time out in 20 minutes
+    // Lobby games time out in 10 minutes
     // Reads do not reset the expiration clock
     // At most 10000 games in the lobby
     // Cannot add a new game when full
     // Timeout evictions are performed once per minute
-    pendingGames.Init(60 * 20, false, 10000, false, 60)
+    pendingGames := new(PendingGames)
+    pendingGames.Init(60 * 10, false, 10000, false, 60)
+
+    listsLock := new(sync.Mutex)
+    var emptyNamesList *[]string = nil
+    var emptyIdsList   *[]ID = nil
+    names := &emptyNamesList
+    ids   := &emptyIdsList
 
     ngHandler := func(w http.ResponseWriter, r *http.Request) {newGameHandler(w, r, pendingGames)}
     dgHandler := func(w http.ResponseWriter, r *http.Request) {deleteGameHandler(w, r, pendingGames)}
-    glHandler := func(w http.ResponseWriter, r *http.Request) {gamesListHandler(w, r, pendingGames)}
+    glHandler := func(w http.ResponseWriter, r *http.Request) {gamesListHandler(w, r, names, ids, listsLock)}
     jgHandler := func(w http.ResponseWriter, r *http.Request) {joinGameHandler(w, r, pendingGames)}
     rsHandler := func(w http.ResponseWriter, r *http.Request) {requestSeatsHandler(w, r, pendingGames)}
+
+    // Runs forever with 10-second pauses
+    go gamesListUpdater(pendingGames, names, ids, listsLock, 10 * time.Second)
 
     http.HandleFunc("/new-game",    ngHandler)
     http.HandleFunc("/delete-game", dgHandler)
@@ -266,13 +301,4 @@ func main() {
     http.HandleFunc("/join-game",   jgHandler)
     http.HandleFunc("/request-seats", rsHandler)
     log.Fatal(http.ListenAndServe(":8080", nil))
-}
-
-func contains(s []ID, x ID) bool {
-    for _, id := range s {
-        if id == x {
-            return true
-        }
-    }
-    return false
 }
