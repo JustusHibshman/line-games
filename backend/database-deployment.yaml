@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: database
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            function: database
+    template:
+        metadata:
+            labels:
+                function: database
+        spec:
+            containers:
+              - name: pg-database
+                image: 'postgres:17.5-alpine3.22'
+                env:
+                  - name: PGDATA
+                    value: "/var/lib/pgsql/data"
+                  - name: POSTGRES_PASSWORD_FILE
+                    value: "/run/secrets/postgres-password.txt"
+                volumeMounts:
+                  - name: db-volume
+                    mountPath: "/var/lib/pgsql/data"
+                    readOnly: false
+                  - name: db-password
+                    mountPath: /run/secrets/postgres-password.txt
+                    subPath: postgres-password.txt
+                    readOnly: true
+            volumes:
+              - name: db-volume
+                persistentVolumeClaim:
+                    claimName: db-volume-claim
+              - name: db-password
+                secret:
+                    secretName: db-password
+                    items:
+                      - key: postgres-password.txt
+                        path: postgres-password.txt

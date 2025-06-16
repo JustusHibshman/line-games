@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: setup-server
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            function: setup-server
+    template:
+        metadata:
+            labels:
+                function: setup-server
+        spec:
+            containers:
+              - name: setup-server
+                image: 'docker.io/justushibshman/jih_personal:database-test-0.0.1'
+                env:
+                  - name: DATABASE_HOST
+                    value: "database-service"
+                  - name: POSTGRES_PASSWORD_FILE
+                    value: "/run/secrets/postgres-password.txt"
+                volumeMounts:
+                  - name: db-password
+                    mountPath: /run/secrets/postgres-password.txt
+                    subPath: postgres-password.txt
+                    readOnly: true
+            imagePullSecrets:
+              - name: docker-credentials
+            volumes:
+              - name: db-password
+                secret:
+                    secretName: db-password
+                    items:
+                      - key: postgres-password.txt
+                        path: postgres-password.txt
