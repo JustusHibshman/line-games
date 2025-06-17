@@ -7,7 +7,7 @@ if [ "$1" = "minikube" ]; then
     }
 else
     kctl() {
-        kubectl $@
+        ./do_kubectl.sh $@
     }
 fi
 
