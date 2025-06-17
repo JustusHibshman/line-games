@@ -1,1 +1,2 @@
-secrets/
+config/secrets/
+config/digital_ocean/
