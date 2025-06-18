@@ -22,7 +22,7 @@ spec:
                     value: "/run/secrets/postgres-password.txt"
                 volumeMounts:
                   - name: db-volume
-                    mountPath: "/var/lib/pgsql/data"
+                    mountPath: "/var/lib/pgsql"
                     readOnly: false
                   - name: db-password
                     mountPath: /run/secrets/postgres-password.txt
