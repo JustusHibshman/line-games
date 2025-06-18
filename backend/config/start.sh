@@ -36,3 +36,6 @@ kctl apply -f db-volume-claim.yaml
 # Launch the deployments
 kctl apply -f database-deployment.yaml
 kctl apply -f setup-deployment.yaml
+
+# Set up the ingress resources
+

@@ -3,10 +3,8 @@ kind: Service
 metadata:
     name: setup-service
 spec:
-    type: NodePort
     selector:
         function: setup-server
     ports:
       - port: 8080
         targetPort: 8080
-        nodePort: 30080
