@@ -23,3 +23,6 @@ kctl delete pvc --all
 
 # Delete the secrets
 kctl delete secret --all
+
+# Delete the ingress resources
+kctl delete ingress app-ingress

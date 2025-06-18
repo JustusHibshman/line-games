@@ -38,4 +38,4 @@ kctl apply -f database-deployment.yaml
 kctl apply -f setup-deployment.yaml
 
 # Set up the ingress resources
-
+kctl apply -f ingress.yaml
