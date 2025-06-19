@@ -14,7 +14,7 @@ spec:
         spec:
             containers:
               - name: setup-server
-                image: 'docker.io/justushibshman/jih_personal:database-test-0.0.1'
+                image: 'docker.io/justushibshman/jih_personal:database-test-0.0.6'
                 env:
                   - name: DATABASE_HOST
                     value: "database-service"

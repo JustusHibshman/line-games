@@ -2,10 +2,12 @@
 
 # Either pass minikube as an argument or pass nothing
 if [ "$1" = "minikube" ]; then
+    MINIKUBEEXT="-minikube"
     kctl() {
         minikube kubectl -- $@
     }
 else
+    MINIKUBEEXT=""
     kctl() {
         ./do_kubectl.sh $@
     }
@@ -28,7 +30,7 @@ rm secrets/postgres-password.txt
 
 # Internal and external communication: ports and host/service names
 kctl apply -f database-service.yaml
-kctl apply -f setup-service.yaml
+kctl apply -f setup-service$MINIKUBEEXT.yaml
 
 # Create volume claims
 kctl apply -f db-volume-claim.yaml
