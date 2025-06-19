@@ -1,4 +1,4 @@
-FROM golang:1.24.3-alpine3.22
+FROM golang:1.24.3-alpine3.22 AS db-test
 
 COPY . .
 

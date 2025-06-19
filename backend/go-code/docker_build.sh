@@ -1,6 +1,6 @@
 #!/bin/bash
 
-docker build -t database-test:0.0.1 .
+docker build --target db-test -t database-test:0.0.6 .
 docker login --username justushibshman
-docker tag      database-test:0.0.1 justushibshman/jih_personal:database-test-0.0.1
-docker push                         justushibshman/jih_personal:database-test-0.0.1
+docker tag      database-test:0.0.6 justushibshman/jih_personal:database-test-0.0.6
+docker push                         justushibshman/jih_personal:database-test-0.0.6
