@@ -8,7 +8,9 @@ import (
 
 // Table schemas
 const (
-    games = "( game_id INT8 PRIMARY KEY, num_players INT, begun BOOL, name VARCHAR(15), pwd VARCHAR(15), created TIMESTAMP )"
+    MaxStrLen = 15  // Max length of varchars
+    // The value of `created` is supposed to be unix time in seconds
+    games = "( game_id INT8 PRIMARY KEY, host_id INT8, num_players INT, begun BOOL, name VARCHAR(15), pwd VARCHAR(15), created INT8 )"
     players = "( player_id INT8 PRIMARY KEY, game_id INT8 REFERENCES games )"
     seats = "( id SERIAL PRIMARY KEY, game_id INT8 REFERENCES games, seat INT, player_id INT8 REFERENCES players )"
     moves = "( id SERIAL PRIMARY KEY, game_id INT8 REFERENCES games, turn INT, x INT, y INT )"
