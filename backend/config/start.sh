@@ -43,4 +43,8 @@ kctl apply -f cleanup-deployment.yaml
 # kctl apply -f setup-deployment.yaml
 
 # Set up the ingress resources
-kctl apply -f ingress.yaml
+if [ "$1" = "minikube" ]; then
+    echo "Skipping Ingress for Minikube"
+else
+    kctl apply -f ingress.yaml
+fi
