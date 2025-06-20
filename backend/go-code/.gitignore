@@ -1,4 +1,5 @@
 cmd/setup_server/setup_server
 cmd/game_server/game_server
+cmd/lobby_list_server/lobby_list_server
 cmd/database_test/database_test
 go.sum
