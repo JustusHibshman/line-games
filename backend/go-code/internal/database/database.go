@@ -19,7 +19,7 @@ func GetNonBegunGames() ([]Game, error) {
 }
 
 func SetBegun(gameID ID) error {
-    command := fmt.Sprintf("UPDATE games SET begum = true WHERE game_id = %d;", gameID)
+    command := fmt.Sprintf("UPDATE games SET begun = true WHERE game_id = %d;", gameID)
     _, err := dbconn.Exec(command)
     return err
 }
@@ -52,7 +52,7 @@ func DeleteAllGameData(gameID ID) error {
 func GetOldGames(d Duration, begun bool) ([]Game, error) {
     var now Time = Time(time.Now().Unix())
     then := now - Time(d)
-    queryStr := fmt.Sprintf("SELECT * FROM games WHERE created <= %d AND begun = %t;",
+    queryStr := fmt.Sprintf("SELECT * FROM games WHERE timestamp <= %d AND begun = %t;",
                             then, begun)
     return query[Game](queryStr, gameScanner)
 }
