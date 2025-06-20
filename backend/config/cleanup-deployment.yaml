@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-    name: setup-server
+    name: cleanup-manager
 spec:
     replicas: 1
     selector:
         matchLabels:
-            function: setup-server
+            function: cleanup-manager
     template:
         metadata:
             labels:
-                function: setup-server
+                function: cleanup-manager
         spec:
             containers:
-              - name: setup-server
-                image: 'docker.io/justushibshman/jih_personal:database_test-0.0.18'
+              - name: cleanup-manager
+                image: 'docker.io/justushibshman/jih_personal:data_cleanup-0.0.1'
                 env:
                   - name: DATABASE_HOST
                     value: "database-service"

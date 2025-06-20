@@ -15,3 +15,10 @@ spec:
             name: setup-service
             port:
               number: 8080
+      - path: /games-list
+        pathType: Prefix
+        backend:
+          service:
+            name: lobby-service
+            port:
+              number: 1111

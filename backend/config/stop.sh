@@ -15,8 +15,9 @@ fi
 kctl delete deployment --all
 
 # Remove the services
-kctl delete service setup-service
+# kctl delete service setup-service
 kctl delete service database-service
+kctl delete service lobby-service
 
 # Delete the database volume claim
 kctl delete pvc --all

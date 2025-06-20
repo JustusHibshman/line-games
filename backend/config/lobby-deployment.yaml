@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-    name: setup-server
+    name: lobby-servers
 spec:
-    replicas: 1
+    replicas: 2
     selector:
         matchLabels:
-            function: setup-server
+            function: lobby-server
     template:
         metadata:
             labels:
-                function: setup-server
+                function: lobby-server
         spec:
             containers:
-              - name: setup-server
-                image: 'docker.io/justushibshman/jih_personal:database_test-0.0.18'
+              - name: lobby-server
+                image: 'docker.io/justushibshman/jih_personal:lobby_server-0.0.1'
                 env:
                   - name: DATABASE_HOST
                     value: "database-service"

@@ -30,14 +30,17 @@ rm secrets/postgres-password.txt
 
 # Internal and external communication: ports and host/service names
 kctl apply -f database-service.yaml
-kctl apply -f setup-service$MINIKUBEEXT.yaml
+kctl apply -f lobby-service$MINIKUBEEXT.yaml
+# kctl apply -f setup-service$MINIKUBEEXT.yaml
 
 # Create volume claims
 kctl apply -f db-volume-claim.yaml
 
 # Launch the deployments
 kctl apply -f database-deployment.yaml
-kctl apply -f setup-deployment.yaml
+kctl apply -f lobby-deployment.yaml
+kctl apply -f cleanup-deployment.yaml
+# kctl apply -f setup-deployment.yaml
 
 # Set up the ingress resources
 kctl apply -f ingress.yaml
