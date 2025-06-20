@@ -7,15 +7,16 @@ import (
     "encoding/json"
     "linegames/backend/internal/database"
     "log"
+    "math/rand"
     "net/http"
     "time"
 )
 
 const (
-    refreshRate = 5  // Update every 5 seconds
+    avgRefreshRate = 5  // Update every 5 seconds on average
 )
 
-var lastUpdated Time
+var nextRefresh Time
 var preMarshalled []byte
 
 type GamesList struct {
@@ -24,12 +25,12 @@ type GamesList struct {
 }
 
 func init() {
-    lastUpdated = 0
+    nextRefresh = 0
 }
 
 func gamesListHandler(w http.ResponseWriter, r *http.Request) {
     var now Time = Time(time.Now().Unix())
-    if lastUpdated == 0 || now - Time(refreshRate) > lastUpdated {
+    if now > nextRefresh {
         // Time to update
         lobbyGames, err := database.GetNonBegunGames()
         if err != nil {
@@ -46,7 +47,11 @@ func gamesListHandler(w http.ResponseWriter, r *http.Request) {
         }
         preMarshalled, _ = json.Marshal(gl)
 
-        lastUpdated = now
+        // Wait some amount between (aRR - 1) and (aRR + 1) seconds before
+        //  refreshing again
+        // Helps reduce the chance that multiple lobby servers query the whole
+        //  database at the same time.
+        nextRefresh = now + avgRefreshRate + (-1) + Time(rand.Int31n(3))
     }
 
     w.Header().Set("Content-Type", "application/json; charset=utf-8") // normal header
@@ -54,6 +59,12 @@ func gamesListHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+    // Wait a random time between 0 and aRR seconds.
+    //
+    // Helps reduce the chance that multiple lobby servers query the whole
+    //  database at the same time.
+    time.Sleep((time.Second * avgRefreshRate * time.Duration(rand.Int31n(1001))) / 1000)
+
     http.HandleFunc("/games-list", gamesListHandler)
     log.Fatal(http.ListenAndServe(":1111", nil))
 }

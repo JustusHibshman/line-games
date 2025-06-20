@@ -49,10 +49,11 @@ func DeleteAllGameData(gameID ID) error {
 }
 
 // Get games that have existed for duration `d` or longer
-func GetOldGames(d Duration) ([]Game, error) {
+func GetOldGames(d Duration, begun bool) ([]Game, error) {
     var now Time = Time(time.Now().Unix())
     then := now - Time(d)
-    queryStr := fmt.Sprintf("SELECT * FROM games WHERE created <= %d;", then)
+    queryStr := fmt.Sprintf("SELECT * FROM games WHERE created <= %d AND begun = %t;",
+                            then, begun)
     return query[Game](queryStr, gameScanner)
 }
 
