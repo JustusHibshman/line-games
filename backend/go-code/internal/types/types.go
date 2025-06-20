@@ -2,6 +2,8 @@ package types
 
 type ID = int64
 type SeatType int
+type Time int64     // Epoch time measured in seconds
+type Duration int64 // measured in seconds
 
 const (
     HumanEmpty  SeatType = 0
@@ -9,6 +11,7 @@ const (
     HumanFilled SeatType = 2
 )
 
+// Database Types
 type Game struct {
     ID ID
     HostID ID
@@ -16,8 +19,30 @@ type Game struct {
     Begun bool
     Name string
     Password string
+    Timestamp Time
 }
 
+type Player struct {
+    ID ID
+    GameID ID
+}
+
+type Seat struct {
+    ID uint
+    GameID ID
+    Seat int 
+    PlayerID ID
+}
+
+type Move struct {
+    ID uint
+    GameID ID
+    Turn int
+    X int
+    Y int
+}
+
+// Other Types
 type BoardRules struct {
     Width   int  `json:"width"`
     Height  int  `json:"height"`

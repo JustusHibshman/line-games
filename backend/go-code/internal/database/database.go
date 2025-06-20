@@ -6,57 +6,191 @@ import (
     "fmt"
     "linegames/backend/internal/dbconn"
     "linegames/backend/internal/dbschema"
+    "database/sql"
     "time"
 )
 
-func GetTimeString() (string, error) {
-    var timeString string
-    rows, err := dbconn.Query("SELECT CURRENT_TIME;")
-    if err != nil {
-        return "", err
-    }
-    for rows.Next() {
-        rows.Scan(&timeString)
-    }
-    rows.Close()
-    return timeString, nil
+func GetTime() (string, bool, error) {
+    return singletonQuery[string]("SELECT CURRENT_TIME;", stringScanner)
 }
 
-func CreateGame(game Game) error {
-    if len(game.Name) > dbschema.MaxStrLen {
-        return fmt.Errorf("Game name %s longer than max of %d characters", game.Name, dbschema.MaxStrLen)
-    }
-    if len(game.Password) > dbschema.MaxStrLen {
-        return fmt.Errorf("Game password %s longer than max of %d characters", game.Password, dbschema.MaxStrLen)
-    }
+func GetNonBegunGames() ([]Game, error) {
+    return query[Game]("SELECT * FROM games where begun = FALSE;", gameScanner)
+}
 
-    // game_id, host_id, num_players, begun, name, password, time created
-    command := fmt.Sprintf("INSERT INTO games VALUES (%d, %d, %d, %t, '%s', '%s', %d);",
-                            game.ID,
-                            game.HostID,
-                            game.NumPlayers,
-                            false,
-                            game.Name,
-                            game.Password,
-                            time.Now().Unix())
+func SetBegun(gameID ID) error {
+    command := fmt.Sprintf("UPDATE games SET begum = true WHERE game_id = %d;", gameID)
     _, err := dbconn.Exec(command)
     return err
 }
 
-func GetAllNonBegunGames() ([]Game, error) {
-    query := "SELECT * FROM games where begun = FALSE;"
-    rows, err := dbconn.Query(query)
+func RefreshGameTimestamp(gameID ID) error {
+    command := fmt.Sprintf("UPDATE games SET timestamp = %d WHERE game_id = %d;",
+                            time.Now().Unix(), gameID)
+    _, err := dbconn.Exec(command)
+    return err
+}
+
+func DeleteAllGameData(gameID ID) error {
+    // Delete in this order so that no REFERENCES relationships are broken
+    err := deleteFn("seats",  "game_id", gameID)
+    if err != nil {
+        return err
+    }
+    err = deleteFn("moves",   "game_id", gameID)
+    if err != nil {
+        return err
+    }
+    err = deleteFn("players", "game_id", gameID)
+    if err != nil {
+        return err
+    }
+    return deleteFn("games",   "game_id", gameID)
+}
+
+// Get games that have existed for duration `d` or longer
+func GetOldGames(d Duration) ([]Game, error) {
+    var now Time = Time(time.Now().Unix())
+    then := now - Time(d)
+    queryStr := fmt.Sprintf("SELECT * FROM games WHERE created <= %d;", then)
+    return query[Game](queryStr, gameScanner)
+}
+
+func GetGame(gameID ID) (Game, bool, error) {
+    queryStr := fmt.Sprintf("SELECT * FROM games WHERE game_id = %d;", gameID)
+    return singletonQuery[Game](queryStr, gameScanner)
+}
+
+func GetPlayer(playerID ID) (Player, bool, error) {
+    queryStr := fmt.Sprintf("SELECT * FROM players WHERE player_id = %d;", playerID)
+    return singletonQuery[Player](queryStr, playerScanner)
+}
+
+func GetPlayers(gameID ID) ([]Player, error) {
+    queryStr := fmt.Sprintf("SELECT * FROM players WHERE game_id = %d;", gameID)
+    return query[Player](queryStr, playerScanner)
+}
+
+func GetMove(gameID ID, turn int) (Move, bool, error) {
+    queryStr := fmt.Sprintf("SELECT * FROM moves WHERE game_id = %d AND turn = %d;", gameID, turn)
+    return singletonQuery[Move](queryStr, moveScanner)
+}
+
+func GetSeats(gameID ID) ([]Seat, error) {
+    queryStr := fmt.Sprintf("SELECT * FROM seats WHERE game_id = %d;", gameID)
+    return query[Seat](queryStr, seatScanner)
+}
+
+func InsertGame(game *Game) error {
+    return insert[Game]("games", game, gameValuesFormatter)
+}
+
+func InsertPlayer(player *Player) error {
+    return insert[Player]("players", player, playerValuesFormatter)
+}
+
+func InsertSeat(seat *Seat) error {
+    return insert[Seat]("seats", seat, seatValuesFormatter)
+}
+
+func InsertMove(move *Move) error {
+    return insert[Move]("moves", move, moveValuesFormatter)
+}
+
+/////////////////////////// Non-Exported Functions ////////////////////////////
+
+func deleteFn(table string, key string, value ID) error {
+    command := fmt.Sprintf("DELETE FROM %s WHERE %s = %d;", table, key, value)
+    _, err := dbconn.Exec(command)
+    return err
+}
+
+func insert[T any](table string, t *T, valuesFormatter func(x *T) (string, error)) error {
+    values, err := valuesFormatter(t)
+    if err != nil {
+        return err
+    }
+    command := fmt.Sprintf("INSERT INTO %s VALUES (%s);", table, values)
+    _, err = dbconn.Exec(command)
+    return err
+}
+
+func gameValuesFormatter(g *Game) (string, error) {
+    if len(g.Name) > dbschema.MaxStrLen {
+        return "", fmt.Errorf("Game name %s longer than max of %d characters",
+                                g.Name, dbschema.MaxStrLen)
+    }
+    if len(g.Password) > dbschema.MaxStrLen {
+        return "", fmt.Errorf("Game password %s longer than max of %d characters",
+                                g.Password, dbschema.MaxStrLen)
+    }
+    return fmt.Sprintf("%d, %d, %d, %t, '%s', '%s', %d",
+                        g.ID, g.HostID, g.NumPlayers, g.Begun, g.Name,
+                        g.Password, time.Now().Unix()), nil
+}
+func playerValuesFormatter(p *Player) (string, error) {
+    return fmt.Sprintf("%d, %d", p.ID, p.GameID), nil
+}
+func seatValuesFormatter(s *Seat) (string, error) {
+    return fmt.Sprintf("DEFAULT, %d, %d, %d", s.GameID, s.Seat, s.PlayerID), nil
+}
+func moveValuesFormatter(m *Move) (string, error) {
+    return fmt.Sprintf("DEFAULT, %d, %d, %d, %d", m.GameID, m.Turn, m.X, m.Y), nil
+}
+
+func stringScanner(r *sql.Rows, s *string) {
+    r.Scan(s)
+}
+func gameScanner(r *sql.Rows, g *Game) {
+    r.Scan(&(g.ID), &(g.HostID), &(g.NumPlayers), &(g.Begun),
+           &(g.Name), &(g.Password), &(g.Timestamp))
+}
+func playerScanner(r *sql.Rows, p *Player) {
+    r.Scan(&(p.ID), &(p.GameID)) 
+}
+func seatScanner(r *sql.Rows, s *Seat) {
+    r.Scan(&(s.ID), &(s.GameID), &(s.Seat), &(s.PlayerID)) 
+}
+func moveScanner(r *sql.Rows, m *Move) {
+    r.Scan(&(m.ID), &(m.GameID), &(m.Turn), &(m.X), &(m.Y)) 
+}
+
+func consumeRows[T any](rows *sql.Rows, scanner func(r *sql.Rows, t *T)) []T {
+    result := make([]T, 0)
+    for rows.Next() {
+        var nextT T
+        scanner(rows, &nextT)
+        result = append(result, nextT)
+    }
+    rows.Close()
+    return result
+}
+
+func query[T any](queryStr string, scanner func(r *sql.Rows, t *T)) ([]T, error) {
+    rows, err := dbconn.Query(queryStr)
     if err != nil {
         return nil, err
     }
-    result := make([]Game, 0)
-    for rows.Next() {  // While another row remains
-        var nextGame Game = Game{}
-        var created int64
-        rows.Scan(&(nextGame.ID), &(nextGame.HostID), &(nextGame.NumPlayers),
-                  &(nextGame.Begun), &(nextGame.Name), &(nextGame.Password),
-                  &created)
-        result = append(result, nextGame)
+    return consumeRows[T](rows, scanner), nil
+}
+
+// Returns the single T, true iff exactly 1 result was found, and an error if
+//      the query was faulty or if the query returned multiple rows
+func firstOfSlice[T any](s []T, err error, queryStr string) (T, bool, error) {
+    if (err != nil) {
+        return *new(T), false, err
     }
-    return result, nil
+    if len(s) == 0 {
+        return *new(T), false, nil
+    } else if len(s) > 1 {
+        return *new(T), false, fmt.Errorf("Supposed singleton query \"%s\" returned more than one row", queryStr)
+    }
+    return s[0], true, nil
+}
+
+// Returns the single T, true iff exactly 1 result was found, and an error if
+//      the query was faulty or if the query returned multiple rows
+func singletonQuery[T any](queryStr string, scanner func(r *sql.Rows, t *T)) (T, bool, error) {
+    s, err := query[T](queryStr, scanner)
+    return firstOfSlice[T](s, err, queryStr)
 }

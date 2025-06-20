@@ -24,27 +24,27 @@ func main() {
     var g3 Game = Game{ID: 3, Name: "Successful test", Password: "telephone"}
     
     var s = ""
-    e1 := database.CreateGame(g1)
+    e1 := database.InsertGame(&g1)
     if e1 != nil {
         s += " " + e1.Error()
     }
-    e2 := database.CreateGame(g2)
+    e2 := database.InsertGame(&g2)
     if e2 != nil {
         s += " " + e2.Error()
     }
-    e3 := database.CreateGame(g3)
+    e3 := database.InsertGame(&g3)
     if e3 != nil {
         s += " " + e3.Error()
     }
 
     for {
         var s2 string
-        games, err := database.GetAllNonBegunGames()
+        games, err := database.GetNonBegunGames()
         CheckError(err)
         if len(games) > 0 {
             s2 = games[rand.Int31n(int32(len(games)))].Name
         }
-        *currentTime = s + " \n\n\n " + s2
+        *currentTime = s + "  " + s2
         time.Sleep(1 * time.Second)
     }
 }
