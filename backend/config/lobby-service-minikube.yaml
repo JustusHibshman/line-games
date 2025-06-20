@@ -9,3 +9,4 @@ spec:
     ports:
       - port: 1111
         targetPort: 1111
+        nodePort: 30081
