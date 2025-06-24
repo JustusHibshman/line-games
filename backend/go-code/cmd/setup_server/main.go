@@ -1,93 +1,47 @@
 package main
 
+// Import the exported project types without a prefix
+import . "linegames/backend/internal/types"
 import (
     "encoding/json"
+    "linegames/backend/internal/database"
     "linegames/backend/internal/random"
-    "linegames/backend/internal/storage"
     "linegames/backend/internal/util"
     "log"
     "math/rand"
     "net/http"
-    "sync"
-    "time"
 )
 
-type ID = uint64
-type SeatType uint
 const (
-    HumanEmpty  SeatType = 0
-    AI          SeatType = 1
-    HumanFilled SeatType = 2
+    maxPlayers = 6
 )
-type BoardRules struct {
-    Width   int  `json:"width"`
-    Height  int  `json:"height"`
-    Gravity bool `json:"gravity"`
-}
-type WinRules struct {
-    WinningLength int  `json:"winningLength"`
-    AllowCaptures bool `json:"allowCaptures"`
-    WinByCaptures bool `json:"winByCaptures"`
-    CaptureSize   int  `json:"captureSize"`
-    WinningNumCaptures int `json:"winningNumCaptures"`
-}
-type GameSpec struct {
-    Board BoardRules `json:"board"`
-    Rules WinRules   `json:"rules"`
-}
+
 
 type CreateRequest struct {
-    Name string         `json:"name"`
-    Password string     `json:"password"`
-    Seats []SeatType    `json:"seats"`
-    Spec GameSpec       `json:"spec"`
+    Name string          `json:"name"`
+    Password string      `json:"password"`
+    SeatTypes []SeatType `json:"seatTypes"`
+    Spec GameSpec        `json:"spec"`
+}
+type AssignedSeat struct {
+    Seat int      `json:"seat"`
+    PlayerID ID   `json:"playerId"`
+    Type SeatType `json:"type"`
 }
 type CreateSuccess struct {
-    GameId ID `json:"gameId"`
-    HostId ID `json:"hostId"`
+    GameID ID            `json:"gameId"`
+    Seats []AssignedSeat `json:"seats"`
 }
-
-type JoinRequest struct {
-    GameId ID `json:"gameId"`
+type SeatRequest struct {
+    GameID ID       `json:"gameId"`
     Password string `json:"password"`
 }
-type JoinSuccess struct {
-    PlayerId ID `json:"playerId"`
-}
-
-type SeatsRequest struct {
-    GameId ID     `json:"gameId"`
-    PlayerId ID   `json:"playerId"`
-    NumSeats uint `json:"numSeats"`
-}
-type SeatsSuccess struct {
-    Seats []int `json:"seats"`
-    GameServer string `json:"gameServer"`
-}
-
-type GamesList struct {
-    Names []string `json:"names"`
-    Ids   []ID     `json:"ids"`
-}
-
 type DeleteRequest struct {
-    GameId ID `json:"gameId"`
-    HostId ID `json:"hostId"`
+    GameID ID   `json:"gameId"`
+    PlayerID ID `json:"playerId"`
 }
 
-type pendingGame struct {
-    Name string
-    Password string
-    GameId ID
-    HostId ID
-    Spec GameSpec
-    PlayerIds []ID
-    Seats []SeatType
-}
-
-type PendingGames = storage.CappedMap[ID, *pendingGame]
-
-func newGameHandler(w http.ResponseWriter, r *http.Request, pendingGames *PendingGames) {
+func newGameHandler(w http.ResponseWriter, r *http.Request) {
 
     newGame := new(CreateRequest)
     err := json.NewDecoder(r.Body).Decode(newGame)
@@ -98,32 +52,117 @@ func newGameHandler(w http.ResponseWriter, r *http.Request, pendingGames *Pendin
         return
     }
 
-    pg := new(pendingGame)
-    pg.Name     = newGame.Name
-    pg.Password = newGame.Password
-    pg.Seats    = newGame.Seats
-    pg.Spec     = newGame.Spec
-
-    pg.GameId = random.Random64()
-    for pendingGames.Contains(pg.GameId) {  // Ensure the game id is new
-        pg.GameId = random.Random64()
-    }
-    pg.HostId = random.Random64()
-    pg.PlayerIds = make([]ID, 1)
-    pg.PlayerIds[0] = pg.HostId
-
-    fullError := pendingGames.Set(pg.GameId, pg)
-    if (fullError != nil) {
-        w.WriteHeader(http.StatusServiceUnavailable)
+    if len(newGame.SeatTypes) == 0 || len(newGame.SeatTypes) > maxPlayers {
+        w.WriteHeader(http.StatusBadRequest)
         return
     }
 
+    /// Rotate the seat types so that human vs. AI starting order is random ///
+    newGame.SeatTypes = util.Rotated[SeatType](newGame.SeatTypes,
+                                               int(rand.Int31n(int32(len(newGame.SeatTypes)))))
+
+    /// First, create all the information locally ///
+    g := new(Game)
+    g.Name     = newGame.Name
+    g.Password = newGame.Password
+    g.NumPlayers = len(newGame.SeatTypes)
+    g.Begun = false
+
+    var alreadyPresent bool = true
+    for alreadyPresent {  // Ensure the game id is new
+        g.ID = random.Random64()
+        _, alreadyPresent, _ = database.GetGame(g.ID)
+    }
+
+    playerIds := make([]ID, g.NumPlayers)
+    players   := make([]Player, g.NumPlayers)
+    var playerId ID
+    for i := 0; i < g.NumPlayers; i++ {
+        alreadyPresent = true
+        for alreadyPresent || util.Contains[ID](playerIds, playerId) {
+            playerId = random.Random64()
+            _, alreadyPresent, _ = database.GetPlayer(playerId)
+        }
+        playerIds[i] = playerId
+        players[i].ID = playerId
+        players[i].GameID = g.ID
+    }
+
+    seats := make([]Seat, g.NumPlayers)
+    humanSeats := make([]int, 0)
+    aiSeats := make([]int, 0)
+    for i := 0; i < g.NumPlayers; i++ {
+        seats[i].Seat = i
+        seats[i].Type = newGame.SeatTypes[i]
+        if seats[i].Type == Human {
+            seats[i].Claimed = false
+            humanSeats = append(humanSeats, i)
+        } else {
+            seats[i].Claimed = true
+            aiSeats = append(aiSeats, i)
+        }
+    }
+
+    // Give the host a seat so that we can determine the host ID
+    if len(humanSeats) == 0 {
+        w.WriteHeader(http.StatusBadRequest)
+        return
+    }
+    if len(humanSeats) == 1 {
+        g.Begun = true  // No need to appear in the lobby list
+    }
+    hSeat := int(rand.Int31n(int32(len(humanSeats))))
+    seats[hSeat].Claimed = true
+
+    spec := new(Spec)
+    spec.GameID = g.ID
+    spec.Spec = newGame.Spec
+
+    /// Then, put the information in the database ///
+
+    err = database.InsertGame(g)
+    if (err != nil) {
+        w.WriteHeader(http.StatusServiceUnavailable)
+        return
+    }
+    err = database.InsertSpec(spec)
+    if (err != nil) {
+        w.WriteHeader(http.StatusServiceUnavailable)
+        return
+    }
+    for i := 0; i < g.NumPlayers; i++ {
+        err = database.InsertPlayer(&players[i])
+        if err != nil {
+            w.WriteHeader(http.StatusServiceUnavailable)
+            return
+        }
+    }
+    for i := 0; i < g.NumPlayers; i++ {
+        err = database.InsertSeat(&seats[i])
+        if err != nil {
+            w.WriteHeader(http.StatusServiceUnavailable)
+            return
+        }
+    }
+
+    var result CreateSuccess
+    result.GameID = g.ID
+    result.Seats = make([]AssignedSeat, 1 + len(aiSeats))
+    result.Seats[0].Seat =     seats[hSeat].Seat
+    result.Seats[0].Type =     seats[hSeat].Type
+    result.Seats[0].PlayerID = seats[hSeat].PlayerID
+    for i := 0; i < len(aiSeats); i++ {
+        result.Seats[i + 1].Seat =     seats[aiSeats[i]].Seat
+        result.Seats[i + 1].Type =     seats[aiSeats[i]].Type
+        result.Seats[i + 1].PlayerID = seats[aiSeats[i]].PlayerID
+    }
+
     w.Header().Set("Content-Type", "application/json; charset=utf-8") // normal header
-    marshalled, _ := json.Marshal(CreateSuccess{GameId: pg.GameId, HostId: pg.HostId})
+    marshalled, _ := json.Marshal(result)
     w.Write(marshalled)
 }
 
-func deleteGameHandler(w http.ResponseWriter, r *http.Request, pendingGames *PendingGames) {
+func deleteGameHandler(w http.ResponseWriter, r *http.Request) {
 
     toDelete := new(DeleteRequest)
     err := json.NewDecoder(r.Body).Decode(toDelete)
@@ -134,94 +173,25 @@ func deleteGameHandler(w http.ResponseWriter, r *http.Request, pendingGames *Pen
         return
     }
 
-    game, err := pendingGames.Get(toDelete.GameId)
-    if (err != nil) {
+    player, found, err := database.GetPlayer(toDelete.PlayerID)
+    if !found || player.GameID != toDelete.GameID {
         w.WriteHeader(http.StatusBadRequest)
         return
     }
-    if (game.HostId != toDelete.HostId) {  // Only the host may delete the game
-        w.WriteHeader(http.StatusBadRequest)
-        return
+    if err != nil {
+        w.WriteHeader(http.StatusServiceUnavailable)
     }
 
-    pendingGames.Remove(toDelete.GameId)
+    database.DeleteAllGameData(toDelete.GameID)
+
     w.WriteHeader(http.StatusOK)
 }
 
-func gamesListUpdater(pendingGames *PendingGames,
-                      names **[]string, ids **[]ID, lock *sync.Mutex, delay time.Duration) {
 
-    for true {
-        _, games := pendingGames.UnorderedKeysAndValues()
-        namesList := make([]string, len(games))
-        idsList   := make([]ID, len(games))
-        for i, game := range games {
-            namesList[i] = game.Name
-            idsList[i] = game.GameId
-        }
+func requestSeatHandler(w http.ResponseWriter, r *http.Request) {
 
-        lock.Lock()
-        *names = &namesList
-        *ids   = &idsList
-        lock.Unlock()
-
-        time.Sleep(delay)
-    }
-}
-
-func gamesListHandler(w http.ResponseWriter, r *http.Request,
-                      names **[]string, ids **[]ID, lock *sync.Mutex) {
-
-    w.Header().Set("Content-Type", "application/json; charset=utf-8") // normal header
-    lock.Lock()
-    namesPtr := *names
-    idsPtr   := *ids
-    lock.Unlock()
-    if namesPtr == nil {
-        marshalled, _ := json.Marshal(GamesList{Names: make([]string, 0), Ids: make([]ID, 0)})
-        w.Write(marshalled)
-        return
-    }
-    marshalled, _ := json.Marshal(GamesList{Names: *namesPtr, Ids: *idsPtr})
-    w.Write(marshalled)
-}
-
-func joinGameHandler(w http.ResponseWriter, r *http.Request, pendingGames *PendingGames) {
-
-    toJoin := new(JoinRequest)
-    err := json.NewDecoder(r.Body).Decode(toJoin)
-    if (err != nil) {
-        w.WriteHeader(http.StatusBadRequest)
-        errText, _ := json.Marshal(err.Error())
-        w.Write(errText)
-        return
-    }
-
-    game, err := pendingGames.Get(toJoin.GameId)
-    if (err != nil) {
-        w.WriteHeader(http.StatusBadRequest)
-        return
-    }
-    if (game.Password != toJoin.Password) {
-        w.WriteHeader(http.StatusBadRequest)
-        return
-    }
-
-    playerId := random.Random64()
-    for util.Contains(game.PlayerIds, playerId) {  // Ensure the player id is new
-        playerId = random.Random64()
-    }
-    game.PlayerIds = append(game.PlayerIds, playerId)
-
-    w.Header().Set("Content-Type", "application/json; charset=utf-8") // normal header
-    marshalled, _ := json.Marshal(JoinSuccess{PlayerId: playerId})
-    w.Write(marshalled)
-}
-
-func requestSeatsHandler(w http.ResponseWriter, r *http.Request, pendingGames *PendingGames) {
-
-    seatsRequest := new(SeatsRequest)
-    err := json.NewDecoder(r.Body).Decode(seatsRequest)
+    seatRequest := new(SeatRequest)
+    err := json.NewDecoder(r.Body).Decode(seatRequest)
     if err != nil {
         w.WriteHeader(http.StatusBadRequest)
         errText, _ := json.Marshal(err.Error())
@@ -229,76 +199,39 @@ func requestSeatsHandler(w http.ResponseWriter, r *http.Request, pendingGames *P
         return
     }
 
-    if seatsRequest.NumSeats == 0 {
-        w.WriteHeader(http.StatusBadRequest)
+    var check bool
+    check, err = database.ValidLogin(seatRequest.GameID, seatRequest.Password)
+    if err != nil || !check {
+        w.WriteHeader(http.StatusServiceUnavailable)
         return
     }
 
-    game, err := pendingGames.Get(seatsRequest.GameId)
-    if err != nil {
-        w.WriteHeader(http.StatusBadRequest)
-        return
-    }
-    if !util.Contains(game.PlayerIds, seatsRequest.PlayerId) {  // Only a player may request seats
-        w.WriteHeader(http.StatusBadRequest)
+    var seats []Seat
+    seats, err = database.GetEmptySeats(seatRequest.GameID)
+    if err != nil || len(seats) == 0 {
+        w.WriteHeader(http.StatusServiceUnavailable)
         return
     }
 
-    freeSeats := make([]int, 0)
-    for i, seatType := range game.Seats {
-        if seatType == HumanEmpty {
-            freeSeats = append(freeSeats, i)
-        }
-    }
-
-    if uint(len(freeSeats)) < seatsRequest.NumSeats {
-        w.WriteHeader(http.StatusBadRequest)
+    chosenIdx := int(rand.Int31n(int32(len(seats))))
+    seatNum := seats[chosenIdx].Seat
+    check, err = database.ClaimSeat(seatRequest.GameID, seatNum)
+    if err != nil || !check {
+        w.WriteHeader(http.StatusServiceUnavailable)
         return
-    }
-
-    // Claim the seats
-    claimedSeats := make([]int, seatsRequest.NumSeats)
-    for i := 0; uint(i) < seatsRequest.NumSeats; i++ {
-        seatIdx := rand.Intn(len(freeSeats))
-        claimedSeats[i] = freeSeats[seatIdx]
-        game.Seats[claimedSeats[i]] = HumanFilled
-        freeSeats[seatIdx] = freeSeats[len(freeSeats) - 1]
-        freeSeats = freeSeats[0:len(freeSeats) - 1]
     }
 
     w.Header().Set("Content-Type", "application/json; charset=utf-8") // normal header
-    marshalled, _ := json.Marshal(SeatsSuccess{Seats: claimedSeats, GameServer: ""})
+    marshalled, _ := json.Marshal(AssignedSeat{Seat: seatNum,
+                                               Type: seats[chosenIdx].Type,
+                                               PlayerID: seats[chosenIdx].PlayerID})
     w.Write(marshalled)
 }
 
 func main() {
-    // Lobby games time out in 10 minutes
-    // Reads do not reset the expiration clock
-    // At most 10000 games in the lobby
-    // Cannot add a new game when full
-    // Timeout evictions are performed once per minute
-    pendingGames := new(PendingGames)
-    pendingGames.Init(60 * 10, false, 10000, false, 60)
 
-    listsLock := new(sync.Mutex)
-    var emptyNamesList *[]string = nil
-    var emptyIdsList   *[]ID = nil
-    names := &emptyNamesList
-    ids   := &emptyIdsList
-
-    ngHandler := func(w http.ResponseWriter, r *http.Request) {newGameHandler(w, r, pendingGames)}
-    dgHandler := func(w http.ResponseWriter, r *http.Request) {deleteGameHandler(w, r, pendingGames)}
-    glHandler := func(w http.ResponseWriter, r *http.Request) {gamesListHandler(w, r, names, ids, listsLock)}
-    jgHandler := func(w http.ResponseWriter, r *http.Request) {joinGameHandler(w, r, pendingGames)}
-    rsHandler := func(w http.ResponseWriter, r *http.Request) {requestSeatsHandler(w, r, pendingGames)}
-
-    // Runs forever with 10-second pauses
-    go gamesListUpdater(pendingGames, names, ids, listsLock, 10 * time.Second)
-
-    http.HandleFunc("/new-game",    ngHandler)
-    http.HandleFunc("/delete-game", dgHandler)
-    http.HandleFunc("/games-list",  glHandler)
-    http.HandleFunc("/join-game",   jgHandler)
-    http.HandleFunc("/request-seats", rsHandler)
+    http.HandleFunc("/new-game",     newGameHandler)
+    http.HandleFunc("/delete-game",  deleteGameHandler)
+    http.HandleFunc("/request-seat", requestSeatHandler)
     log.Fatal(http.ListenAndServe(":8080", nil))
 }
