@@ -57,6 +57,13 @@ func newGameHandler(w http.ResponseWriter, r *http.Request) {
         return
     }
 
+    for i := 0; i < len(newGame.SeatTypes); i++ {
+        if newGame.SeatTypes[i] != Human && newGame.SeatTypes != AI {
+            w.WriteHeader(http.StatusBadRequest)
+            return
+        }
+    }
+
     /// Rotate the seat types so that human vs. AI starting order is random ///
     newGame.SeatTypes = util.Rotated[SeatType](newGame.SeatTypes,
                                                int(rand.Int31n(int32(len(newGame.SeatTypes)))))
