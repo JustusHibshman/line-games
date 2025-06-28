@@ -4,12 +4,15 @@ package main
 import . "linegames/backend/internal/types"
 import (
     "encoding/json"
+    "fmt"
     "linegames/backend/internal/database"
     "linegames/backend/internal/random"
     "linegames/backend/internal/util"
     "log"
     "math/rand"
     "net/http"
+    // "strings"
+    "io"
 )
 
 const (
@@ -25,27 +28,62 @@ type CreateRequest struct {
 }
 type AssignedSeat struct {
     Seat int      `json:"seat"`
-    PlayerID ID   `json:"playerId"`
+    PlayerID ID   `json:"playerID"`
     Type SeatType `json:"type"`
 }
-type CreateSuccess struct {
-    GameID ID            `json:"gameId"`
+// NOTE: `Seats` only contains the seat(s) assigned in the process of handling a
+//  particular request -- not all the seats that a client occupies.
+type SuccessResponse struct {
+    GameID ID            `json:"gameID"`
     Seats []AssignedSeat `json:"seats"`
+    Spec GameSpec        `json:"spec"`
+    NumPlayers int       `json:"numPlayers"`
 }
 type SeatRequest struct {
-    GameID ID       `json:"gameId"`
+    GameID ID       `json:"gameID"`
     Password string `json:"password"`
 }
 type DeleteRequest struct {
-    GameID ID   `json:"gameId"`
-    PlayerID ID `json:"playerId"`
+    GameID ID   `json:"gameID"`
+    PlayerID ID `json:"playerID"`
+}
+
+// Assumes that sr already has the game ID and the seat info -- adds the spec
+//  and the number of players.
+func fillInGameDetails(sr *SuccessResponse) error {
+    var err error
+    var found bool
+    var game Game
+    var spec Spec
+    spec, found, err = database.GetSpec(sr.GameID)
+    if err != nil {
+        return err
+    } else if !found {
+        return fmt.Errorf("Game Spec for game_id %d not found.", sr.GameID)
+    }
+    sr.Spec = spec.Spec
+    game, found, err = database.GetGame(sr.GameID)
+    if err != nil {
+        return err
+    } else if !found {
+        return fmt.Errorf("Game for game_id %d not found.", sr.GameID)
+    }
+    sr.NumPlayers = game.NumPlayers
+    return nil
 }
 
 func newGameHandler(w http.ResponseWriter, r *http.Request) {
 
+    log.Printf("Received a create-game request")
+    // buf := new(strings.Builder)
+    // io.Copy(buf, r.Body)
+    // log.Println(buf.String())
+
     newGame := new(CreateRequest)
     err := json.NewDecoder(r.Body).Decode(newGame)
-    if (err != nil) {
+    if (err != nil && err != io.EOF) {
+        log.Printf("Could not json decode")
+        log.Printf(err.Error())
         w.WriteHeader(http.StatusBadRequest)
         errText, _ := json.Marshal(err.Error())
         w.Write(errText)
@@ -58,7 +96,7 @@ func newGameHandler(w http.ResponseWriter, r *http.Request) {
     }
 
     for i := 0; i < len(newGame.SeatTypes); i++ {
-        if newGame.SeatTypes[i] != Human && newGame.SeatTypes != AI {
+        if newGame.SeatTypes[i] != Human && newGame.SeatTypes[i] != AI {
             w.WriteHeader(http.StatusBadRequest)
             return
         }
@@ -152,8 +190,10 @@ func newGameHandler(w http.ResponseWriter, r *http.Request) {
         }
     }
 
-    var result CreateSuccess
+    var result SuccessResponse
     result.GameID = g.ID
+    result.NumPlayers = g.NumPlayers
+    result.Spec = newGame.Spec
     result.Seats = make([]AssignedSeat, 1 + len(aiSeats))
     result.Seats[0].Seat =     seats[hSeat].Seat
     result.Seats[0].Type =     seats[hSeat].Type
@@ -228,10 +268,19 @@ func requestSeatHandler(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    w.Header().Set("Content-Type", "application/json; charset=utf-8") // normal header
-    marshalled, _ := json.Marshal(AssignedSeat{Seat: seatNum,
+    var result SuccessResponse
+    result.GameID = seatRequest.GameID
+    result.Seats = []AssignedSeat{AssignedSeat{Seat: seatNum,
                                                Type: seats[chosenIdx].Type,
-                                               PlayerID: seats[chosenIdx].PlayerID})
+                                               PlayerID: seats[chosenIdx].PlayerID}}
+    err = fillInGameDetails(&result)
+    if err != nil {
+        w.WriteHeader(http.StatusServiceUnavailable)
+        return
+    }
+
+    w.Header().Set("Content-Type", "application/json; charset=utf-8") // normal header
+    marshalled, _ := json.Marshal(result)
     w.Write(marshalled)
 }
 

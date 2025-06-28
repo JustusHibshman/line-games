@@ -14,7 +14,7 @@ spec:
         spec:
             containers:
               - name: lobby-server
-                image: 'docker.io/justushibshman/jih_personal:lobby_server-0.0.2'
+                image: 'docker.io/justushibshman/jih_personal:lobby_server-0.1.0'
                 env:
                   - name: DATABASE_HOST
                     value: "database-service"

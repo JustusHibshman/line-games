@@ -8,28 +8,17 @@
     <div class="horizontally-centered-main">
     <div class="main-vertical-color-strip">
     <div class="spaced-column padded">
-        <div class="middle-aligned-row">
-            <span>How many players will be at your PC?</span>
-            <app-integer-input [min]=1 [max]=6 [(value)]="requestedSeats"
-                [disable]="awaitingResponse() || requestGranted()" />
-        </div>
-        <app-action-button [text]="requestedSeatsText()" (click)="requestSeats()"
-            [disable]="awaitingResponse() || requestGranted()" />
+        <h3>Your Claimed Seats</h3>
         <div>
-            @for(selected of seatSelected(); track $index; let i = $index) {
-            <div class="player-disc solid-{{ colors[i] }} {{ visibilityText[i]() }}">
+            @for(claimed of seats() ; track $index; let i = $index) {
+            <div class="player-disc solid-{{ colors[i] }}">
             </div>
             }
         </div>
-        <div>
-            @for(playerType of playerTypeTexts; track $index) {
-            <span>
-                {{ playerType }}
-            </span>
-            }
+        <div class="middle-aligned-row">
+            <app-action-button [text]="'Request Another Seat'" (click)="requestSeat()" />
+            <app-action-button [text]="'Go to Gameboard'" (click)="enterGame()" />
         </div>
-        <app-action-button [text]="'Enter Game'" (click)="enterGame()"
-            [disable]="emptySeats" />
     </div>
     </div>
     </div>

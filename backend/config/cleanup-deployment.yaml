@@ -14,7 +14,7 @@ spec:
         spec:
             containers:
               - name: cleanup-manager
-                image: 'docker.io/justushibshman/jih_personal:data_cleanup-0.0.2'
+                image: 'docker.io/justushibshman/jih_personal:data_cleanup-0.1.0'
                 env:
                   - name: DATABASE_HOST
                     value: "database-service"

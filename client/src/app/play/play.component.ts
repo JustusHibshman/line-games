@@ -7,7 +7,6 @@ import { Move } from '@local-types/move.type';
 
 import { safe } from '@local-utilities/safe';
 
-import { SetupService } from '@local-services/setup.service';
 import { GameplayService } from '@local-services/gameplay.service';
 import { ScreenSizeService } from '@local-services/screen-size.service';
 
@@ -19,7 +18,6 @@ import { ScreenSizeService } from '@local-services/screen-size.service';
 })
 export class PlayComponent {
 
-    setup = inject(SetupService);
     gameplay = inject(GameplayService);
     screenSize = inject(ScreenSizeService);
 
@@ -71,7 +69,7 @@ export class PlayComponent {
 
     isLegalMove(m: Move): boolean {
         return this.gameplay.isLegalMove(m) &&
-               this.gameplay.isLocalPlayer(this.currentPlayer());
+               this.gameplay.isLocalHuman(this.currentPlayer());
     }
 
     widthCalc(screenWidth: number, screenHeight: number): number {

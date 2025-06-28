@@ -15,6 +15,27 @@ spec:
             name: setup-service
             port:
               number: 8080
+      - path: /new-game
+        pathType: Prefix
+        backend:
+          service:
+            name: setup-service
+            port:
+              number: 8080
+      - path: /delete-game
+        pathType: Prefix
+        backend:
+          service:
+            name: setup-service
+            port:
+              number: 8080
+      - path: /request-seat
+        pathType: Prefix
+        backend:
+          service:
+            name: setup-service
+            port:
+              number: 8080
       - path: /games-list
         pathType: Prefix
         backend:

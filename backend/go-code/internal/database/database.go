@@ -176,7 +176,7 @@ func gameValuesFormatter(g *Game) (string, error) {
 }
 func specValuesFormatter(s *Spec) (string, error) {
     marshalled, err := json.Marshal(s.Spec)
-    return fmt.Sprintf("DEFAULT, %d, %s", s.GameID, marshalled), err
+    return fmt.Sprintf("DEFAULT, %d, '%s'", s.GameID, marshalled), err
 }
 func playerValuesFormatter(p *Player) (string, error) {
     return fmt.Sprintf("%d, %d", p.ID, p.GameID), nil

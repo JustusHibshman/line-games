@@ -1,4 +1,5 @@
 import { Component, computed, inject, OnInit, signal, Signal, WritableSignal } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { ActionButtonComponent } from '@local-components/action-button/action-button.component';
 import { IntegerInputComponent } from '@local-components/integer-input/integer-input.component';
@@ -12,7 +13,8 @@ import { PlayerType } from '@local-types/player-type.type';
 
 import { SortedPipe } from '@local-pipes/sorted.pipe';
 
-import { SetupService } from '@local-services/setup.service';
+import { BackendService } from '@local-services/backend.service';
+import { GameplayService } from '@local-services/gameplay.service';
 import { RulePresetsService } from '@local-services/rule-presets.service';
 
 @Component({
@@ -27,8 +29,12 @@ export class HostComponent implements OnInit {
 
     public PlayerTypes = PlayerType;
 
-    setup = inject(SetupService);
+    router = inject(Router);
+    backendService = inject(BackendService);
+    gameplayService = inject(GameplayService);
     presets = inject(RulePresetsService);
+
+    error = signal<string>("");
 
     chosenPreset = signal<string>("");
     rulesReady = signal<boolean>(false);
@@ -53,7 +59,6 @@ export class HostComponent implements OnInit {
     constructor() {}
 
     ngOnInit(): void {
-        this.setup.quitGame();
         this.resizePlayerTypes();
     }
 
@@ -86,13 +91,30 @@ export class HostComponent implements OnInit {
         }
     }
 
-    hostGame(): void {
-        let playerTypes = Array.from(this.ptChoices(), (v) => v() ? PlayerType.AI : PlayerType.Human);
-        this.setup.hostGame(this.gameName(), this.password(), this.gameSpec, playerTypes);
-    }
+    async hostGame() {
+        this.backendService.quitGame();  // The point of no return.
+        this.gameplayService.quitGame();
 
-    goFullscreen(): void {
-        let elem = document.documentElement;
-        elem.requestFullscreen({ navigationUI: "hide"});
+        this.error.set("");
+        let playerTypes = Array.from(this.ptChoices(), (v) => v() ? PlayerType.AI : PlayerType.Human);
+        let success: boolean =
+                await this.backendService.createGame(this.gameName(), this.password(),
+                                                     this.gameSpec, playerTypes);
+
+        if (success) {
+            if (this.numHumans() == 1) {
+                // Only one human player, no need to go to the lobby.
+                success = this.gameplayService.loadInitialGameDetails();
+                if (success) {
+                    this.router.navigate(["/play"]);
+                } else {
+                    this.error.set("Error launching game -- try again.");
+                }
+            } else {
+                this.router.navigate(["/lobby"]);
+            }
+        } else {
+            this.error.set("Error creating game -- try again.");
+        }
     }
 }

@@ -7,11 +7,12 @@ export class Game {
     readonly numPlayers: number;
     readonly EMPTY: number;
     _state: GameState;
+    _history: Array<Move>;
 
     _winner: number | null;
     _numPlaced: number;  // Total number of stones on the board
 
-    constructor(spec: GameSpec, numPlayers: number, firstPlayer: number);
+    constructor(spec: GameSpec, numPlayers: number);
     constructor(toCopy: Game);
     constructor();
     constructor(...arr: any[]) {
@@ -22,6 +23,7 @@ export class Game {
             this._state = emptyGameState();
             this._winner = null;
             this._numPlaced = 0;
+            this._history = [];
         }
         else if (arr.length === 1) {
             let toCopy: Game = arr[0];
@@ -33,6 +35,11 @@ export class Game {
                 board:  Array.from(toCopy._state.board, (row) => [ ...row ]),
                 captures: [...toCopy._state.captures],
             };
+            this._history = [];
+            for (let i = 0; i < toCopy._history.length; i += 1) {
+                let m: Move = toCopy._history[i];
+                this._history.push({row: m.row, col: m.col});
+            }
             this._winner    = toCopy._winner;
             this._numPlaced = toCopy._numPlaced;
         } else {
@@ -40,11 +47,12 @@ export class Game {
             this.numPlayers = arr[1];
             this._state = {
                 turn: 0,
-                player: arr[2],
+                player: 0,
                 board: Array.from({length: this.spec.board.height}, () =>
                                     Array.from({length: this.spec.board.width}, () => this.EMPTY)),
                 captures: Array.from({length: this.numPlayers}, () => 0),
             };
+            this._history = [];
             this._winner = null;
             this._numPlaced = 0;
         }
@@ -103,7 +111,15 @@ export class Game {
         this._state.player = (this._state.player + 1) % this.numPlayers;
         this._state.turn++;
         this._numPlaced = (this._numPlaced + 1) - captured.length;
+        this._history = [ ...this._history, {row: m.row, col: m.col} ];
         return captured;
+    }
+
+    pastMove(turn: number): Move {
+        if (turn >= this.turn()) {
+            return {row: -1, col: -1};
+        }
+        return this._history[turn];
     }
 
     /////////////////////// Internal Utility Functions ///////////////////////

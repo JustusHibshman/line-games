@@ -4,7 +4,7 @@ import { NavButtonComponent } from '@local-components/nav-button/nav-button.comp
 import { ToggleSwitchComponent } from '@local-components/toggle-switch/toggle-switch.component';
 
 import { ColorSchemeService } from '@local-services/color-scheme.service';
-import { SetupService } from '@local-services/setup.service';
+import { BackendService } from '@local-services/backend.service';
 import { ScreenSizeService } from '@local-services/screen-size.service';
 
 @Component({
@@ -14,9 +14,12 @@ import { ScreenSizeService } from '@local-services/screen-size.service';
   styleUrl: './home.component.scss'
 })
 export class HomeComponent {
-    setup = inject(SetupService);
+    backendService = inject(BackendService);
     csService = inject(ColorSchemeService);
     screenSize = inject(ScreenSizeService);
+
+    // Only set once because the home page should not change this status.
+    inGame: boolean;
 
     screenWidth = this.screenSize.getWidth();
 
@@ -34,6 +37,9 @@ export class HomeComponent {
     dotWidth = computed(() => this.dotWidthCalc(this.screenWidth()));
 
     constructor() {
+        // Only set once because the home page should not change this status.
+        this.inGame = this.backendService.inGame();
+
         this.validSpots = this.filledInCircle(23);
         this.height = this.validSpots.length;
         this.width  = this.validSpots[0].length;

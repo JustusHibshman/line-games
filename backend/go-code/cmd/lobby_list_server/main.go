@@ -21,7 +21,7 @@ var preMarshalled []byte
 
 type GamesList struct {
     Names []string `json:"names"`
-    Ids   []ID     `json:"ids"`
+    Ids   []ID     `json:"gameIDs"`
 }
 
 func init() {

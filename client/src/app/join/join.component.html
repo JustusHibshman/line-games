@@ -8,7 +8,7 @@
     <div class="horizontally-centered-main">
     <div class="main-vertical-color-strip">
     <div class="spaced-column padded">
-        @for (game of games | sorted : getGameName ; track $index; let i = $index) {
+        @for (game of games() | sorted : getGameName ; track $index; let i = $index) {
         <div class="middle-aligned-row">
             <span>{{ game.name }}</span>
             <span>Password:</span>
