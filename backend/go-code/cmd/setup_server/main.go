@@ -119,16 +119,16 @@ func newGameHandler(w http.ResponseWriter, r *http.Request) {
         _, alreadyPresent, _ = database.GetGame(g.ID)
     }
 
-    playerIds := make([]ID, g.NumPlayers)
+    playerIDs := make([]ID, g.NumPlayers)
     players   := make([]Player, g.NumPlayers)
     var playerId ID
     for i := 0; i < g.NumPlayers; i++ {
         alreadyPresent = true
-        for alreadyPresent || util.Contains[ID](playerIds, playerId) {
+        for alreadyPresent || util.Contains[ID](playerIDs, playerId) {
             playerId = random.Random64()
             _, alreadyPresent, _ = database.GetPlayer(playerId)
         }
-        playerIds[i] = playerId
+        playerIDs[i] = playerId
         players[i].ID = playerId
         players[i].GameID = g.ID
     }
@@ -137,6 +137,8 @@ func newGameHandler(w http.ResponseWriter, r *http.Request) {
     humanSeats := make([]int, 0)
     aiSeats := make([]int, 0)
     for i := 0; i < g.NumPlayers; i++ {
+        seats[i].GameID = g.ID
+        seats[i].PlayerID = playerIDs[i]
         seats[i].Seat = i
         seats[i].Type = newGame.SeatTypes[i]
         if seats[i].Type == Human {
