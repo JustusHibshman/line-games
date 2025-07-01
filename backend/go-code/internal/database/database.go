@@ -182,7 +182,7 @@ func playerValuesFormatter(p *Player) (string, error) {
     return fmt.Sprintf("%d, %d", p.ID, p.GameID), nil
 }
 func seatValuesFormatter(s *Seat) (string, error) {
-    return fmt.Sprintf("DEFAULT, %d, %d, %d", s.GameID, s.Seat, s.Type, s.Claimed, s.PlayerID), nil
+    return fmt.Sprintf("DEFAULT, %d, %d, %d, %t, %d", s.GameID, s.Seat, s.Type, s.Claimed, s.PlayerID), nil
 }
 func moveValuesFormatter(m *Move) (string, error) {
     return fmt.Sprintf("DEFAULT, %d, %d, %d, %d", m.GameID, m.Turn, m.X, m.Y), nil
