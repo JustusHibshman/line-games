@@ -15,7 +15,7 @@ fi
 kctl delete deployment --all
 
 # Remove the services
-# kctl delete service setup-service
+kctl delete service setup-service
 kctl delete service database-service
 kctl delete service lobby-service
 
