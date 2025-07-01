@@ -27,7 +27,30 @@ func init() {
     for i := 0; i < len(schemas); i++ {
         success = false
         for !success {
+            _, lockErr := dbconn.Exec("SELECT pg_advisory_lock(1234);")
+            if lockErr != nil {
+                log.Printf("Locking attempt error:\n")
+                log.Printf(lockErr.Error() + "\n")
+                log.Printf("Trying again...\n")
+                time.Sleep(1 * time.Second)
+                continue
+            }
+
             _, err := dbconn.Exec("CREATE TABLE IF NOT EXISTS " + tableNames[i] + " " + schemas[i] + ";")
+
+            for {
+                // Unlocking is more important than locking -- keep trying
+                _, lockErr = dbconn.Exec("SELECT pg_advisory_unlock(1234);")
+                if lockErr != nil {
+                    log.Printf("Unlocking attempt error:\n")
+                    log.Printf(lockErr.Error() + "\n")
+                    log.Printf("Trying again...\n")
+                    time.Sleep(1 * time.Second)
+                } else {
+                    break
+                }
+            }
+
             if err != nil {
                 log.Printf("Attempt failed for table " + tableNames[i] + ":\n")
                 log.Printf(err.Error() + "\n")
