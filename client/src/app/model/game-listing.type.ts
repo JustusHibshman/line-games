@@ -1,4 +1,4 @@
 export type GameListing = {
-    gameID: number;
+    gameID: BigInt;
     name:   string;
 }

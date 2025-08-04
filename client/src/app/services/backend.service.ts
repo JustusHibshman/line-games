@@ -118,7 +118,7 @@ export class BackendService {
     }
 
     // Returns true iff successful
-    async joinGame(gameID: number, password: string): Promise<boolean> {
+    async joinGame(gameID: BigInt, password: string): Promise<boolean> {
         if (this.membership !== null) {
             this.quitGame();
         }
@@ -180,11 +180,17 @@ export class BackendService {
     }
 
     updateMembership(m: GameMembership) {
+        console.log("Membership updated")
+        console.log(m.gameID)
         if (this.membership === null || this.membership.gameID != m.gameID) {
             this.membership = m;
             return
         }
-        this.membership.assignedSeats = [...this.membership.assignedSeats, ...m.assignedSeats];
+        if (this.membership.assignedSeats === undefined || this.membership.assignedSeats === null) {
+            this.membership.assignedSeats = m.assignedSeats;
+        } else {
+            this.membership.assignedSeats = [...this.membership.assignedSeats, ...m.assignedSeats];
+        }
         this.saveData();
     }
 }

@@ -3,7 +3,7 @@ import { Seat } from './seat.type';
 
 // NOTE: This type corresponds to a json type in the backend.
 export type GameMembership = {
-    gameID: number;
+    gameID: BigInt;
     assignedSeats: Array<Seat>;
     spec: GameSpec;
     numPlayers: number;

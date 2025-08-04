@@ -35,7 +35,7 @@ type AssignedSeat struct {
 //  particular request -- not all the seats that a client occupies.
 type SuccessResponse struct {
     GameID ID            `json:"gameID"`
-    Seats []AssignedSeat `json:"seats"`
+    Seats []AssignedSeat `json:"assignedSeats"`
     Spec GameSpec        `json:"spec"`
     NumPlayers int       `json:"numPlayers"`
 }
@@ -74,7 +74,6 @@ func fillInGameDetails(sr *SuccessResponse) error {
 
 func newGameHandler(w http.ResponseWriter, r *http.Request) {
 
-    log.Printf("Received a create-game request")
     // buf := new(strings.Builder)
     // io.Copy(buf, r.Body)
     // log.Println(buf.String())
@@ -82,8 +81,6 @@ func newGameHandler(w http.ResponseWriter, r *http.Request) {
     newGame := new(CreateRequest)
     err := json.NewDecoder(r.Body).Decode(newGame)
     if (err != nil && err != io.EOF) {
-        log.Printf("Could not json decode")
-        log.Printf(err.Error())
         w.WriteHeader(http.StatusBadRequest)
         errText, _ := json.Marshal(err.Error())
         w.Write(errText)
@@ -115,7 +112,7 @@ func newGameHandler(w http.ResponseWriter, r *http.Request) {
 
     var alreadyPresent bool = true
     for alreadyPresent {  // Ensure the game id is new
-        g.ID = random.Random64()
+        g.ID = random.JavaScriptFriendlyRandom64()
         _, alreadyPresent, _ = database.GetGame(g.ID)
     }
 
@@ -125,7 +122,7 @@ func newGameHandler(w http.ResponseWriter, r *http.Request) {
     for i := 0; i < g.NumPlayers; i++ {
         alreadyPresent = true
         for alreadyPresent || util.Contains[ID](playerIDs, playerId) {
-            playerId = random.Random64()
+            playerId = random.JavaScriptFriendlyRandom64()
             _, alreadyPresent, _ = database.GetPlayer(playerId)
         }
         playerIDs[i] = playerId

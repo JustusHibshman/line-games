@@ -21,3 +21,8 @@ func Random32() int32 {
 func Random64() int64 {
     return int64(Random32()) << 32 + int64(Random32())
 }
+
+// Returns a 53-bit random integer
+func JavaScriptFriendlyRandom64() int64 {
+    return Random64() & 0x001FFFFFFFFFFFFF
+}

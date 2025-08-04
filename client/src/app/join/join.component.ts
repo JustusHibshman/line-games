@@ -57,7 +57,7 @@ export class JoinComponent implements OnInit {
     }
 
     joinGame(idx: number): void {
-        let gameID: number = this.games()[idx].gameID;
+        let gameID: BigInt = this.games()[idx].gameID;
         let password: string = this.typed[idx]();
 
         this.backendService.joinGame(gameID, password);

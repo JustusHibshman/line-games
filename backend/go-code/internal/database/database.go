@@ -18,7 +18,7 @@ func GetTime() (string, bool, error) {
 }
 
 func ValidLogin(gameID ID, password string) (bool, error) {
-    queryStr := fmt.Sprintf("SELECT * FROM games WHERE game_id = %d AND password = '%s';", gameID, password)
+    queryStr := fmt.Sprintf("SELECT * FROM games WHERE game_id = %d AND pwd = '%s';", gameID, password)
     _, found, err := singletonQuery[Game](queryStr, gameScanner)
     return found, err
 }

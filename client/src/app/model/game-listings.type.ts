@@ -1,4 +1,4 @@
 export type GameListings = {
-    gameIDs: Array<number>;
+    gameIDs: Array<BigInt>;
     names:   Array<string>;
 }
