@@ -15,6 +15,7 @@ spec:
             containers:
               - name: pg-database
                 image: 'postgres:17.5-alpine3.22'
+                imagePullPolicy: IfNotPresent
                 env:
                   - name: PGDATA
                     value: "/var/lib/pgsql/data"
