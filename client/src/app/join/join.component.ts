@@ -39,7 +39,7 @@ export class JoinComponent implements OnInit {
             games.push({gameID: gls.gameIDs[i], name: gls.names[i]});
         }
         games.sort(this.compareListings);
-        this.typed = Array.from({ length: this.games.length }, () => signal<string>(""));
+        this.typed = Array.from({ length: games.length }, () => signal<string>(""));
         this.games.set(games);
 
         // Wait for 1 second before allowing another refresh.
