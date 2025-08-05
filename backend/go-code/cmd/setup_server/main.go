@@ -28,7 +28,7 @@ type CreateRequest struct {
 }
 type AssignedSeat struct {
     Seat int      `json:"seat"`
-    PlayerID ID   `json:"playerID"`
+    PlayerID ID   `json:"userID"`
     Type SeatType `json:"type"`
 }
 // NOTE: `Seats` only contains the seat(s) assigned in the process of handling a
@@ -73,6 +73,8 @@ func fillInGameDetails(sr *SuccessResponse) error {
 }
 
 func newGameHandler(w http.ResponseWriter, r *http.Request) {
+
+    log.Printf("New Game Request")
 
     // buf := new(strings.Builder)
     // io.Copy(buf, r.Body)
@@ -210,6 +212,8 @@ func newGameHandler(w http.ResponseWriter, r *http.Request) {
 
 func deleteGameHandler(w http.ResponseWriter, r *http.Request) {
 
+    log.Printf("Delete Game Request")
+
     toDelete := new(DeleteRequest)
     err := json.NewDecoder(r.Body).Decode(toDelete)
     if (err != nil) {
@@ -235,6 +239,8 @@ func deleteGameHandler(w http.ResponseWriter, r *http.Request) {
 
 
 func requestSeatHandler(w http.ResponseWriter, r *http.Request) {
+
+    log.Printf("Seat Request")
 
     seatRequest := new(SeatRequest)
     err := json.NewDecoder(r.Body).Decode(seatRequest)

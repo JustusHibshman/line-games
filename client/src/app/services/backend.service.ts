@@ -144,7 +144,7 @@ export class BackendService {
             return
         }
         // We still subscribe to simplify logic about sequential order of events
-        await firstValueFrom(this.http.post(BackendService.setupUrl + BackendService.requestSeatPath,
+        await firstValueFrom(this.http.post(BackendService.setupUrl + BackendService.deleteGamePath,
                              {gameID: this.membership.gameID,
                               playerID: this.membership.assignedSeats[0].userID}
                              ));

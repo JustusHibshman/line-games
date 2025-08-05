@@ -92,7 +92,6 @@ export class HostComponent implements OnInit {
     }
 
     async hostGame() {
-        this.backendService.quitGame();  // The point of no return.
         this.gameplayService.quitGame();
 
         this.error.set("");
