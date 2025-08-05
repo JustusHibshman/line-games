@@ -11,8 +11,13 @@
         <h3>Your Claimed Seats</h3>
         <div>
             @for(claimed of seats() ; track $index; let i = $index) {
-            <div class="player-disc solid-{{ colors[i] }}">
-            </div>
+                @if(claimed) {
+                <div class="player-disc solid-{{ colors[i] }}">
+                </div>
+                } @else {
+                <div class="player-disc empty">
+                </div>
+                }
             }
         </div>
         <div class="middle-aligned-row">
