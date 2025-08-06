@@ -180,8 +180,6 @@ export class BackendService {
     }
 
     updateMembership(m: GameMembership) {
-        console.log("Membership updated")
-        console.log(m.gameID)
         if (this.membership === null || this.membership.gameID != m.gameID) {
             this.membership = m;
             return
