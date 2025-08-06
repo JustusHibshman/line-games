@@ -20,7 +20,7 @@ import { RulePresetsService } from '@local-services/rule-presets.service';
 @Component({
   selector: 'app-host',
   imports: [ActionButtonComponent, IntegerInputComponent, NavButtonComponent,
-            ToggleSwitchComponent, VerticalRadioComponent,
+            TextBoxComponent, ToggleSwitchComponent, VerticalRadioComponent,
             SortedPipe],
   templateUrl: './host.component.html',
   styleUrl: './host.component.scss'
@@ -43,7 +43,7 @@ export class HostComponent implements OnInit {
     specs: { [id: string]: GameSpec } = this.presets.getSpecs();
     specNames: Array<string> = this.presets.getSpecNames();
 
-    gameName = signal<string>("<placeholder>");
+    gameName = signal<string>("");
     password = signal<string>("");
 
     numPlayers = signal<number>(2);
@@ -53,8 +53,9 @@ export class HostComponent implements OnInit {
     ptChoices = signal<Array<WritableSignal<boolean>>>([]);
     numHumans = computed(() => this.booleanSignalSum(this.ptChoices(), this.PTHUMAN));
 
-    readyToLaunch = computed(() => this.gameName().trim().length > 0 &&
-                                   this.rulesReady() && this.numHumans() > 0);
+    readyToLaunch = computed(() => this.numHumans() == 1 ||
+                                   (this.gameName().trim().length > 0 &&
+                                    this.rulesReady() && this.numHumans() > 0));
 
     constructor() {}
 

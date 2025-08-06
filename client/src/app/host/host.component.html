@@ -24,14 +24,14 @@
                 </div>
             }
         </div>
-        <!--
-        <div>
-            <span class="label">Game Name</span>
-            <app-text-box [(text)]="gameName" [maxLength]="13" class="label" />
-            <span class="label">Password</span>
-            <app-text-box [(text)]="password" [maxLength]="10" class="label" />
+        <div class="middle-aligned-row wrap">
+            <span>Game Name</span>
+            <app-text-box [(text)]="gameName" [maxLength]="13" />
+            <div class="middle-aligned-row">
+                <span>Password</span>
+                <app-text-box [(text)]="password" [maxLength]="10" />
+            </div>
         </div>
-        -->
         <div>
             <app-action-button [text]="'Launch Game'" [disable]="!readyToLaunch()"
                     (click)="hostGame()" />
