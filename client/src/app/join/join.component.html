@@ -13,7 +13,7 @@
             <span>{{ game.name }}</span>
             <span>Password:</span>
             <app-text-box [maxLength]="10" [(text)]="typed[i]" />
-            <app-action-button [text]="'Join'" (click)="joinGame(i)" />
+            <app-action-button [text]="'Join'" (click)="joinGame(i)" [disable]="attemptedRecently()" />
         </div>
         }
         @empty {

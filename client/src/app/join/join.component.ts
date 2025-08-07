@@ -27,6 +27,7 @@ export class JoinComponent implements OnInit {
     refreshable = signal<boolean>(true);
     games = signal<Array<GameListing>>([]);
     typed: any = [];
+    attemptedRecently = signal<boolean>(false);
 
     async updateGames() {
         this.refreshable.set(false);
@@ -50,17 +51,21 @@ export class JoinComponent implements OnInit {
         this.updateGames();
     }
 
-    lobbyIfSuccessful(b: boolean): void {
-        if (b) {
-            this.router.navigate(['/lobby']);
-        }
+    allowJoinAttempt(obj: JoinComponent): void {
+        obj.attemptedRecently.set(false);
     }
 
-    joinGame(idx: number): void {
+    async joinGame(idx: number) {
+        this.attemptedRecently.set(true);
+        setTimeout(this.allowJoinAttempt, 2000, this);
+
         let gameID: BigInt = this.games()[idx].gameID;
         let password: string = this.typed[idx]();
 
-        this.backendService.joinGame(gameID, password);
+        let success: boolean = await this.backendService.joinGame(gameID, password);
+        if (success) {
+            this.router.navigate(['/lobby']);
+        }
     }
 
     compareListings(a: GameListing, b: GameListing): number {
