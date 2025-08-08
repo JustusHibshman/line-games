@@ -32,7 +32,7 @@
         </div>
         <div class="middle-aligned-row wrap">
             <app-action-button [text]="'Request Another Seat'" (click)="requestSeat()" />
-            <app-action-button [text]="'Go to Gameboard'" (click)="enterGame()" />
+            <app-action-button [text]="'Go to Gameboard'" (click)="enterGame()" [disable]="hasEmptySeat()" />
         </div>
     </div>
     </div>

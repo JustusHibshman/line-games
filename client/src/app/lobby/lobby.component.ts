@@ -24,6 +24,7 @@ export class LobbyComponent implements OnInit, OnDestroy {
     localHumanClaimed = signal<Array<boolean>>([]);
     empty =             signal<Array<boolean>>([]);
     ai =                signal<Array<boolean>>([]);
+    hasEmptySeat = computed(() => this.hasATrue(this.empty()));
     
     colors = ["E", "F", "A", "B", "C", "D"];
     updaterInterval = 0;
@@ -76,5 +77,14 @@ export class LobbyComponent implements OnInit, OnDestroy {
     updateSeatsSignal(): void {
         let pTypes: Array<PlayerType> = this.backendService.getSeats();
         this.localHumanClaimed.set(Array.from(pTypes, (v) => (v == PlayerType.Human)));
+    }
+
+    hasATrue(a: Array<boolean>): boolean {
+        for (var val of a) {
+            if (val) {
+                return true;
+            }
+        }
+        return false;
     }
 }
