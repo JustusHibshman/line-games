@@ -1,7 +1,10 @@
 <div class="full-page">
 
     <div class="side-menu">
+    <div class="spaced-column">
         <app-nav-button [target]='"/"' [text]='"Home"' />
+        <app-action-button [text]="'Refresh List'" (click)="updateGames()" [disable]="!refreshable()" />
+    </div>
     </div>
 
     <div class="main">

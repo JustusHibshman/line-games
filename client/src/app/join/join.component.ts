@@ -44,7 +44,7 @@ export class JoinComponent implements OnInit {
         this.games.set(games);
 
         // Wait for 1 second before allowing another refresh.
-        setTimeout( ( (obj) => (() => { this.refreshable.set(true) }) )(this), 1000);
+        setTimeout( ( (obj) => (() => { this.refreshable.set(true) }) )(this), 2000);
     }
 
     ngOnInit(): void {
