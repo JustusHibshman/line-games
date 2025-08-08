@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 
+import { EmptySeats } from '@local-types/empty-seats.type';
 import { GameMembership } from '@local-types/game-membership.type';
 import { GameListings } from '@local-types/game-listings.type';
 import { GameSpec, copyGameSpec } from '@local-types/game-spec.type';
@@ -18,6 +19,7 @@ export class BackendService {
     static readonly newGamePath = "/new-game"
     static readonly deleteGamePath = "/delete-game"
     static readonly requestSeatPath = "/request-seat"
+    static readonly emptySeatsPath = "/empty-seats"
 
     // static readonly lobbyUrl = "http://backend.playlinegames.net"  // Production
     static readonly lobbyUrl = "http://192.168.49.2:30081"  // Minikube development
@@ -95,6 +97,24 @@ export class BackendService {
         return result
     }
 
+    async getEmptySeats(): Promise<Array<number> | null> {
+        if (this.membership === null) {
+            return new Promise<Array<number> | null>(function(resolve, reject) { resolve(null); });
+        }
+
+        var emptySeats: EmptySeats
+        try {
+            emptySeats = await
+                firstValueFrom(this.http.post<EmptySeats>(BackendService.setupUrl + BackendService.emptySeatsPath,
+                                                            {gameID: this.membership.gameID,
+                                                             playerID: this.membership.assignedSeats[0].userID}
+                                                            ));
+        } catch(e) {
+            return new Promise<Array<number> | null>(function(resolve, reject) { resolve(null); });
+        }
+        return new Promise<Array<number> | null>(function(resolve, reject) { resolve(emptySeats.indices); });
+    }
+
     // Returns true iff successful
     async createGame(name: string, password: string,
                      gSpec: GameSpec, playerTypes: Array<PlayerType>): Promise<boolean> {
@@ -143,11 +163,16 @@ export class BackendService {
         if (this.membership === null) {
             return
         }
-        // We still subscribe to simplify logic about sequential order of events
-        await firstValueFrom(this.http.post(BackendService.setupUrl + BackendService.deleteGamePath,
-                             {gameID: this.membership.gameID,
-                              playerID: this.membership.assignedSeats[0].userID}
-                             ));
+
+        try {
+            // We still subscribe to simplify logic about sequential order of events
+            await firstValueFrom(this.http.post(BackendService.setupUrl + BackendService.deleteGamePath,
+                                 {gameID: this.membership.gameID,
+                                  playerID: this.membership.assignedSeats[0].userID}
+                                 ));
+        } catch(e) {
+
+        }
         this.membership = null;
         this.saveData();
     }

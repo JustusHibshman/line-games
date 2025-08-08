@@ -8,19 +8,25 @@
     <div class="horizontally-centered-main">
     <div class="main-vertical-color-strip">
     <div class="spaced-column padded">
-        <h3>Your Claimed Seats</h3>
-        <div>
-            @for(claimed of seats() ; track $index; let i = $index) {
+        <h2>Your Claimed Seats</h2>
+        <div class="middle-aligned-row wrap">
+            @for(claimed of localHumanClaimed() ; track $index; let i = $index) {
                 @if(claimed) {
                 <div class="player-disc solid-{{ colors[i] }}">
+                    <span class="seat-type"></span>
+                </div>
+                } @else if (empty()[i]) {
+                <div class="player-disc empty">
+                    <span class="seat-type">Empty Seat</span>
                 </div>
                 } @else {
-                <div class="player-disc empty">
+                <div class="player-disc full">
+                    <span class="seat-type">Other Player</span>
                 </div>
                 }
             }
         </div>
-        <div class="middle-aligned-row">
+        <div class="middle-aligned-row wrap">
             <app-action-button [text]="'Request Another Seat'" (click)="requestSeat()" />
             <app-action-button [text]="'Go to Gameboard'" (click)="enterGame()" />
         </div>

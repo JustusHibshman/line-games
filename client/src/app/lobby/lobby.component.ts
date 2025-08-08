@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { ActionButtonComponent } from '@local-components/action-button/action-button.component';
@@ -15,17 +15,26 @@ import { GameplayService } from '@local-services/gameplay.service';
   templateUrl: './lobby.component.html',
   styleUrl: './lobby.component.scss'
 })
-export class LobbyComponent implements OnInit {
+export class LobbyComponent implements OnInit, OnDestroy {
 
     router = inject(Router);
     backendService = inject(BackendService);
     gameplayService = inject(GameplayService);
 
-    seats = signal<Array<boolean>>([]);
+    localHumanClaimed = signal<Array<boolean>>([]);
+    empty =             signal<Array<boolean>>([]);
+    
     colors = ["E", "F", "A", "B", "C", "D"];
+    updaterInterval = 0;
 
     ngOnInit(): void {
         this.updateSeatsSignal();
+        this.updateEmptySeats(this);
+        this.updaterInterval = setInterval(this.updateEmptySeats, 1000, this);
+    }
+
+    ngOnDestroy(): void {
+        clearInterval(this.updaterInterval);
     }
 
     async requestSeat() {
@@ -33,6 +42,20 @@ export class LobbyComponent implements OnInit {
         if (success) {
             this.updateSeatsSignal();
         }
+    }
+
+    async updateEmptySeats(obj: LobbyComponent) {
+        console.log("Updating Empty Seats Data")
+        let emptySeats: Array<number> | null = await obj.backendService.getEmptySeats();
+        if (emptySeats === null) {
+            return;
+        }
+        let pTypes: Array<PlayerType> = obj.backendService.getSeats();
+        let empty: Array<boolean> = Array.from({length: pTypes.length}, () => false);
+        for (var seatIdx of emptySeats) {
+            empty[seatIdx] = true;
+        }
+        obj.empty.set(empty);
     }
 
     enterGame(): void {
@@ -44,6 +67,6 @@ export class LobbyComponent implements OnInit {
 
     updateSeatsSignal(): void {
         let pTypes: Array<PlayerType> = this.backendService.getSeats();
-        this.seats.set(Array.from(pTypes, (v) => (v == PlayerType.Human)));
+        this.localHumanClaimed.set(Array.from(pTypes, (v) => (v == PlayerType.Human)));
     }
 }

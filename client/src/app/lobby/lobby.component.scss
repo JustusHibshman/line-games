@@ -1,14 +1,20 @@
 .player-disc {
     display: inline-block;
-    width: 11%;
+    width: max(11%, 100px);
     aspect-ratio: 1/1;
     border-radius: 50%;
-    border: 5px solid black;
-    margin-left: 1%;
-    margin-right: 1%;
+    border: 5px solid rgb(from #ffffff calc(r - var(--input-background-red)) calc(g - var(--input-background-green)) calc(b - var(--input-background-blue)));
+    align-content: center;
 }
 
 .empty {
-    background-color: rgba(0,0,0,0);
-    border: 5px solid gray;
+    background-color: rgba(0 0 0 / 0%);
+}
+
+.full {
+    background-color: var(--site-background);
+}
+
+.seat-type {
+    font-size: 20px;
 }
