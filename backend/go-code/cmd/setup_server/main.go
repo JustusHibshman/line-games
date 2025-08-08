@@ -11,7 +11,6 @@ import (
     "log"
     "math/rand"
     "net/http"
-    // "strings"
     "io"
 )
 
@@ -87,12 +86,6 @@ func fillInGameDetails(sr *SuccessResponse) error {
 }
 
 func newGameHandler(w http.ResponseWriter, r *http.Request) {
-
-    log.Printf("New Game Request")
-
-    // buf := new(strings.Builder)
-    // io.Copy(buf, r.Body)
-    // log.Println(buf.String())
 
     newGame := new(CreateRequest)
     err := json.NewDecoder(r.Body).Decode(newGame)
@@ -226,8 +219,6 @@ func newGameHandler(w http.ResponseWriter, r *http.Request) {
 
 func deleteGameHandler(w http.ResponseWriter, r *http.Request) {
 
-    log.Printf("Delete Game Request")
-
     toDelete := new(DeleteRequest)
     err := json.NewDecoder(r.Body).Decode(toDelete)
     if (err != nil) {
@@ -253,8 +244,6 @@ func deleteGameHandler(w http.ResponseWriter, r *http.Request) {
 
 
 func requestSeatHandler(w http.ResponseWriter, r *http.Request) {
-
-    log.Printf("Seat Request")
 
     seatRequest := new(SeatRequest)
     err := json.NewDecoder(r.Body).Decode(seatRequest)
