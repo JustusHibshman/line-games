@@ -20,10 +20,12 @@ export class GameplayService {
     game: WritableSignal<Game>;
     lastVerifiedServerTurn: number;
     performingServerUpdate: boolean;
+    inGame: boolean;
 
     // Initializing
     constructor() {
         this.game = signal<Game>(new Game());
+        this.inGame = false;
         this.lastVerifiedServerTurn = -1;
         this.performingServerUpdate = false;
         try {
@@ -41,28 +43,30 @@ export class GameplayService {
     static readonly dataPrefix: string = "GAMEPLAY_SERVICE.";
     saveData(): void {
         localStorage.setItem(GameplayService.dataPrefix + 'lVSTurn', JSON.stringify(this.lastVerifiedServerTurn));
-        localStorage.setItem(GameplayService.dataPrefix + 'game', JSON.stringify(this.game()));
+        localStorage.setItem(GameplayService.dataPrefix + 'game',    JSON.stringify(this.game()));
+        localStorage.setItem(GameplayService.dataPrefix + 'inGame',  JSON.stringify(this.inGame));
     }
     loadData(): void {
         this.lastVerifiedServerTurn = JSON.parse(localStorage[GameplayService.dataPrefix + 'lVSTurn']);
         // The use of new Game() is necessary to restore the presence of methods
         //  like .winner()
         this.game.set(new Game(JSON.parse(localStorage[GameplayService.dataPrefix + 'game'])));
+        this.inGame = JSON.parse(localStorage[GameplayService.dataPrefix + 'inGame']);
     }
 
     getGravity(): boolean {
-        let g: Game | null = this.game();
-        if (g === null) {
+        if (!this.inGame) {
             return false;
         }
+        let g: Game = this.game();
         return g.spec.board.gravity;
     }
 
     static aiMoveChecker(obj: GameplayService): void {
-        let g: Game | null = obj.game();
-        if (g === null) {
+        if (!obj.inGame) {
             return
         }
+        let g: Game = obj.game();
         let p: number = g.player();
         let pt: Array<PlayerType> = obj.backendService.getSeats();
         if (pt.length <= p) {
@@ -85,11 +89,11 @@ export class GameplayService {
             obj.performingServerUpdate = false;
             return
         }
-        let g: Game | null = obj.game();
-        if (g === null) {
+        if (!obj.inGame) {
             obj.performingServerUpdate = false;
             return
         }
+        let g: Game = obj.game();
         let nextToVerify: number = obj.lastVerifiedServerTurn + 1;
         if (g.turn() > nextToVerify) {
             // This turn was local and has been completed. Try pushing.
@@ -126,12 +130,14 @@ export class GameplayService {
 
         this.lastVerifiedServerTurn = -1;
         this.game.set(new Game(spec, playerTypes.length));
+        this.inGame = true;
         this.saveData();
         return true;
     }
 
     quitGame(): void {
         this.game.set(new Game());
+        this.inGame = false;
         this.saveData();
     }
 
@@ -161,18 +167,18 @@ export class GameplayService {
     }
 
     isLegalMove(m: Move): boolean {
-        let g: Game | null = this.game();
-        if (g === null) {
+        if (!this.inGame) {
             return false;
         }
+        let g: Game = this.game();
         return g.isLegal(m);
     }
 
     makeMove(m: Move): void {
-        let g: Game | null = this.game();
-        if (g === null) {
+        if (!this.inGame) {
             return;
         }
+        let g: Game = this.game();
         g.makeMove(m);
         this.game.set(g.copy());  // Ensures downstream signals are updated
         this.saveData();
