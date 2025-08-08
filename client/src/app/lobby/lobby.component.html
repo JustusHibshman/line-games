@@ -17,11 +17,15 @@
                 </div>
                 } @else if (empty()[i]) {
                 <div class="player-disc empty">
-                    <span class="seat-type">Empty Seat</span>
+                    <span class="seat-type">Open Seat</span>
+                </div>
+                } @else if (ai()[i]) {
+                <div class="player-disc full">
+                    <span class="seat-type">AI</span>
                 </div>
                 } @else {
                 <div class="player-disc full">
-                    <span class="seat-type">Other Player</span>
+                    <span class="seat-type">Other Human</span>
                 </div>
                 }
             }

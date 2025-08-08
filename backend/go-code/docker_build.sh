@@ -9,9 +9,9 @@
 # docker tag      database_test:0.0.18 justushibshman/jih_personal:database_test-0.0.18
 # docker push                          justushibshman/jih_personal:database_test-0.0.18
 
-docker build --target setup-server -t setup_server:0.1.30 .
-docker tag      setup_server:0.1.30 justushibshman/jih_personal:setup_server-0.1.30
-minikube image load justushibshman/jih_personal:setup_server-0.1.30
+docker build --target setup-server -t setup_server:0.1.31 .
+docker tag      setup_server:0.1.31 justushibshman/jih_personal:setup_server-0.1.31
+minikube image load justushibshman/jih_personal:setup_server-0.1.31
 # docker push                         justushibshman/jih_personal:setup_server-0.1.12
 
 # docker build --target lobby-server -t lobby_server:0.1.3 .

@@ -123,6 +123,11 @@ func GetEmptySeats(gameID ID) ([]Seat, error) {
     return query[Seat](queryStr, seatScanner)
 }
 
+func GetAISeats(gameID ID) ([]Seat, error) {
+    queryStr := fmt.Sprintf("SELECT * FROM seats WHERE game_id = %d AND type = %d;", gameID, AI)
+    return query[Seat](queryStr, seatScanner)
+}
+
 func InsertGame(game *Game) error {
     return insert[Game]("games", game, gameValuesFormatter)
 }

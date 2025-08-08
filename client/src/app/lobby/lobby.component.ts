@@ -23,14 +23,15 @@ export class LobbyComponent implements OnInit, OnDestroy {
 
     localHumanClaimed = signal<Array<boolean>>([]);
     empty =             signal<Array<boolean>>([]);
+    ai =                signal<Array<boolean>>([]);
     
     colors = ["E", "F", "A", "B", "C", "D"];
     updaterInterval = 0;
 
     ngOnInit(): void {
         this.updateSeatsSignal();
-        this.updateEmptySeats(this);
-        this.updaterInterval = setInterval(this.updateEmptySeats, 1000, this);
+        this.updateSeats(this);
+        this.updaterInterval = setInterval(this.updateSeats, 1500, this);
     }
 
     ngOnDestroy(): void {
@@ -44,18 +45,25 @@ export class LobbyComponent implements OnInit, OnDestroy {
         }
     }
 
-    async updateEmptySeats(obj: LobbyComponent) {
-        console.log("Updating Empty Seats Data")
+    async updateSeats(obj: LobbyComponent) {
         let emptySeats: Array<number> | null = await obj.backendService.getEmptySeats();
-        if (emptySeats === null) {
-            return;
-        }
+        let aiSeats:    Array<number> | null = await obj.backendService.getAISeats();
         let pTypes: Array<PlayerType> = obj.backendService.getSeats();
-        let empty: Array<boolean> = Array.from({length: pTypes.length}, () => false);
-        for (var seatIdx of emptySeats) {
-            empty[seatIdx] = true;
+
+        let empty:  Array<boolean> = Array.from({length: pTypes.length}, () => false);
+        let ai:     Array<boolean> = Array.from({length: pTypes.length}, () => false);
+        if (emptySeats !== null) {
+            for (var seatIdx of emptySeats) {
+                empty[seatIdx] = true;
+            }
+        }
+        if (aiSeats !== null) {
+            for (var seatIdx of aiSeats) {
+                ai[seatIdx] = true;
+            }
         }
         obj.empty.set(empty);
+        obj.ai.set(ai);
     }
 
     enterGame(): void {

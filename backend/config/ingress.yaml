@@ -43,6 +43,13 @@ spec:
             name: setup-service
             port:
               number: 8080
+      - path: /ai-seats
+        pathType: Prefix
+        backend:
+          service:
+            name: setup-service
+            port:
+              number: 8080
       - path: /games-list
         pathType: Prefix
         backend:

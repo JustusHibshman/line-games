@@ -1,3 +1,3 @@
-export type EmptySeats = {
+export type SeatNumbers = {
     indices: Array<number>;
 }
