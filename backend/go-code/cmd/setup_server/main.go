@@ -47,6 +47,13 @@ type DeleteRequest struct {
     GameID ID   `json:"gameID"`
     PlayerID ID `json:"playerID"`
 }
+type EmptySeatsRequest struct {
+    GameID ID   `json:"gameID"`
+    PlayerID ID `json:"playerID"`
+}
+type EmptySeatsResponse struct {
+    Indices []int   `json:"indices"`
+}
 
 // Assumes that sr already has the game ID and the seat info -- adds the spec
 //  and the number of players.
@@ -289,10 +296,49 @@ func requestSeatHandler(w http.ResponseWriter, r *http.Request) {
     w.Write(marshalled)
 }
 
+func emptySeatsHandler(w http.ResponseWriter, r *http.Request) {
+
+    userData := new(EmptySeatsRequest)
+    err := json.NewDecoder(r.Body).Decode(userData)
+    if (err != nil) {
+        w.WriteHeader(http.StatusBadRequest)
+        errText, _ := json.Marshal(err.Error())
+        w.Write(errText)
+        return
+    }
+
+    player, found, err := database.GetPlayer(userData.PlayerID)
+    if !found || player.GameID != userData.GameID {
+        w.WriteHeader(http.StatusBadRequest)
+        return
+    }
+    if err != nil {
+        w.WriteHeader(http.StatusServiceUnavailable)
+        return
+    }
+
+    seats, err := database.GetEmptySeats(userData.GameID)
+    if err != nil {
+        w.WriteHeader(http.StatusServiceUnavailable)
+        return
+    }
+
+    var result EmptySeatsResponse
+    result.Indices = []int{}
+    for i := 0; i < len(seats); i++ {
+        result.Indices = append(result.Indices, seats[i].Seat)
+    }
+
+    w.Header().Set("Content-Type", "application/json; charset=utf-8") // normal header
+    marshalled, _ := json.Marshal(result)
+    w.Write(marshalled)
+}
+
 func main() {
 
     http.HandleFunc("/new-game",     newGameHandler)
     http.HandleFunc("/delete-game",  deleteGameHandler)
     http.HandleFunc("/request-seat", requestSeatHandler)
+    http.HandleFunc("/empty-seats",  emptySeatsHandler)
     log.Fatal(http.ListenAndServe(":8080", nil))
 }
