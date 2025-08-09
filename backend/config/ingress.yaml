@@ -57,3 +57,17 @@ spec:
             name: lobby-service
             port:
               number: 1111
+      - path: /make-move
+        pathType: Prefix
+        backend:
+          service:
+            name: gameplay-service
+            port:
+              number: 3333
+      - path: /request-move
+        pathType: Prefix
+        backend:
+          service:
+            name: gameplay-service
+            port:
+              number: 3333

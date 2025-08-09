@@ -7,6 +7,7 @@ import { GameMembership } from '@local-types/game-membership.type';
 import { GameListings } from '@local-types/game-listings.type';
 import { GameSpec, copyGameSpec } from '@local-types/game-spec.type';
 import { Move } from '@local-types/move.type';
+import { MoveAndStatus } from '@local-types/move-and-status.type';
 import { PlayerType } from '@local-types/player-type.type';
 
 @Injectable({
@@ -26,10 +27,10 @@ export class BackendService {
     static readonly lobbyUrl = "http://192.168.49.2:30081"  // Minikube development
     static readonly lobbyListPath = "/games-list"
 
-    // static readonly playUrl = "http://backend.playlinegames.net"  // Production
-    static readonly playUrl = "http://192.168.49.2:30082"  // Minikube development
+    // static readonly gameplayUrl = "http://backend.playlinegames.net"  // Production
+    static readonly gameplayUrl = "http://192.168.49.2:30082"  // Minikube development
     static readonly makeMovePath = "/make-move"
-    static readonly getMovePath = "/get-move"
+    static readonly getMovePath = "/request-move"
 
     http = inject(HttpClient);
 
@@ -209,11 +210,52 @@ export class BackendService {
 
     // Returns true iff successful
     async submitMove(turn: number, m: Move): Promise<boolean> {
-        return new Promise<boolean>(function(resolve, reject) { resolve(false) });
+        if (this.membership === null) {
+            return new Promise<boolean>(function(resolve, reject) { resolve(false) });
+        }
+        let seatNum: number = turn % this.membership.numPlayers;
+        let playerID: BigInt | null = null;
+        for (var seat of this.membership.assignedSeats) {
+            if (seat.seat == seatNum) {
+                playerID = seat.userID;
+                break;
+            }
+        }
+        if (playerID === null) {
+            return new Promise<boolean>(function(resolve, reject) { resolve(false) });
+        }
+        var moveAndStatus: MoveAndStatus
+        try {
+            moveAndStatus = await
+                firstValueFrom(this.http.post<MoveAndStatus>(BackendService.gameplayUrl + BackendService.makeMovePath,
+                                                             {gameID: this.membership.gameID, playerID: playerID,
+                                                              col: m.col, row: m.row, turn: turn}
+                                                             )); //.subscribe((gl) => { this.gameList = gl; } );
+        } catch(e) {
+            return new Promise<boolean>(function(resolve, reject) { resolve(false); });
+        }
+        return new Promise<boolean>(function(resolve, reject) { resolve(moveAndStatus.success) });
     }
 
     async requestMove(turn: number): Promise<Move | null> {
-        return new Promise<Move | null>(function(resolve, reject) { resolve(null); });
+        if (this.membership === null) {
+            return new Promise<Move | null>(function(resolve, reject) { resolve(null); });
+        }
+        var moveAndStatus: MoveAndStatus
+        try {
+            moveAndStatus = await
+                firstValueFrom(this.http.post<MoveAndStatus>(BackendService.gameplayUrl + BackendService.getMovePath,
+                                                             {gameID: this.membership.gameID,
+                                                              playerID: this.membership.assignedSeats[0].userID,
+                                                              turn: turn}
+                                                             )); //.subscribe((gl) => { this.gameList = gl; } );
+        } catch(e) {
+            return new Promise<Move | null>(function(resolve, reject) { resolve(null); });
+        }
+        if (!moveAndStatus.success) {
+            return new Promise<Move | null>(function(resolve, reject) { resolve(null); });
+        }
+        return new Promise<Move | null>(function(resolve, reject) { resolve(moveAndStatus.move); });
     }
 
     updateMembership(m: GameMembership) {

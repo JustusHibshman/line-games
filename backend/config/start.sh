@@ -32,6 +32,7 @@ rm secrets/postgres-password.txt
 kctl apply -f database-service.yaml
 kctl apply -f lobby-service$MINIKUBEEXT.yaml
 kctl apply -f setup-service$MINIKUBEEXT.yaml
+kctl apply -f gameplay-service$MINIKUBEEXT.yaml
 
 # Create volume claims
 kctl apply -f db-volume-claim.yaml
@@ -41,6 +42,7 @@ kctl apply -f database-deployment.yaml
 kctl apply -f lobby-deployment.yaml
 kctl apply -f cleanup-deployment.yaml
 kctl apply -f setup-deployment.yaml
+kctl apply -f gameplay-deployment.yaml
 
 # Set up the ingress resources
 if [ "$1" = "minikube" ]; then

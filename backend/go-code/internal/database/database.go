@@ -108,6 +108,11 @@ func GetPlayer(playerID ID) (Player, bool, error) {
     return singletonQuery[Player](queryStr, playerScanner)
 }
 
+func GetPlayerSeat(playerID ID) (Seat, bool, error) {
+    queryStr := fmt.Sprintf("SELECT * FROM seats WHERE player_id = %d;", playerID)
+    return singletonQuery[Seat](queryStr, seatScanner)
+}
+
 func GetPlayers(gameID ID) ([]Player, error) {
     queryStr := fmt.Sprintf("SELECT * FROM players WHERE game_id = %d;", gameID)
     return query[Player](queryStr, playerScanner)

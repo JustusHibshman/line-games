@@ -99,8 +99,8 @@ export class GameplayService {
             // This turn was local and has been completed. Try pushing.
             let m: Move = g.pastMove(nextToVerify);
             await obj.backendService.submitMove(nextToVerify, m);
-            let recorded: Move | null = await obj.backendService.requestMove(nextToVerify);
-            if (recorded === null) {
+            let recorded: boolean = await obj.backendService.submitMove(nextToVerify, m);
+            if (!recorded) {
                 obj.performingServerUpdate = false;
                 return;
             }

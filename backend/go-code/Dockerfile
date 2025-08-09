@@ -41,3 +41,11 @@ COPY ./cmd/old_data_cleanup/main.go ./cmd/old_data_cleanup/main.go
 RUN cd cmd/old_data_cleanup && go build
 
 CMD ["cmd/old_data_cleanup/old_data_cleanup"]
+
+
+FROM core AS gameplay-server
+
+COPY ./cmd/gameplay_server/main.go ./cmd/gameplay_server/main.go
+RUN cd cmd/gameplay_server && go build
+
+CMD ["cmd/gameplay_server/gameplay_server"]

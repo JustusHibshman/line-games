@@ -18,6 +18,7 @@ kctl delete deployment --all
 kctl delete service setup-service
 kctl delete service database-service
 kctl delete service lobby-service
+kctl delete service gameplay-service
 
 # Delete the database volume claim
 kctl delete pvc --all

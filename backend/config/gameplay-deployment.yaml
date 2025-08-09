@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: gameplay-servers
+spec:
+    replicas: 2
+    selector:
+        matchLabels:
+            function: gameplay-server
+    template:
+        metadata:
+            labels:
+                function: gameplay-server
+        spec:
+            containers:
+              - name: gameplay-server
+                image: 'docker.io/justushibshman/jih_personal:gameplay_server-0.1.2'
+                imagePullPolicy: Never
+                env:
+                  - name: DATABASE_HOST
+                    value: "database-service"
+                  - name: POSTGRES_PASSWORD_FILE
+                    value: "/run/secrets/postgres-password.txt"
+                volumeMounts:
+                  - name: db-password
+                    mountPath: /run/secrets/postgres-password.txt
+                    subPath: postgres-password.txt
+                    readOnly: true
+            imagePullSecrets:
+              - name: docker-credentials
+            volumes:
+              - name: db-password
+                secret:
+                    secretName: db-password
+                    items:
+                      - key: postgres-password.txt
+                        path: postgres-password.txt
