@@ -79,10 +79,15 @@ func makeMoveHandler(w http.ResponseWriter, r *http.Request) {
     move.GameID = request.GameID
     move.Turn = request.Turn
 
-    err = database.InsertMove(&move)
-    if err != nil {
-        w.WriteHeader(http.StatusServiceUnavailable)
-        return
+    _, alreadyPresent, _ := database.GetMove(request.GameID, request.Turn)
+    if !alreadyPresent {
+        err = database.InsertMove(&move)
+        if err != nil {
+            w.WriteHeader(http.StatusServiceUnavailable)
+            return
+        }
+    } else {
+        log.Printf("Attempted to submit move %d more than once in game %d", request.Turn, request.GameID)
     }
 
     var result MakeMoveResponse
