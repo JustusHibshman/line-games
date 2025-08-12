@@ -14,8 +14,8 @@ spec:
         spec:
             containers:
               - name: setup-server
-                image: 'docker.io/justushibshman/jih_personal:setup_server-0.2.0'
-                imagePullPolicy: Never
+                image: 'docker.io/justushibshman/jih_personal:setup_server-0.2.2'
+                imagePullPolicy: IfNotPresent
                 env:
                   - name: DATABASE_HOST
                     value: "database-service"

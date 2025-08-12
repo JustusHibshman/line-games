@@ -15,20 +15,20 @@ import { PlayerType } from '@local-types/player-type.type';
 })
 export class BackendService {
 
-    // static readonly setupUrl = "http://backend.playlinegames.net"  // Production
-    static readonly setupUrl = "http://192.168.49.2:30080"  // Minikube development
+    static readonly setupUrl = "https://backend.playlinegames.net"  // Production
+    // static readonly setupUrl = "http://192.168.49.2:30080"  // Minikube development
     static readonly newGamePath = "/new-game"
     static readonly deleteGamePath = "/delete-game"
     static readonly requestSeatPath = "/request-seat"
     static readonly emptySeatsPath = "/empty-seats"
     static readonly aiSeatsPath = "/ai-seats"
 
-    // static readonly lobbyUrl = "http://backend.playlinegames.net"  // Production
-    static readonly lobbyUrl = "http://192.168.49.2:30081"  // Minikube development
+    static readonly lobbyUrl = "https://backend.playlinegames.net"  // Production
+    // static readonly lobbyUrl = "http://192.168.49.2:30081"  // Minikube development
     static readonly lobbyListPath = "/games-list"
 
-    // static readonly gameplayUrl = "http://backend.playlinegames.net"  // Production
-    static readonly gameplayUrl = "http://192.168.49.2:30082"  // Minikube development
+    static readonly gameplayUrl = "https://backend.playlinegames.net"  // Production
+    // static readonly gameplayUrl = "http://192.168.49.2:30082"  // Minikube development
     static readonly makeMovePath = "/make-move"
     static readonly getMovePath = "/request-move"
 

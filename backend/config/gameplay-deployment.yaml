@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
     name: gameplay-servers
 spec:
-    replicas: 2
+    replicas: 1
     selector:
         matchLabels:
             function: gameplay-server
@@ -14,8 +14,8 @@ spec:
         spec:
             containers:
               - name: gameplay-server
-                image: 'docker.io/justushibshman/jih_personal:gameplay_server-0.1.2'
-                imagePullPolicy: Never
+                image: 'docker.io/justushibshman/jih_personal:gameplay_server-0.1.5'
+                imagePullPolicy: IfNotPresent
                 env:
                   - name: DATABASE_HOST
                     value: "database-service"

@@ -28,6 +28,16 @@ kctl create secret generic db-password \
     --from-file=secrets/postgres-password.txt
 rm secrets/postgres-password.txt
 
+
+# Set up the ingress resources
+if [ "$1" = "minikube" ]; then
+    echo "Skipping TLS for Minikube"
+else
+    sudo kctl create secret tls backend-tls \
+        --key  /etc/letsencrypt/live/backend.playlinegames.net/privkey.pem \
+        --cert /etc/letsencrypt/live/backend.playlinegames.net/fullchain.pem
+fi
+
 # Internal and external communication: ports and host/service names
 kctl apply -f database-service.yaml
 kctl apply -f lobby-service$MINIKUBEEXT.yaml
