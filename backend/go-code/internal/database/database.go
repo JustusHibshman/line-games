@@ -127,7 +127,7 @@ func GetPlayers(gameID ID) ([]Player, error) {
 
 func GetMove(gameID ID, turn int) (Move, bool, error) {
     queryStr := fmt.Sprintf("SELECT * FROM moves WHERE game_id = %d AND turn = %d;", gameID, turn)
-    return singletonQuery[Move](queryStr, moveScanner)
+    return singletonQueryAllowMultiples[Move](queryStr, moveScanner)
 }
 
 func GetEmptySeats(gameID ID) ([]Seat, error) {
@@ -248,23 +248,30 @@ func query[T any](queryStr string, scanner func(r *sql.Rows, t *T)) ([]T, error)
     return consumeRows[T](rows, scanner), nil
 }
 
-// Returns the single T, true iff exactly 1 result was found, and an error if
-//      the query was faulty or if the query returned multiple rows
-func firstOfSlice[T any](s []T, err error, queryStr string) (T, bool, error) {
+// Returns the single T, true if 1 or more results are found, and an error if
+//      the query was faulty or if [the query returned multiple rows and errIfMultiple set]
+func firstOfSlice[T any](s []T, err error, queryStr string, errIfMultiple bool) (T, bool, error) {
     if (err != nil) {
         return *new(T), false, err
     }
     if len(s) == 0 {
         return *new(T), false, nil
-    } else if len(s) > 1 {
-        return *new(T), false, fmt.Errorf("Supposed singleton query \"%s\" returned more than one row", queryStr)
+    } else if len(s) > 1 && errIfMultiple {
+        return *new(T), true, fmt.Errorf("Supposed singleton query \"%s\" returned more than one row", queryStr)
     }
     return s[0], true, nil
 }
 
-// Returns the single T, true iff exactly 1 result was found, and an error if
+// Returns the single T, true if 1 or more results were found, and an error if
 //      the query was faulty or if the query returned multiple rows
 func singletonQuery[T any](queryStr string, scanner func(r *sql.Rows, t *T)) (T, bool, error) {
     s, err := query[T](queryStr, scanner)
-    return firstOfSlice[T](s, err, queryStr)
+    return firstOfSlice[T](s, err, queryStr, true)
+}
+
+// Returns the single T, true if 1 or more results were found, and an error if
+//      the query was faulty
+func singletonQueryAllowMultiples[T any](queryStr string, scanner func(r *sql.Rows, t *T)) (T, bool, error) {
+    s, err := query[T](queryStr, scanner)
+    return firstOfSlice[T](s, err, queryStr, false)
 }
