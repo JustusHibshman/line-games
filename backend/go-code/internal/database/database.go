@@ -8,8 +8,15 @@ import (
     "linegames/backend/internal/dbconn"
     "linegames/backend/internal/dbschema"
     "database/sql"
+    "strings"
     "time"
 )
+
+type StringifiedSpec struct {
+    ID ID
+    GameID ID
+    SpecString string
+}
 
 // TODO: Remove the possibility of a SQL injection
 
@@ -186,7 +193,7 @@ func gameValuesFormatter(g *Game) (string, error) {
 }
 func specValuesFormatter(s *Spec) (string, error) {
     marshalled, err := json.Marshal(s.Spec)
-    return fmt.Sprintf("DEFAULT, %d, '%s'", s.GameID, marshalled), err
+    return fmt.Sprintf("DEFAULT, %d, '%s'", s.GameID, string(marshalled)), err
 }
 func playerValuesFormatter(p *Player) (string, error) {
     return fmt.Sprintf("%d, %d", p.ID, p.GameID), nil
@@ -206,7 +213,11 @@ func gameScanner(r *sql.Rows, g *Game) {
            &(g.Name), &(g.Password), &(g.Timestamp))
 }
 func specScanner(r *sql.Rows, s *Spec) {
-    r.Scan(&(s.ID), &(s.GameID), &(s.Spec))
+    var stringifiedSpec StringifiedSpec
+    r.Scan(&(stringifiedSpec.ID), &(stringifiedSpec.GameID), &(stringifiedSpec.SpecString))
+    s.ID = stringifiedSpec.ID
+    s.GameID = stringifiedSpec.ID
+    json.NewDecoder(strings.NewReader(stringifiedSpec.SpecString)).Decode(&(s.Spec))
 }
 func playerScanner(r *sql.Rows, p *Player) {
     r.Scan(&(p.ID), &(p.GameID)) 
