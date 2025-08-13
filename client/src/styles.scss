@@ -17,6 +17,7 @@
     --color-F: #444444;
 
     --inactive-color: #555555;
+    --invalid-color: red;
     --input-hover-background: #000000;
 
     --input-background: #111111;
@@ -54,6 +55,7 @@
     // --alt-color-F: #e5a938;
 
     --inactive-color: #aaaaaa;
+    --invalid-color: red;
 
     --input-background: #dddddd;
     --input-background-red:   208;   // #dd is equal to 208
@@ -183,6 +185,12 @@ body {
         &:hover {
             cursor: pointer;
             background-color: var(--input-hover-background);
+            &:invalid {
+                color: var(--invalid-color);
+            }
+        }
+        &:invalid {
+            color: var(--invalid-color);
         }
     }
 

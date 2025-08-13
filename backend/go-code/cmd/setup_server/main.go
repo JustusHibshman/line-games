@@ -25,6 +25,9 @@ type CreateRequest struct {
     SeatTypes []SeatType `json:"seatTypes"`
     Spec GameSpec        `json:"spec"`
 }
+func (cr *CreateRequest) Strings() []string {
+    return []string{cr.Name, cr.Password}
+}
 type AssignedSeat struct {
     Seat int      `json:"seat"`
     PlayerID ID   `json:"userID"`
@@ -41,6 +44,9 @@ type SuccessResponse struct {
 type SeatRequest struct {
     GameID ID       `json:"gameID"`
     Password string `json:"password"`
+}
+func (sr *SeatRequest) Strings() []string {
+    return []string{sr.Password}
 }
 type DeleteRequest struct {
     GameID ID   `json:"gameID"`
@@ -93,6 +99,11 @@ func newGameHandler(w http.ResponseWriter, r *http.Request) {
         w.WriteHeader(http.StatusBadRequest)
         errText, _ := json.Marshal(err.Error())
         w.Write(errText)
+        return
+    }
+
+    if !database.StringsAreSafe(newGame) {
+        w.WriteHeader(http.StatusBadRequest)
         return
     }
 
@@ -251,6 +262,11 @@ func requestSeatHandler(w http.ResponseWriter, r *http.Request) {
         w.WriteHeader(http.StatusBadRequest)
         errText, _ := json.Marshal(err.Error())
         w.Write(errText)
+        return
+    }
+
+    if !database.StringsAreSafe(seatRequest) {
+        w.WriteHeader(http.StatusBadRequest)
         return
     }
 

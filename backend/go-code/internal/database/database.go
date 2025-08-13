@@ -12,6 +12,23 @@ import (
     "time"
 )
 
+type WithStrings interface {
+    Strings() []string
+}
+
+func StringsAreSafe(val WithStrings) bool {
+    strings := val.Strings()
+    for _, s := range strings {
+        for _, c := range s {
+            if (!(('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z') ||
+                  ('0' <= c && c <= '9') ||  ' ' == c)) {
+                return false
+            }
+        }
+    }
+    return true
+}
+
 type StringifiedSpec struct {
     ID ID
     GameID ID

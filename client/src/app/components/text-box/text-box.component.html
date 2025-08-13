@@ -1,3 +1,4 @@
 <input type="text" [(ngModel)]="text" [maxlength]="maxLength()" 
+       pattern="[a-zA-Z0-9 ]*"
        [style.width.px]="widthCalc()" class="interface hoverable {{ size() }} content-{{ color() }}">
 <canvas id="canvas"></canvas>
