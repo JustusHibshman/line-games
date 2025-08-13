@@ -1,10 +1,10 @@
 # Line Games
 
-This project is currently under development. It's a server and browser client for playing line-forming games like Tic-Tac-Toe, Pente, Link Four, etc.
+This project is a server and browser client for playing line-forming games like Tic-Tac-Toe, Pente, Link Four, etc.
 
-The goal is to eventually have all of the following features.
+It currently is in a beta release state and can be accessed at [playlinegames.net](https://playlinegames.net).
 
-## (Eventual) Features
+## Features
 
 ### Gameplay Choices
 
@@ -26,8 +26,9 @@ The goal is to eventually have all of the following features.
 ## Development Phases
 
  - [x] Phase I: Client interface with working hotseat and in-browser AI
- - [ ] Phase II: Back end for online multiplayer -- will also broadcast the host's client AI moves
- - [ ] Phase III: Move AI to the back end; make it more powerful and efficient
+ - [x] Phase II: Back end for online multiplayer -- will also broadcast the host's client AI moves
+ - [ ] Phase III: Quality of life features, such as usernames, chat, etc.
+ - [ ] Phase IV (Optional): Move AI to the back end; make it more powerful and efficient
 
 
 ## Technical Implementation
@@ -38,21 +39,18 @@ The goal is to eventually have all of the following features.
 
 The client tracks which moves are legal, whether someone has won, etc.
 
+The client hosting the game also calculates the AI moves.
+
 ### Server Architecture
 
  - Content servers for the browser client
  - Single entry point server for game participation
-    - Gives player a game ID upon game creation
-    - Assigns created game to a specific game server
-    - Gives players a player ID upon game creation or upon requesting to join a game
-    - Primitive DDOS protection via tracking IP address requests-per-second
+    - Manages creating games, adding players, deleting games, etc.
  - Game servers
-    - Communicate between human players and AI servers
+    - Handles requests to make moves or learn about moves others made
     - Only responds to requests with valid game and player IDs
- - Stateless AI servers
-    - Pass entire game state to server, receive chosen AI move in return
-    - Only responds to requests from parent game server
  - Tech stack
     - Go(lang)
-    - AWS
     - Kubernetes
+    - PostgreSQL
+    - Hosted on Digital Ocean
