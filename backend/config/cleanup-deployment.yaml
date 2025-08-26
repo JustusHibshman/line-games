@@ -14,7 +14,7 @@ spec:
         spec:
             containers:
               - name: cleanup-manager
-                image: 'docker.io/justushibshman/jih_personal:data_cleanup-0.1.3'
+                image: 'docker.io/justushibshman/jih_personal:data_cleanup-0.1.4'
                 imagePullPolicy: IfNotPresent
                 env:
                   - name: DATABASE_HOST
