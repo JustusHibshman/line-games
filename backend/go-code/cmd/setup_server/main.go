@@ -6,6 +6,7 @@ import (
     "encoding/json"
     "fmt"
     "linegames/backend/internal/database"
+    "linegames/backend/internal/httpparse"
     "linegames/backend/internal/random"
     "linegames/backend/internal/util"
     "log"
@@ -53,15 +54,15 @@ type DeleteRequest struct {
     PlayerID ID `json:"playerID"`
 }
 type EmptySeatsRequest struct {
-    GameID ID   `json:"gameID"`
-    PlayerID ID `json:"playerID"`
+    GameID ID   `url:"gameID"`
+    PlayerID ID `url:"playerID"`
 }
 type EmptySeatsResponse struct {
     Indices []int   `json:"indices"`
 }
 type AISeatsRequest struct {
-    GameID ID   `json:"gameID"`
-    PlayerID ID `json:"playerID"`
+    GameID ID   `url:"gameID"`
+    PlayerID ID `url:"playerID"`
 }
 type AISeatsResponse struct {
     Indices []int   `json:"indices"`
@@ -91,6 +92,7 @@ func fillInGameDetails(sr *SuccessResponse) error {
     return nil
 }
 
+// Expects a POST request
 func newGameHandler(w http.ResponseWriter, r *http.Request) {
 
     newGame := new(CreateRequest)
@@ -228,6 +230,7 @@ func newGameHandler(w http.ResponseWriter, r *http.Request) {
     w.Write(marshalled)
 }
 
+// Expects a POST request
 func deleteGameHandler(w http.ResponseWriter, r *http.Request) {
 
     toDelete := new(DeleteRequest)
@@ -253,7 +256,7 @@ func deleteGameHandler(w http.ResponseWriter, r *http.Request) {
     w.WriteHeader(http.StatusOK)
 }
 
-
+// Expects a POST request
 func requestSeatHandler(w http.ResponseWriter, r *http.Request) {
 
     seatRequest := new(SeatRequest)
@@ -308,10 +311,12 @@ func requestSeatHandler(w http.ResponseWriter, r *http.Request) {
     w.Write(marshalled)
 }
 
+// Expects a GET request
 func emptySeatsHandler(w http.ResponseWriter, r *http.Request) {
 
     userData := new(EmptySeatsRequest)
-    err := json.NewDecoder(r.Body).Decode(userData)
+    err := httpparse.HttpParamsToStruct(r, userData, "url")
+
     if (err != nil) {
         w.WriteHeader(http.StatusBadRequest)
         errText, _ := json.Marshal(err.Error())
@@ -342,14 +347,17 @@ func emptySeatsHandler(w http.ResponseWriter, r *http.Request) {
     }
 
     w.Header().Set("Content-Type", "application/json; charset=utf-8") // normal header
+    w.Header().Set("Cache-Control", "max-age=1") // set brief 1-second cache life
     marshalled, _ := json.Marshal(result)
     w.Write(marshalled)
 }
 
+// Expects a GET request
 func aiSeatsHandler(w http.ResponseWriter, r *http.Request) {
 
     userData := new(AISeatsRequest)
-    err := json.NewDecoder(r.Body).Decode(userData)
+    err := httpparse.HttpParamsToStruct(r, userData, "url")
+
     if (err != nil) {
         w.WriteHeader(http.StatusBadRequest)
         errText, _ := json.Marshal(err.Error())

@@ -9,6 +9,7 @@ import (
     "log"
     "math/rand"
     "net/http"
+    "strconv"
     "time"
 )
 
@@ -28,6 +29,7 @@ func init() {
     nextRefresh = 0
 }
 
+// Expects a GET request
 func gamesListHandler(w http.ResponseWriter, r *http.Request) {
     var now Time = Time(time.Now().Unix())
     if now > nextRefresh {
@@ -55,6 +57,7 @@ func gamesListHandler(w http.ResponseWriter, r *http.Request) {
     }
 
     w.Header().Set("Content-Type", "application/json; charset=utf-8") // normal header
+    w.Header().Set("Cache-Control", "max-age=" + strconv.Itoa(avgRefreshRate)) // set cache life
     w.Write(preMarshalled)
 }
 

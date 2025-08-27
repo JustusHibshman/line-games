@@ -14,7 +14,7 @@ spec:
         spec:
             containers:
               - name: gameplay-server
-                image: 'docker.io/justushibshman/jih_personal:gameplay_server-0.1.6'
+                image: 'docker.io/justushibshman/jih_personal:gameplay_server-0.1.17'
                 imagePullPolicy: IfNotPresent
                 env:
                   - name: DATABASE_HOST

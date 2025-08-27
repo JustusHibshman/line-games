@@ -71,8 +71,7 @@ export class BackendService {
     async getGameList(): Promise<GameListings> {
         try {
             this.gameList = await
-                firstValueFrom(this.http.post<GameListings>(BackendService.lobbyUrl + BackendService.lobbyListPath, {}
-                                                            )); //.subscribe((gl) => { this.gameList = gl; } );
+                firstValueFrom(this.http.get<GameListings>(BackendService.lobbyUrl + BackendService.lobbyListPath));
         } catch(e) {
             let result: GameListings = {gameIDs: [], names: []};
             return new Promise<GameListings>(function(resolve, reject) { resolve(result); });
@@ -108,9 +107,9 @@ export class BackendService {
         var seatsData: SeatNumbers
         try {
             seatsData = await
-                firstValueFrom(this.http.post<SeatNumbers>(BackendService.setupUrl + path,
-                                                            {gameID: this.membership.gameID,
-                                                             playerID: this.membership.assignedSeats[0].userID}
+                firstValueFrom(this.http.get<SeatNumbers>(BackendService.setupUrl + path +
+                                                           "?gameID=" + String(this.membership.gameID) +
+                                                           "&playerID=" + String(this.membership.assignedSeats[0].userID)
                                                             ));
         } catch(e) {
             return new Promise<Array<number> | null>(function(resolve, reject) { resolve(null); });
@@ -143,7 +142,7 @@ export class BackendService {
                 firstValueFrom(this.http.post<GameMembership>(BackendService.setupUrl + BackendService.newGamePath,
                                                  {name: name, password: password,
                                                   spec: gSpec, seatTypes: playerTypes}
-                                                 ))); //.subscribe(this.updateMembership);
+                                                 )));
         } catch(e) {
             success = false;
         }
@@ -163,7 +162,7 @@ export class BackendService {
             this.updateMembership(await firstValueFrom(
                 this.http.post<GameMembership>(BackendService.setupUrl + BackendService.requestSeatPath,
                                                  {gameID: gameID, password: password}
-                                                ))); //.subscribe(this.updateMembership);
+                                                )));
         } catch(e) {
             success = false;
         }
@@ -178,7 +177,6 @@ export class BackendService {
         }
 
         try {
-            // We still subscribe to simplify logic about sequential order of events
             await firstValueFrom(this.http.post(BackendService.setupUrl + BackendService.deleteGamePath,
                                  {gameID: this.membership.gameID,
                                   playerID: this.membership.assignedSeats[0].userID}
@@ -201,7 +199,7 @@ export class BackendService {
             this.updateMembership(await firstValueFrom(
                 this.http.post<GameMembership>(BackendService.setupUrl + BackendService.requestSeatPath,
                                                  {gameID: this.membership.gameID, password: this.lastPwd}
-                                                ))); //.subscribe(this.updateMembership);
+                                                )));
         } catch(e) {
             success = false;
         }
@@ -230,7 +228,7 @@ export class BackendService {
                 firstValueFrom(this.http.post<MoveAndStatus>(BackendService.gameplayUrl + BackendService.makeMovePath,
                                                              {gameID: this.membership.gameID, playerID: playerID,
                                                               col: m.col, row: m.row, turn: turn}
-                                                             )); //.subscribe((gl) => { this.gameList = gl; } );
+                                                             ));
         } catch(e) {
             return new Promise<boolean>(function(resolve, reject) { resolve(false); });
         }
@@ -244,11 +242,11 @@ export class BackendService {
         var moveAndStatus: MoveAndStatus
         try {
             moveAndStatus = await
-                firstValueFrom(this.http.post<MoveAndStatus>(BackendService.gameplayUrl + BackendService.getMovePath,
-                                                             {gameID: this.membership.gameID,
-                                                              playerID: this.membership.assignedSeats[0].userID,
-                                                              turn: turn}
-                                                             )); //.subscribe((gl) => { this.gameList = gl; } );
+                firstValueFrom(this.http.get<MoveAndStatus>(BackendService.gameplayUrl + BackendService.getMovePath +
+                                                            "?gameID="   + String(this.membership.gameID) +
+                                                            "&playerID=" + String(this.membership.assignedSeats[0].userID) +
+                                                            "&turn="     + String(turn)
+                                                             ));
         } catch(e) {
             return new Promise<Move | null>(function(resolve, reject) { resolve(null); });
         }

@@ -5,6 +5,7 @@ import . "linegames/backend/internal/types"
 import (
     "encoding/json"
     "linegames/backend/internal/database"
+    "linegames/backend/internal/httpparse"
     "log"
     "net/http"
 )
@@ -13,9 +14,9 @@ type Position struct {
     Y int   `json:"row"`
 }
 type RequestMoveRequest struct {
-    GameID ID   `json:"gameID"`
-    PlayerID ID `json:"playerID"`
-    Turn int    `json:"turn"`
+    GameID ID   `url:"gameID"`
+    PlayerID ID `url:"playerID"`
+    Turn int    `url:"turn"`
 }
 type RequestMoveResponse struct {
     Success bool    `json:"success"`
@@ -33,6 +34,7 @@ type MakeMoveResponse struct {
     Pos Position    `json:"move"`
 }
 
+// Expects a POST request
 func makeMoveHandler(w http.ResponseWriter, r *http.Request) {
 
     request := new(MakeMoveRequest)
@@ -99,10 +101,11 @@ func makeMoveHandler(w http.ResponseWriter, r *http.Request) {
     w.Write(marshalled)
 }
 
+// Expects a GET request
 func requestMoveHandler(w http.ResponseWriter, r *http.Request) {
 
     request := new(RequestMoveRequest)
-    err := json.NewDecoder(r.Body).Decode(request)
+    err := httpparse.HttpParamsToStruct(r, request, "url")
     if (err != nil) {
         w.WriteHeader(http.StatusBadRequest)
         errText, _ := json.Marshal(err.Error())
