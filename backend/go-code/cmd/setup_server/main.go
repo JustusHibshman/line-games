@@ -177,7 +177,7 @@ func newGameHandler(w http.ResponseWriter, r *http.Request) {
     if len(humanSeats) == 1 {
         g.Begun = true  // No need to appear in the lobby list
     }
-    hSeat := int(rand.Int31n(int32(len(humanSeats))))
+    hSeat := humanSeats[int(rand.Int31n(int32(len(humanSeats))))]
     seats[hSeat].Claimed = true
 
     spec := new(Spec)
