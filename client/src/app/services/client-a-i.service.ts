@@ -49,13 +49,10 @@ export class ClientAIService {
                                     this.moveToInt(game, {row: h - 1, col: i})));
         }
 
-        /* Return four central squares */
         let s = new Set<number>();
-        for (let r = Math.floor(h / 2) - 1; r < Math.floor(h / 2) + 1; r++) {
-            for (let c = Math.floor(w / 2) - 1; c < Math.floor(w / 2) + 1; c++) {
-                s.add(this.moveToInt(game, {row: r, col: c}));
-            }
-        }
+        // Return central square
+        s.add(this.moveToInt(game, {row: Math.floor(h / 2), col: Math.floor(w / 2)}))
+
         return s;
     }
 
