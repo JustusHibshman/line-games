@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 
+import { Seat } from '@local-types/seat.type';
 import { SeatNumbers } from '@local-types/seat-numbers.type';
 import { GameMembership } from '@local-types/game-membership.type';
 import { GameListings } from '@local-types/game-listings.type';
@@ -136,6 +137,19 @@ export class BackendService {
 
         this.lastPwd = password;
 
+        // Added when multiplayer disabled
+        let assignedSeats: Array<Seat> = new Array<Seat>(playerTypes.length);
+        for (let i = 0; i < assignedSeats.length; i++) {
+            assignedSeats[i] = {seat: i, userID: BigInt(0), type: PlayerType.AI};
+        }
+        let randIdx = Math.floor(Math.random() * assignedSeats.length);
+        assignedSeats[randIdx] = {seat: randIdx, userID: BigInt(0), type: PlayerType.Human};
+        this.membership = {spec: gSpec, numPlayers: playerTypes.length, gameID: BigInt(0),
+                           assignedSeats: assignedSeats};
+        return new Promise<boolean>(function(resolve, reject) { resolve(true); });
+        // ^^ Added when multiplayer disabled
+
+        /* Multiplayer disabled
         let success = true;
         try {
             this.updateMembership(await
@@ -147,6 +161,7 @@ export class BackendService {
             success = false;
         }
         return new Promise<boolean>(function(resolve, reject) { resolve(success); });
+        */
     }
 
     // Returns true iff successful

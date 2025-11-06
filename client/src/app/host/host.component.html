@@ -11,11 +11,15 @@
         <h2>Choose the Game</h2>
         <app-vertical-radio [options]="specNames | sorted" (value)="loadConfig($event)" />
         <span></span>
+        <!-- Multiplayer disabled
         <h2>Choose the Number of AI and Human Players</h2>
+        -->
+        <h2>Choose the Number of Players</h2>
         <div class="middle-aligned-row">
             <span class="label">Number of Players</span>
             <app-integer-input [(value)]="numPlayers"  [min]="2" [max]="6" (mayHaveChanged)="resizePlayerTypes()" />
         </div>
+        <!-- Multiplayer disabled
         <div class="input-group">
             @for(pt of ptChoices(); track $index; let i = $index) {
                 <div class="player-selector interface medium content-B">
@@ -24,6 +28,8 @@
                 </div>
             }
         </div>
+        -->
+        <!-- Multiplayer disabled
         <div class="middle-aligned-row wrap">
             <span>Game Name</span>
             <app-text-box [(text)]="gameName" [maxLength]="13" />
@@ -32,6 +38,7 @@
                 <app-text-box [(text)]="password" [maxLength]="10" />
             </div>
         </div>
+        -->
         <div>
             <app-action-button [text]="'Launch Game'" [disable]="!readyToLaunch()"
                     (click)="hostGame()" />

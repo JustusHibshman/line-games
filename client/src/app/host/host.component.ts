@@ -20,8 +20,8 @@ import { RulePresetsService } from '@local-services/rule-presets.service';
 @Component({
   selector: 'app-host',
   imports: [ActionButtonComponent, IntegerInputComponent, NavButtonComponent,
-            TextBoxComponent, ToggleSwitchComponent, VerticalRadioComponent,
-            SortedPipe],
+            /* [Multiplayer disabled] TextBoxComponent, ToggleSwitchComponent, */
+            VerticalRadioComponent, SortedPipe],
   templateUrl: './host.component.html',
   styleUrl: './host.component.scss'
 })
@@ -53,9 +53,12 @@ export class HostComponent implements OnInit {
     ptChoices = signal<Array<WritableSignal<boolean>>>([]);
     numHumans = computed(() => this.booleanSignalSum(this.ptChoices(), this.PTHUMAN));
 
+    /* Multiplayer disabled
     readyToLaunch = computed(() => this.numHumans() == 1 ||
-                                   (this.gameName().trim().length > 0 &&
-                                    this.rulesReady() && this.numHumans() > 0));
+                                    (this.gameName().trim().length > 0 &&
+                                     this.rulesReady() && this.numHumans() > 0));
+    */
+    readyToLaunch = computed(() => this.rulesReady());
 
     constructor() {}
 
@@ -71,7 +74,10 @@ export class HostComponent implements OnInit {
             l.pop();
         }
         while (l.length < this.numPlayers()) {
+            /* Multiplayer disabled
             let choice: boolean = l.length == 0 ? this.PTHUMAN : l[l.length - 1]();
+            */
+            let choice: boolean = l.length == 0 ? this.PTHUMAN : !this.PTHUMAN;
             l.push(signal<boolean>(choice));
         }
         // Here we copy the array, which makes the reference change, which in turn
